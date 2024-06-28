@@ -50,6 +50,19 @@
 				<!-- Actions -->
 			</aside>
 		{/if}
+		{#if $message}
+			<aside class="alert variant-ghost-error w-full mb-4">
+				<!-- Icon -->
+				<div>
+					<CircleAlertIcon class="size-4" />
+				</div>
+				<!-- Message -->
+				<div class="alert-message">
+					<p>{$message.message}</p>
+				</div>
+				<!-- Actions -->
+			</aside>
+		{/if}
 		<form
 			method="post"
 			use:enhance
