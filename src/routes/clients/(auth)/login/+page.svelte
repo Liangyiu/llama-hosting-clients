@@ -100,7 +100,10 @@
 							<div class="space-y-1">
 								<Label asChild={true}>
 									<div class="flex items-center justify-between">
-										<span>Password</span>
+										<label for="password" class="label">
+											<span>Password</span>
+										</label>
+
 										<a href="/clients/reset-password" class="text-sm font-medium anchor"
 											>Forgot password?</a
 										>

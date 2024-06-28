@@ -19,8 +19,7 @@ export const registerSchema = z
 			.min(8, { message: 'Must be at least 8 characters long' })
 			.max(64, { message: 'Can not exceed 64 characters' }),
 		passwordConfirm: z.string(),
-		accept_terms: z.boolean().default(false),
-		accept_terms_control_value: z.boolean().default(true)
+		accept_terms: z.boolean()
 	})
 	.superRefine(({ password }, checkPasswordComplexity) => {
 		const containsUppercase = (ch: string) => /[A-Z]/.test(ch);
@@ -54,6 +53,6 @@ export const registerSchema = z
 		message: 'Passwords do not match',
 		path: ['passwordConfirm']
 	})
-	.refine((data) => data.accept_terms === data.accept_terms_control_value, {
+	.refine((data) => data.accept_terms === true, {
 		path: ['accept_terms']
 	});
