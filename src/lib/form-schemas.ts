@@ -54,5 +54,6 @@ export const registerSchema = z
 		path: ['passwordConfirm']
 	})
 	.refine((data) => data.accept_terms === true, {
+		message: 'You need to accept to proceed',
 		path: ['accept_terms']
 	});

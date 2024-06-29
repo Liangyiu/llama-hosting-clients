@@ -190,7 +190,7 @@
 			{
 				"system": false,
 				"id": "fqajdwem",
-				"name": "user_id",
+				"name": "user",
 				"type": "relation",
 				"required": false,
 				"presentable": false,
@@ -206,7 +206,7 @@
 			{
 				"system": false,
 				"id": "mf9k3pxm",
-				"name": "order_id",
+				"name": "order",
 				"type": "relation",
 				"required": false,
 				"presentable": false,
@@ -234,8 +234,8 @@
 			}
 		],
 		"indexes": [],
-		"listRule": "user_id = @request.auth.id",
-		"viewRule": "user_id = @request.auth.id",
+		"listRule": "user = @request.auth.id",
+		"viewRule": "user = @request.auth.id",
 		"createRule": null,
 		"updateRule": null,
 		"deleteRule": null,
@@ -250,7 +250,7 @@
 			{
 				"system": false,
 				"id": "riemgqtg",
-				"name": "order_id",
+				"name": "order",
 				"type": "relation",
 				"required": true,
 				"presentable": false,
@@ -266,7 +266,7 @@
 			{
 				"system": false,
 				"id": "reitknoa",
-				"name": "product_id",
+				"name": "product",
 				"type": "relation",
 				"required": true,
 				"presentable": false,
@@ -295,8 +295,8 @@
 			}
 		],
 		"indexes": [],
-		"listRule": "@request.auth.id = order_id.user_id",
-		"viewRule": "@request.auth.id = order_id.user_id",
+		"listRule": "@request.auth.id = order.user",
+		"viewRule": "@request.auth.id = order.user",
 		"createRule": null,
 		"updateRule": null,
 		"deleteRule": null,
@@ -311,7 +311,7 @@
 			{
 				"system": false,
 				"id": "i38gnzwf",
-				"name": "user_id",
+				"name": "user",
 				"type": "relation",
 				"required": true,
 				"presentable": false,
@@ -373,8 +373,8 @@
 			}
 		],
 		"indexes": [],
-		"listRule": "user_id = @request.auth.id && user_id.verified = true",
-		"viewRule": "user_id = @request.auth.id && user_id.verified = true",
+		"listRule": "user = @request.auth.id && user.verified = true",
+		"viewRule": "user = @request.auth.id && user.verified = true",
 		"createRule": null,
 		"updateRule": null,
 		"deleteRule": null,
@@ -500,7 +500,7 @@
 			{
 				"system": false,
 				"id": "vg9bozel",
-				"name": "product_id",
+				"name": "product",
 				"type": "relation",
 				"required": true,
 				"presentable": true,
@@ -529,7 +529,7 @@
 			{
 				"system": false,
 				"id": "u20qwj3b",
-				"name": "user_id",
+				"name": "user",
 				"type": "relation",
 				"required": true,
 				"presentable": false,
@@ -545,7 +545,7 @@
 			{
 				"system": false,
 				"id": "gbywvuei",
-				"name": "invoice_id",
+				"name": "invoice",
 				"type": "relation",
 				"required": true,
 				"presentable": false,
@@ -576,7 +576,7 @@
 			{
 				"system": false,
 				"id": "ih8sbhoi",
-				"name": "user_id",
+				"name": "user",
 				"type": "relation",
 				"required": true,
 				"presentable": false,
@@ -618,12 +618,10 @@
 				}
 			}
 		],
-		"indexes": [
-			"CREATE UNIQUE INDEX `idx_M7UMIVA` ON `ssh_keys` (\n  `public_key`,\n  `user_id`\n)"
-		],
-		"listRule": "user_id = @request.auth.id",
-		"viewRule": "user_id = @request.auth.id",
-		"createRule": "user_id = @request.auth.id",
+		"indexes": ["CREATE UNIQUE INDEX `idx_M7UMIVA` ON `ssh_keys` (\n  `public_key`,\n  `user`\n)"],
+		"listRule": "user = @request.auth.id",
+		"viewRule": "user = @request.auth.id",
+		"createRule": "user = @request.auth.id",
 		"updateRule": null,
 		"deleteRule": null,
 		"options": {}
@@ -637,7 +635,7 @@
 			{
 				"system": false,
 				"id": "piouhpxs",
-				"name": "user_id",
+				"name": "user",
 				"type": "relation",
 				"required": true,
 				"presentable": false,
@@ -767,12 +765,12 @@
 		],
 		"indexes": [
 			"CREATE UNIQUE INDEX `idx_tLIMDSA` ON `user_details` (`vat_id`)",
-			"CREATE UNIQUE INDEX `idx_LKYp7Vp` ON `user_details` (`user_id`)"
+			"CREATE UNIQUE INDEX `idx_9c20qTs` ON `user_details` (`user`)"
 		],
 		"listRule": null,
-		"viewRule": "user_id = @request.auth.id && user_id.verified = true",
-		"createRule": "user_id = @request.auth.id && user_id.verified = true",
-		"updateRule": "user_id = @request.auth.id && user_id.verified = true",
+		"viewRule": "user = @request.auth.id && user.verified = true",
+		"createRule": "user = @request.auth.id && user.verified = true",
+		"updateRule": "user = @request.auth.id && user.verified = true",
 		"deleteRule": null,
 		"options": {}
 	},
@@ -785,7 +783,7 @@
 			{
 				"system": false,
 				"id": "kdr5nvbb",
-				"name": "user_id",
+				"name": "user",
 				"type": "relation",
 				"required": false,
 				"presentable": false,
