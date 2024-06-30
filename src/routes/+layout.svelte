@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.postcss';
 
-	import { ModeWatcher } from 'mode-watcher';
+	import { autoModeWatcher } from '@skeletonlabs/skeleton';
 	import { initializeStores, Drawer } from '@skeletonlabs/skeleton';
 
 	initializeStores();
@@ -13,11 +13,11 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 </script>
 
+<svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
+
 <Drawer position="left" regionDrawer="max-w-sm">
 	<Sidebar />
 </Drawer>
-
-<ModeWatcher defaultMode={'dark'} />
 
 <div class="h-screen">
 	<slot />

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { focusTrap } from '@skeletonlabs/skeleton';
+	import { focusTrap, LightSwitch } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -22,7 +22,13 @@
 
 <div class="card">
 	<div class="card-header">
-		<h1 class="h3">Client-Login</h1>
+		<div class="w-full justify-between align-middle flex">
+			<h1 class="h3">Client-Login</h1>
+
+			<div class="items-center flex">
+				<LightSwitch />
+			</div>
+		</div>
 	</div>
 	<section class="flex flex-col items-center justify-center p-4 w-full">
 		{#if newUser}

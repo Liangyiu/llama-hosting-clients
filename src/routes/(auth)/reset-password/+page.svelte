@@ -3,7 +3,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { resetPasswordSchema } from '$lib/form-schemas';
 	import { CircleAlertIcon, Loader2 } from 'lucide-svelte';
-	import { focusTrap } from '@skeletonlabs/skeleton';
+	import { focusTrap, LightSwitch } from '@skeletonlabs/skeleton';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	export let data;
 
@@ -18,8 +18,13 @@
 
 <div class="card">
 	<div class="card-header">
-		<h1 class="h3">Reset password</h1>
-		<p class="text-sm">Further instructions will be sent to you</p>
+		<div class="w-full justify-between align-middle flex">
+			<h1 class="h3">Reset password</h1>
+
+			<div class="items-center flex">
+				<LightSwitch />
+			</div>
+		</div>
 	</div>
 	<section class="flex flex-col items-center justify-center p-4 w-full">
 		{#if $message}
