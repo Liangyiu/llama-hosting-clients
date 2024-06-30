@@ -57,13 +57,7 @@
 				</div>
 			</aside>
 		{/if}
-		<form
-			method="post"
-			use:enhance
-			action="/clients/login"
-			class="w-full"
-			use:focusTrap={isFocused}
-		>
+		<form method="post" use:enhance action="/login" class="w-full" use:focusTrap={isFocused}>
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div>
 					<Field {form} name="email">
@@ -98,8 +92,7 @@
 											<span>Password</span>
 										</label>
 
-										<a href="/clients/reset-password" class="text-sm font-medium anchor"
-											>Forgot password?</a
+										<a href="/reset-password" class="text-sm font-medium anchor">Forgot password?</a
 										>
 									</div>
 								</Label>
@@ -126,8 +119,7 @@
 				{/if}
 			</button>
 			<div class="text-sm w-full text-center pt-2">
-				Don't have an account yet? <a href="/clients/register" class="font-medium anchor">Sign up</a
-				>
+				Don't have an account yet? <a href="/register" class="font-medium anchor">Sign up</a>
 			</div>
 		</form>
 	</section>

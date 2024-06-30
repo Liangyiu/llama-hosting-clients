@@ -9,7 +9,7 @@ export const actions: Actions = {
 
 		pb.authStore.clear();
 
-		return redirect(303, '/clients/login?logout=true');
+		return redirect(303, '/login?logout=true');
 	},
 	setTheme: async ({ cookies, request }) => {
 		const formData = await request.formData();

@@ -32,6 +32,6 @@ export const actions: Actions = {
 
 			return message(form, { status, message: 'An error occurred' });
 		}
-		return redirect(303, '/clients/login?new_user=true');
+		return redirect(303, '/login?new_user=true');
 	}
 };

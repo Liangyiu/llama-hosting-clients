@@ -35,6 +35,6 @@ export const actions: Actions = {
 
 			return message(form, { status, message: 'An error occurred during authentication' });
 		}
-		return redirect(303, '/clients/dashboard');
+		return redirect(303, '/dashboard');
 	}
 };

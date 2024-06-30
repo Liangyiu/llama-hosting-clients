@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { UsersRecord } from '$lib/types/pbTypes';
-	import { Avatar, LightSwitch, popup, type PopupSettings } from '@skeletonlabs/skeleton';
+	import { Avatar, popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import { LogOutIcon, SettingsIcon } from 'lucide-svelte';
 	import ThemeSelector from './ThemeSelector.svelte';
 
@@ -18,11 +18,11 @@
 	else initials = 'LL';
 
 	async function logout() {
-		await fetch('/clients/dashboard/?/logout', {
+		await fetch('/dashboard/?/logout', {
 			method: 'post',
 			body: new FormData()
 		});
-		return await goto('/clients/login?logout=1');
+		return await goto('/login?logout=1');
 	}
 
 	const dropdownItemClasses =
@@ -31,7 +31,6 @@
 
 <!-- routes -->
 <div class="ml-auto flex gap-x-4 items-center">
-	<LightSwitch />
 	<ThemeSelector />
 	<button use:popup={avatarClick}>
 		<Avatar
@@ -50,7 +49,7 @@
 	<div
 		class="w-full [&>*:first-child]:rounded-t-[var(--theme-rounded-container)] [&>*:last-child]:rounded-b-[var(--theme-rounded-container)]"
 	>
-		<button class={dropdownItemClasses} on:click={() => goto('/clients/settings')}>
+		<button class={dropdownItemClasses} on:click={() => goto('/settings')}>
 			<div class="flex items-center space-x-2">
 				<SettingsIcon size="18" /> <span>Settings</span>
 			</div>

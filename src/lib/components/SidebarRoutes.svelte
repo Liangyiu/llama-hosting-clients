@@ -34,6 +34,6 @@
 
 <div class="flex w-full flex-col">
 	{#each routes as { href, icon, label }}
-		<SidebarItem href={`/clients${href}`} {icon} {label} />
+		<SidebarItem href={`/${href}`} {icon} {label} />
 	{/each}
 </div>

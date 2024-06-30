@@ -38,7 +38,7 @@
 		<form
 			method="post"
 			use:enhance
-			action="/clients/reset-password"
+			action="/reset-password"
 			class="w-full"
 			use:focusTrap={isFocused}
 		>

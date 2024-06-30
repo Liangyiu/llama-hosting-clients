@@ -34,7 +34,7 @@
 		class="btn-icon md:hidden variant-ghost-surface hover:variant-soft-primary"
 		use:popup={{ event: 'click', target: 'theme', closeQuery: 'a[href]' }}
 	>
-		<PaletteIcon size="16" />
+		<PaletteIcon size="22" />
 	</button>
 
 	<button
@@ -44,11 +44,17 @@
 		<span class="inline-block">Theme</span>
 		<ChevronDownIcon size="16" class="inline-block" />
 	</button>
+
 	<!-- popup -->
 	<div class="card p-4 w-60 shadow-xl" data-popup="theme">
 		<div class="space-y-4">
+			<section class="flex justify-between items-center">
+				<h6 class="h6">Mode</h6>
+				<LightSwitch />
+			</section>
+			<hr />
 			<nav class="list-nav p-4 -m-4 max-h-64 lg:max-h-[500px] overflow-y-auto">
-				<form action="/clients/dashboard/?/setTheme" method="post" use:enhance={setTheme}>
+				<form action="/dashboard/?/setTheme" method="post" use:enhance={setTheme}>
 					<ul>
 						<!-- , badge -->
 						{#each themes as { icon, name, type }}

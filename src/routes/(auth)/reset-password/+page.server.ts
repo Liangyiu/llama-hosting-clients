@@ -26,6 +26,6 @@ export const actions: Actions = {
 
 			return message(form, { status, message: 'An error occurred' });
 		}
-		return redirect(303, '/clients/reset-password/success');
+		return redirect(303, '/reset-password/success');
 	}
 };

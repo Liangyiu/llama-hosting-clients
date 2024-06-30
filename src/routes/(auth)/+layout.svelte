@@ -1,9 +1,9 @@
 <script lang="ts">
 </script>
 
-<main class=" mx-auto h-screen w-full max-w-lg content-center items-center space-y-4 p-4">
+<main class="mx-auto h-screen w-full max-w-lg content-center items-center space-y-4 p-4">
 	<div class="logo-section flex w-full items-center justify-center">
-		<a href="/clients">
+		<a href="/">
 			<img
 				src="/assets/logos/llama-hosting-logo-light-text.svg"
 				alt="llama-hosting-logo-with-text"

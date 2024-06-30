@@ -38,30 +38,21 @@ export async function handle({ event, resolve }) {
 	}
 
 	if (
-		url.pathname.startsWith('/clients') &&
+		url.pathname.startsWith('/') &&
 		locals.user === null &&
-		![
-			'/clients/login',
-			'/clients/register',
-			'/clients/reset-password',
-			'/clients/reset-password/success'
-		].includes(url.pathname)
+		!['/login', '/register', '/reset-password', '/reset-password/success'].includes(url.pathname)
 	) {
-		return redirect(303, '/clients/login');
+		return redirect(303, '/login');
 	}
 
 	if (
-		url.pathname.startsWith('/clients') &&
+		url.pathname.startsWith('/') &&
 		locals.user &&
-		[
-			'/clients',
-			'/clients/login',
-			'/clients/register',
-			'/clients/reset-password',
-			'/clients/reset-password/success'
-		].includes(url.pathname)
+		['/', '/login', '/register', '/reset-password', '/reset-password/success'].includes(
+			url.pathname
+		)
 	) {
-		return redirect(303, '/clients/dashboard');
+		return redirect(303, '/dashboard');
 	}
 
 	const response = await resolve(event, {

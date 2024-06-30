@@ -19,6 +19,6 @@
 
 <ModeWatcher defaultMode={'dark'} />
 
-<div>
+<div class="h-screen">
 	<slot />
 </div>

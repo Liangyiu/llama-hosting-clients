@@ -34,13 +34,7 @@
 				<!-- Actions -->
 			</aside>
 		{/if}
-		<form
-			method="post"
-			use:enhance
-			action="/clients/register"
-			class="w-full"
-			use:focusTrap={isFocused}
-		>
+		<form method="post" use:enhance action="/register" class="w-full" use:focusTrap={isFocused}>
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div class="grid grid-cols-2 gap-4">
 					<div>
@@ -189,7 +183,7 @@
 				{/if}
 			</button>
 			<div class="text-sm w-full text-center pt-2">
-				Already have an account? <a href="/clients/login" class="font-medium anchor">Login</a>
+				Already have an account? <a href="/login" class="font-medium anchor">Login</a>
 			</div>
 		</form>
 	</section>
