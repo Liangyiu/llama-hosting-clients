@@ -7,8 +7,6 @@ export const actions: Actions = {
 			locals: { pb }
 		} = event;
 
-		console.log('pressed logout');
-
 		pb.authStore.clear();
 
 		return redirect(303, '/clients/login?logout=true');
