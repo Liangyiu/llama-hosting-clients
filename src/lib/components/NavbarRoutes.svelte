@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import type { UsersRecord } from '$lib/types/pbTypes';
 	import { Avatar, LightSwitch, popup, type PopupSettings } from '@skeletonlabs/skeleton';
-	import { LogOutIcon } from 'lucide-svelte';
+	import { LogOutIcon, SettingsIcon } from 'lucide-svelte';
 	import ThemeSelector from './ThemeSelector.svelte';
 
 	const avatarClick: PopupSettings = {
@@ -26,7 +26,7 @@
 	}
 
 	const dropdownItemClasses =
-		'w-full py-2 px-4 text-left hover:bg-surface-600/75 transition-colors';
+		'w-full py-2 px-3 text-left hover:bg-surface-600/75 transition-colors';
 </script>
 
 <!-- routes -->
@@ -51,12 +51,14 @@
 		class="w-full [&>*:first-child]:rounded-t-[var(--theme-rounded-container)] [&>*:last-child]:rounded-b-[var(--theme-rounded-container)]"
 	>
 		<button class={dropdownItemClasses} on:click={() => goto('/clients/settings')}>
-			Settings
+			<div class="flex items-center space-x-2">
+				<SettingsIcon size="18" /> <span>Settings</span>
+			</div>
 		</button>
 		<hr class="!border-surface-800-100-token" />
 		<button class={dropdownItemClasses} on:click={logout}>
 			<div class="flex items-center space-x-2">
-				<LogOutIcon /> <span>Logout</span>
+				<LogOutIcon size="18" /> <span>Logout</span>
 			</div>
 		</button>
 	</div>

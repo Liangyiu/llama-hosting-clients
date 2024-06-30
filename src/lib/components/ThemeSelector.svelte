@@ -3,7 +3,7 @@
 	import { LightSwitch, popup } from '@skeletonlabs/skeleton';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { enhance } from '$app/forms';
-	import { ChevronDownIcon } from 'lucide-svelte';
+	import { ChevronDownIcon, PaletteIcon } from 'lucide-svelte';
 
 	const themes = [
 		{ type: 'skeleton', name: 'Skeleton', icon: '💀' },
@@ -31,11 +31,18 @@
 <div>
 	<!-- trigger -->
 	<button
-		class="btn variant-ghost-surface hover:variant-soft-primary"
+		class="btn-icon md:hidden variant-ghost-surface hover:variant-soft-primary"
 		use:popup={{ event: 'click', target: 'theme', closeQuery: 'a[href]' }}
 	>
-		<span class="hidden md:inline-block">Theme</span>
-		<ChevronDownIcon size="16" />
+		<PaletteIcon size="16" />
+	</button>
+
+	<button
+		class="btn hidden md:inline-block variant-ghost-surface hover:variant-soft-primary"
+		use:popup={{ event: 'click', target: 'theme', closeQuery: 'a[href]' }}
+	>
+		<span class="inline-block">Theme</span>
+		<ChevronDownIcon size="16" class="inline-block" />
 	</button>
 	<!-- popup -->
 	<div class="card p-4 w-60 shadow-xl" data-popup="theme">
