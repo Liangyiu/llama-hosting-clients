@@ -47,7 +47,7 @@
 		{
 			icon: IconSettings,
 			label: 'Settings',
-			href: '/settings'
+			href: '/settings/account'
 		}
 	];
 </script>
