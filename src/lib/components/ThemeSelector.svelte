@@ -31,14 +31,14 @@
 <div>
 	<!-- trigger -->
 	<button
-		class="btn-icon md:hidden variant-ghost-surface hover:variant-soft-primary"
+		class="btn-icon md:hidden size-[46px] variant-ghost-surface hover:bg-surface-400-500-token transition-colors"
 		use:popup={{ event: 'click', target: 'theme', closeQuery: 'a[href]' }}
 	>
 		<PaletteIcon size="22" />
 	</button>
 
 	<button
-		class="btn hidden md:inline-block variant-ghost-surface hover:variant-soft-primary"
+		class="btn hidden md:inline-block variant-ghost-surface hover:bg-surface-400-500-token transition-colors"
 		use:popup={{ event: 'click', target: 'theme', closeQuery: 'a[href]' }}
 	>
 		<span class="inline-block">Theme</span>
@@ -46,7 +46,7 @@
 	</button>
 
 	<!-- popup -->
-	<div class="card p-4 w-60 shadow-xl" data-popup="theme">
+	<div class="card variant-glass-tertiary p-4 w-60 shadow-xl" data-popup="theme">
 		<div class="space-y-4">
 			<section class="flex justify-between items-center">
 				<h6 class="h6">Mode</h6>

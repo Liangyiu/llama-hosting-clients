@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 	import type { UsersRecord } from '$lib/types/pbTypes';
 	import { Avatar, popup, type PopupSettings } from '@skeletonlabs/skeleton';
-	import { LogOutIcon, SettingsIcon } from 'lucide-svelte';
 	import ThemeSelector from './ThemeSelector.svelte';
+	import Wallet from '@tabler/icons-svelte/icons/wallet';
 
 	const avatarClick: PopupSettings = {
 		event: 'click',
@@ -25,39 +25,71 @@
 		return await goto('/login?logout=1');
 	}
 
-	const dropdownItemClasses =
-		'w-full py-2 px-3 text-left hover:bg-surface-600/75 transition-colors';
+	const links = [
+		{
+			text: 'Accounting',
+			href: '/accounting'
+		},
+		{
+			text: 'Settings',
+			href: '/settings'
+		}
+	];
 </script>
 
 <!-- routes -->
-<div class="ml-auto flex gap-x-4 items-center">
-	<ThemeSelector />
-	<button use:popup={avatarClick}>
-		<Avatar
-			src={`https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
-				initials}
-			rounded="rounded-full"
-			width="w-12"
-			border="border-4 border-surface-300-600-token hover:!border-surface-500-400-token transition-colors"
-		/>
-		<span class="sr-only">Toggle user menu</span>
-	</button>
+<div class="flex w-full items-center justify-between">
+	<div class="w-fit hidden sm:block">
+		<h1 class="h6">llama hosting - Control Panel</h1>
+	</div>
+	<div class="flex gap-x-4 items-center ml-auto">
+		<ThemeSelector />
+		<button use:popup={avatarClick}>
+			<Avatar
+				src={`https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
+					initials}
+				rounded="rounded-full"
+				width="w-12"
+				border="border-2 border-surface-300-600-token hover:!border-surface-500-400-token transition-colors"
+			/>
+			<span class="sr-only">Toggle user menu</span>
+		</button>
+	</div>
 </div>
 
 <!-- card -->
-<div class="card variant-glass-tertiary w-36" data-popup="avatarClick">
+<div class="card variant-glass-tertiary shadow-xl" data-popup="avatarClick">
 	<div
 		class="w-full [&>*:first-child]:rounded-t-[var(--theme-rounded-container)] [&>*:last-child]:rounded-b-[var(--theme-rounded-container)]"
 	>
-		<button class={dropdownItemClasses} on:click={() => goto('/settings')}>
-			<div class="flex items-center space-x-2">
-				<SettingsIcon size="18" /> <span>Settings</span>
-			</div>
-		</button>
+		<div class="w-full px-3 text-left transition-colors py-2">
+			<span class="block text font-semibold">{user?.first_name} {user?.last_name}</span>
+			<span class="block text-sm align-middle"
+				><Wallet size="16" class="inline mr-0.5" /> {user?.balance || 0} €</span
+			>
+		</div>
 		<hr class="!border-surface-800-100-token" />
-		<button class={dropdownItemClasses} on:click={logout}>
+		<div>
+			{#each links as { href, text }}
+				<button
+					class="hover:bg-surface-600/75 text-sm w-full px-3 py-2 text-left transition-colors"
+					on:click={() => goto(href)}
+				>
+					<div class="flex items-center space-x-2">
+						<span>
+							{text}
+						</span>
+					</div>
+				</button>
+			{/each}
+		</div>
+		<hr class="!border-surface-800-100-token" />
+		<button
+			class="hover:bg-surface-600/75 text-sm w-full px-3 text-left transition-colors py-2"
+			on:click={logout}
+		>
 			<div class="flex items-center space-x-2">
-				<LogOutIcon size="18" /> <span>Logout</span>
+				<span>Logout</span>
 			</div>
 		</button>
 	</div>

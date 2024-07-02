@@ -140,7 +140,7 @@ export type UserDetailsRecord = {
 }
 
 export type UserDetailsAdminRecord = {
-	in_client_created?: boolean
+	balance?: number
 	in_id?: string
 	user?: RecordIdString
 }

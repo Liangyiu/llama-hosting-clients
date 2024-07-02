@@ -10,6 +10,6 @@
 	};
 </script>
 
-<button class="btn-icon pr-4 transition hover:opacity-75 md:hidden" on:click={openSidebar}>
+<button class="btn-icon pr-4 transition hover:opacity-75 lg:hidden" on:click={openSidebar}>
 	<MenuIcon />
 </button>

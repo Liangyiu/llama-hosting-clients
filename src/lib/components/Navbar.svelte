@@ -6,9 +6,7 @@
 	export let user: UsersRecord | null;
 </script>
 
-<div
-	class="flex h-full items-center border-b-2 border-surface-300-600-token variant-glass-surface p-4 shadow-sm"
->
+<div class="flex h-full items-center p-4 mx-auto max-w-[1450px]">
 	<MobileSidebar />
 	<NavbarRoutes {user} />
 </div>

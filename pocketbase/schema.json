@@ -798,16 +798,6 @@
 			},
 			{
 				"system": false,
-				"id": "3rjlhyjh",
-				"name": "in_client_created",
-				"type": "bool",
-				"required": false,
-				"presentable": false,
-				"unique": false,
-				"options": {}
-			},
-			{
-				"system": false,
 				"id": "nppiqgpz",
 				"name": "in_id",
 				"type": "text",
@@ -819,9 +809,26 @@
 					"max": null,
 					"pattern": ""
 				}
+			},
+			{
+				"system": false,
+				"id": "t9swkicm",
+				"name": "balance",
+				"type": "number",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": 0,
+					"max": 50,
+					"noDecimal": false
+				}
 			}
 		],
-		"indexes": ["CREATE UNIQUE INDEX `idx_7IpVeSO` ON `user_details_admin` (`in_id`)"],
+		"indexes": [
+			"CREATE UNIQUE INDEX `idx_7IpVeSO` ON `user_details_admin` (`in_id`)",
+			"CREATE UNIQUE INDEX `idx_WIjOnpu` ON `user_details_admin` (`user`)"
+		],
 		"listRule": null,
 		"viewRule": null,
 		"createRule": null,

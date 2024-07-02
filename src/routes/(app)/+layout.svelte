@@ -9,8 +9,8 @@
 <div class="h-full">
 	<Navigation {user} />
 
-	<main class="h-screen pt-[80px] md:pl-56">
-		<div class="p-5">
+	<main class="h-screen pt-[80px] lg:pl-56">
+		<div class="p-4 mx-auto max-w-[1450px] border min-h-full">
 			<slot />
 		</div>
 	</main>

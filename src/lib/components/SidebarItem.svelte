@@ -1,23 +1,22 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { cn } from '$lib/utils';
-	import type { Icon } from 'lucide-svelte';
+	import { type Icon } from '@tabler/icons-svelte';
 	import type { ComponentType } from 'svelte';
 
 	export let label: string;
 	export let icon: ComponentType<Icon>;
 	export let href: string;
 	$: pathname = $page.url.pathname;
-	$: isActive =
-		(pathname === '/' && href === '/') || pathname === href || pathname.startsWith(`${href}/`);
+	$: isActive = pathname.includes(href);
 </script>
 
 <a
 	{href}
 	class={cn(
-		'flex items-center gap-x-2 text-sm font-medium text-muted-foreground transition-all hover:bg-muted hover:text-slate-600',
+		'flex items-center gap-x-2 text-sm font-medium transition-all hover:text-secondary-500-400-token',
 		{
-			'bg-primary/20 text-primary hover:bg-primary/20 hover:text-primary': isActive
+			'text-secondary-500-400-token': isActive
 		}
 	)}
 >
@@ -31,9 +30,4 @@
 		/>
 		{label}
 	</div>
-	<div
-		class={cn('ml-auto h-full border-2 border-primary opacity-0 transition-all', {
-			'opacity-100': isActive
-		})}
-	/>
 </a>
