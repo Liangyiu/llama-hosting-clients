@@ -46,7 +46,7 @@
 	</button>
 
 	<!-- popup -->
-	<div class="card variant-glass-tertiary p-4 w-60 shadow-xl" data-popup="theme">
+	<div class="card variant-glass-surface p-4 w-60 shadow-xl" data-popup="theme">
 		<div class="space-y-4">
 			<section class="flex justify-between items-center">
 				<h6 class="h6">Mode</h6>

@@ -58,9 +58,9 @@
 </div>
 
 <!-- card -->
-<div class="card variant-glass-tertiary shadow-xl" data-popup="avatarClick">
+<div class="card variant-glass-surface shadow-xl" data-popup="avatarClick">
 	<div
-		class="w-full [&>*:first-child]:rounded-t-[var(--theme-rounded-container)] [&>*:last-child]:rounded-b-[var(--theme-rounded-container)]"
+		class="w-full [&>*:first-child]:rounded-t-[var(--theme-rounded-container)] [&>*:last-child]:rounded-b-[var(--theme-rounded-container)] px-3 py-2"
 	>
 		<div class="w-full px-3 text-left transition-colors py-2">
 			<span class="block text font-semibold">{user?.first_name} {user?.last_name}</span>
@@ -68,24 +68,24 @@
 				><Wallet size="16" class="inline mr-0.5" /> {user?.balance || 0} €</span
 			>
 		</div>
-		<hr class="!border-surface-800-100-token" />
-		<div>
-			{#each links as { href, text }}
-				<button
-					class="hover:bg-surface-600/75 text-sm w-full px-3 py-2 text-left transition-colors"
-					on:click={() => goto(href)}
-				>
-					<div class="flex items-center space-x-2">
-						<span>
-							{text}
-						</span>
-					</div>
-				</button>
-			{/each}
-		</div>
-		<hr class="!border-surface-800-100-token" />
+		<hr class="my-2" />
+
+		{#each links as { href, text }}
+			<button
+				class="hover:bg-surface-600/75 w-full text-left transition-colors"
+				on:click={() => goto(href)}
+			>
+				<div class="flex items-center space-x-2 px-3 py-2">
+					<span>
+						{text}
+					</span>
+				</div>
+			</button>
+		{/each}
+
+		<hr class="my-2" />
 		<button
-			class="hover:bg-surface-600/75 text-sm w-full px-3 text-left transition-colors py-2"
+			class="hover:bg-surface-600/75 w-full px-3 text-left transition-colors py-2"
 			on:click={logout}
 		>
 			<div class="flex items-center space-x-2">

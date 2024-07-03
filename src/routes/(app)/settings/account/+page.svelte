@@ -1,8 +1,22 @@
-<script>
-	import { page } from '$app/stores';
-	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
-</script>
-
-<Breadcrumbs pathname={$page.url.pathname} />
-
-Account settings
+<div class="w-full">
+	<h5 class="h4 hidden md:block">Account</h5>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+	<div>test</div>
+</div>

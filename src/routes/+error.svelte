@@ -1,4 +1,4 @@
-<div class="text-center space-y-8 content-center mx-auto h-full">
+<div class="text-center space-y-4 lg:space-y-8 content-center mx-auto h-full px-2">
 	<div class="text-9xl font-extrabold text-error-300-600-token">404</div>
 	<div class="text-4xl font-bold">You have found a secret place</div>
 	<p>
