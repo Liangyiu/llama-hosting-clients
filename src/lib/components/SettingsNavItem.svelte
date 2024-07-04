@@ -22,11 +22,11 @@
 	class={cn(
 		'flex items-center transition-all hover:text-secondary-500-400-token hover:bg-surface-hover-token',
 		{
-			'text-secondary-500-400-token': isActive
+			'text-secondary-500-400-token bg-surface-500/20 md:bg-surface-500/10': isActive
 		}
 	)}
 >
-	<div class="flex items-center p-5">
+	<div class="flex items-center p-2.5 md:p-5">
 		{label}
 	</div>
 </button>
