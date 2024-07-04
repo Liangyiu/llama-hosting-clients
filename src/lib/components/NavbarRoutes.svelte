@@ -5,17 +5,18 @@
 	import ThemeSelector from './ThemeSelector.svelte';
 	import Wallet from '@tabler/icons-svelte/icons/wallet';
 
+	export let user: UsersRecord | null;
+	export let avatarUrl: string;
+
 	const avatarClick: PopupSettings = {
 		event: 'click',
 		target: 'avatarClick',
 		placement: 'bottom'
 	};
 
-	export let user: UsersRecord | null;
-	let initials;
-	if (user)
-		initials = user?.first_name.charAt(0).toUpperCase() + user?.last_name.charAt(0).toUpperCase();
-	else initials = 'LL';
+	$: initials =
+		(user?.first_name.charAt(0).toUpperCase() || 'L') +
+		(user?.last_name.charAt(0).toUpperCase() || 'L');
 
 	async function logout() {
 		await fetch('/dashboard/?/logout', {
@@ -46,8 +47,10 @@
 		<ThemeSelector />
 		<button use:popup={avatarClick}>
 			<Avatar
-				src={`https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
-					initials}
+				src={avatarUrl === ''
+					? `https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
+						initials
+					: avatarUrl}
 				rounded="rounded-full"
 				width="w-12"
 				border="border-2 border-surface-300-600-token hover:!border-surface-500-400-token transition-colors"

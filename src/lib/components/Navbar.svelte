@@ -4,9 +4,10 @@
 	import NavbarRoutes from './NavbarRoutes.svelte';
 
 	export let user: UsersRecord | null;
+	export let avatarUrl: string;
 </script>
 
 <div class="flex h-full items-center p-4 mx-auto max-w-[1450px]">
 	<MobileSidebar />
-	<NavbarRoutes {user} />
+	<NavbarRoutes {user} {avatarUrl} />
 </div>

@@ -3,11 +3,11 @@
 
 	export let data;
 
-	const { user } = data;
+	const { user, avatarUrl } = data;
 </script>
 
 <div class="h-full">
-	<Navigation {user} />
+	<Navigation {user} {avatarUrl} />
 
 	<main class="h-screen pt-[80px] lg:pl-56">
 		<div class="p-4 mx-auto max-w-[1450px] border h-full">

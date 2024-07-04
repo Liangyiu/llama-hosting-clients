@@ -32,22 +32,6 @@
 					"max": null,
 					"pattern": ""
 				}
-			},
-			{
-				"system": false,
-				"id": "htc97sjf",
-				"name": "avatar",
-				"type": "file",
-				"required": false,
-				"presentable": false,
-				"unique": false,
-				"options": {
-					"mimeTypes": ["image/png", "image/jpeg"],
-					"thumbs": [],
-					"maxSelect": 1,
-					"maxSize": 5242880,
-					"protected": false
-				}
 			}
 		],
 		"indexes": [],
@@ -761,15 +745,31 @@
 					"maxSelect": null,
 					"displayFields": null
 				}
+			},
+			{
+				"system": false,
+				"id": "wijnhvyi",
+				"name": "avatar",
+				"type": "file",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"mimeTypes": ["image/png", "image/jpeg"],
+					"thumbs": ["200x200", "400x400"],
+					"maxSelect": 1,
+					"maxSize": 5242880,
+					"protected": false
+				}
 			}
 		],
 		"indexes": [
 			"CREATE UNIQUE INDEX `idx_tLIMDSA` ON `user_details` (`vat_id`)",
 			"CREATE UNIQUE INDEX `idx_9c20qTs` ON `user_details` (`user`)"
 		],
-		"listRule": null,
+		"listRule": "user = @request.auth.id && user.verified = true",
 		"viewRule": "user = @request.auth.id && user.verified = true",
-		"createRule": "user = @request.auth.id && user.verified = true",
+		"createRule": null,
 		"updateRule": "user = @request.auth.id && user.verified = true",
 		"deleteRule": null,
 		"options": {}

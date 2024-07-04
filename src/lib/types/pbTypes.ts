@@ -133,6 +133,7 @@ export type UserDetailsRecord = {
 	address_line_one?: string
 	address_line_two?: string
 	address_state_province?: string
+	avatar?: string
 	default_ssh_keys?: RecordIdString[]
 	phone_number?: string
 	user: RecordIdString
@@ -146,7 +147,6 @@ export type UserDetailsAdminRecord = {
 }
 
 export type UsersRecord = {
-	avatar?: string
 	first_name: string
 	last_name: string
 }
