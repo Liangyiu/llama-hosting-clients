@@ -12,7 +12,8 @@ export async function handle({ event, resolve }) {
 	if (cookieTheme) {
 		theme = cookieTheme;
 	} else {
-		event.cookies.set('theme', 'skeleton', { path: '/' });
+		// set default theme, cookie expiry in 1 year
+		event.cookies.set('theme', 'skeleton', { path: '/', maxAge: 60 * 60 * 24 * 30 * 12 });
 		theme = 'skeleton';
 	}
 
