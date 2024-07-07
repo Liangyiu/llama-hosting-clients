@@ -4,9 +4,9 @@
 	import { Avatar, popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import ThemeSelector from './ThemeSelector.svelte';
 	import Wallet from '@tabler/icons-svelte/icons/wallet';
+	import { getUserState } from '$lib/stores/userStore.svelte';
 
-	export let user: UsersRecord | null;
-	export let avatarUrl: string;
+	const user = getUserState();
 
 	const avatarClick: PopupSettings = {
 		event: 'click',
@@ -15,8 +15,8 @@
 	};
 
 	$: initials =
-		(user?.first_name.charAt(0).toUpperCase() || 'L') +
-		(user?.last_name.charAt(0).toUpperCase() || 'L');
+		($user.firstName.charAt(0).toUpperCase() || 'L') +
+		($user.lastName.charAt(0).toUpperCase() || 'L');
 
 	async function logout() {
 		await fetch('/dashboard/?/logout', {
@@ -47,10 +47,10 @@
 		<ThemeSelector />
 		<button use:popup={avatarClick}>
 			<Avatar
-				src={avatarUrl === ''
+				src={$user.avatarUrl === ''
 					? `https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
 						initials
-					: avatarUrl}
+					: `${$user.avatarUrl}?thumb=200x200`}
 				rounded="rounded-full"
 				width="w-12"
 				border="border-2 border-surface-300-600-token hover:!border-surface-500-400-token transition-colors"
@@ -66,9 +66,9 @@
 		class="w-full [&>*:first-child]:rounded-t-[var(--theme-rounded-container)] [&>*:last-child]:rounded-b-[var(--theme-rounded-container)] px-3 py-2"
 	>
 		<div class="w-full px-3 text-left transition-colors py-2">
-			<span class="block text font-semibold">{user?.first_name} {user?.last_name}</span>
+			<span class="block text font-semibold">{$user.firstName} {$user.lastName}</span>
 			<span class="block text-sm align-middle"
-				><Wallet size="16" class="inline mr-0.5" /> {user?.balance || 0} €</span
+				><Wallet size="16" class="inline mr-0.5" /> {$user.balance || 0} €</span
 			>
 		</div>
 		<hr class="my-2" />

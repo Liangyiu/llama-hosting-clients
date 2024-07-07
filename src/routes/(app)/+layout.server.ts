@@ -9,7 +9,7 @@ export const load = (async ({ locals }) => {
 			.getFirstListItem<
 				UserDetailsResponse<UserDetailsRecord>
 			>('user="' + user?.id + '"', { requestKey: 'fetchUserDetails' });
-		const avatarUrl = await pb.getFileUrl(userDetails, userDetails.avatar, { thumb: '200x200' });
+		const avatarUrl = await pb.getFileUrl(userDetails, userDetails.avatar);
 
 		return { user: locals.user, avatarUrl, userDetails };
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
