@@ -132,6 +132,7 @@ export type UserDetailsRecord = {
 	address_country?: string
 	address_line_one?: string
 	address_line_two?: string
+	address_postal_code?: string
 	address_state_province?: string
 	avatar?: string
 	default_ssh_keys?: RecordIdString[]
@@ -149,6 +150,7 @@ export type UserDetailsAdminRecord = {
 export type UsersRecord = {
 	first_name: string
 	last_name: string
+	user_details?: RecordIdString
 }
 
 // Response types include system fields and match responses from the PocketBase API

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import '../app.postcss';
 
+	import Sidebar from '$lib/components/Sidebar.svelte';
+
 	import { autoModeWatcher } from '@skeletonlabs/skeleton';
 	import { initializeStores, Drawer } from '@skeletonlabs/skeleton';
 
@@ -9,7 +11,7 @@
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
-	import Sidebar from '$lib/components/Sidebar.svelte';
+
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 </script>
 

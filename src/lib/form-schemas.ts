@@ -57,3 +57,9 @@ export const registerSchema = z
 		message: 'You need to accept to proceed',
 		path: ['accept_terms']
 	});
+
+export const avatarSchema = z.object({
+	avatar: z
+		.instanceof(File, { message: 'Please upload a file' })
+		.refine((file) => file.size < 5_000_000, 'Max 5 MB file size')
+});
