@@ -3,7 +3,7 @@
 	import { getUserState } from '$lib/stores/userStore.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import { IconBug, IconCheck } from '@tabler/icons-svelte';
-	import { Control, Field, FieldErrors, Label } from 'formsnap';
+	import { Control, Field, FieldErrors } from 'formsnap';
 	import { Loader2 } from 'lucide-svelte';
 	import { fileProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -25,7 +25,7 @@
 
 	let avatar: string | undefined = undefined;
 
-	function onFileSelected(event: Event) {
+	function onFileSelected() {
 		const image = $avatarFile[0];
 		const reader = new FileReader();
 		reader.readAsDataURL(image);
@@ -55,7 +55,7 @@
 		<h5 class="h4 hidden md:block">Account</h5>
 	</div>
 
-	<div class="md:py-6 py-4">
+	<div class="md:py-6 py-4 space-y-20">
 		<section class="space-y-4">
 			<h5 class="h5">Avatar</h5>
 			{#if $avatarFormMessage}
@@ -98,7 +98,7 @@
 									accept="image/png, image/jpeg"
 									bind:files={$avatarFile}
 									class="max-w-60 sm:max-w-96"
-									on:change={(e) => onFileSelected(e)}
+									on:change={() => onFileSelected()}
 								/>
 							</Control>
 							<FieldErrors class="text-error-500" />
@@ -124,6 +124,12 @@
 						</form>
 					{/if}
 				</div>
+			</div>
+		</section>
+		<section class="space-y-4">
+			<h5 class="h5">Account Details</h5>
+			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
+				<form action="/settings/account/?/updateAccountDetails" method="post"></form>
 			</div>
 		</section>
 	</div>
