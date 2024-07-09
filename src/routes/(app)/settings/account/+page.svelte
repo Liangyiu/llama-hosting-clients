@@ -23,6 +23,18 @@
 
 	const avatarFile = fileProxy(avatarFormData, 'avatar');
 
+	let avatar: string | undefined = undefined;
+
+	function onFileSelected(event: Event) {
+		const image = $avatarFile[0];
+		const reader = new FileReader();
+		reader.readAsDataURL(image);
+		reader.onload = (e) => {
+			// @ts-ignore
+			avatar = e.target?.result;
+		};
+	}
+
 	const user = getUserState();
 
 	$: initials =
@@ -68,7 +80,7 @@
 				{/if}
 			{/if}
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
-				<Avatar src={avatarUrl} width="w-28 md:w-32" rounded="rounded-full" />
+				<Avatar src={avatar ? avatar : avatarUrl} width="w-28 md:w-32" rounded="rounded-full" />
 				<div class="md:ml-6 space-y-4 w-36 mt-4 md:mt-0">
 					<form
 						action="/settings/account/?/uploadAvatar"
@@ -86,6 +98,7 @@
 									accept="image/png, image/jpeg"
 									bind:files={$avatarFile}
 									class="max-w-60 sm:max-w-96"
+									on:change={(e) => onFileSelected(e)}
 								/>
 							</Control>
 							<FieldErrors class="text-error-500" />
