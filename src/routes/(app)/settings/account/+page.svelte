@@ -1,14 +1,26 @@
 <script lang="ts">
-	import { avatarSchema } from '$lib/form-schemas.js';
+	import { accountDetailsSchema, avatarSchema } from '$lib/form-schemas.js';
 	import { getUserState } from '$lib/stores/userStore.svelte';
+	import { supportedCountries } from '$lib/utils.js';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import { IconBug, IconCheck } from '@tabler/icons-svelte';
-	import { Control, Field, FieldErrors } from 'formsnap';
+	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { Loader2 } from 'lucide-svelte';
 	import { fileProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let data;
+
+	const accountDetailsForm = superForm(data.accountDetailsForm, {
+		validators: zodClient(accountDetailsSchema)
+	});
+
+	const {
+		form: accountDetailsFormData,
+		enhance: accountDetailsFormEnhance,
+		message: accountDetailsFormMessage,
+		delayed: accountDetailsFormDelayed
+	} = accountDetailsForm;
 
 	const avatarForm = superForm(data.avatarForm, {
 		validators: zodClient(avatarSchema)
@@ -52,10 +64,10 @@
 
 <div class="w-full">
 	<div>
-		<h5 class="h4 hidden md:block">Account</h5>
+		<h4 class="h4 hidden md:block">Account</h4>
 	</div>
 
-	<div class="md:py-6 py-4 space-y-20">
+	<div class="md:py-6 py-4 space-y-8 md:space-y-14">
 		<section class="space-y-4">
 			<h5 class="h5">Avatar</h5>
 			{#if $avatarFormMessage}
@@ -81,7 +93,7 @@
 			{/if}
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				<Avatar src={avatar ? avatar : avatarUrl} width="w-28 md:w-32" rounded="rounded-full" />
-				<div class="md:ml-6 space-y-4 w-36 mt-4 md:mt-0">
+				<div class="md:ml-6 space-y-4 mt-4 md:mt-0 max-w-60 sm:max-w-96">
 					<form
 						action="/settings/account/?/uploadAvatar"
 						method="post"
@@ -97,7 +109,7 @@
 									id="avatarInput"
 									accept="image/png, image/jpeg"
 									bind:files={$avatarFile}
-									class="max-w-60 sm:max-w-96"
+									class="input w-full"
 									on:change={() => onFileSelected()}
 								/>
 							</Control>
@@ -129,7 +141,203 @@
 		<section class="space-y-4">
 			<h5 class="h5">Account Details</h5>
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
-				<form action="/settings/account/?/updateAccountDetails" method="post"></form>
+				<form
+					action="/settings/account/?/updateAccountDetails"
+					method="post"
+					use:accountDetailsFormEnhance
+				>
+					<div class="space-y-4 md:space-y-6">
+						<div class="grid grid-cols-2 gap-4">
+							<div>
+								<Field form={accountDetailsForm} name="first_name">
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="first_name">
+													<span>First name</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.first_name}
+												id="first_name"
+												placeholder={$user.firstName}
+												class="input"
+											/>
+										</div>
+									</Control>
+									<FieldErrors class="text-error-500" />
+								</Field>
+							</div>
+							<div>
+								<Field form={accountDetailsForm} name="last_name">
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="last_name">
+													<span>Last name</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.last_name}
+												id="last_name"
+												placeholder={$user.lastName}
+												class="input"
+											/>
+										</div>
+									</Control>
+									<FieldErrors class="text-error-500" />
+								</Field>
+							</div>
+						</div>
+						<div>
+							<Field form={accountDetailsForm} name="address_line_one">
+								<Control let:attrs>
+									<div class="space-y-1">
+										<Label asChild={true}>
+											<label class="label" for="address_line_one">
+												<span>Address Line 1</span>
+											</label>
+										</Label>
+										<input
+											{...attrs}
+											bind:value={$accountDetailsFormData.address_line_one}
+											id="address_line_one"
+											placeholder={$user.addressLineOne !== ''
+												? $user.addressLineOne
+												: 'e.g. Example Street 5'}
+											class="input"
+										/>
+									</div>
+								</Control>
+								<FieldErrors class="text-error-500" />
+							</Field>
+						</div>
+						<div>
+							<Field form={accountDetailsForm} name="address_line_two">
+								<Control let:attrs>
+									<div class="space-y-1">
+										<Label asChild={true}>
+											<label class="label" for="address_line_two">
+												<span>Address Line 2</span>
+											</label>
+										</Label>
+										<input
+											{...attrs}
+											bind:value={$accountDetailsFormData.address_line_two}
+											id="address_line_two"
+											placeholder={$user.addressLineTwo !== ''
+												? $user.addressLineTwo
+												: 'e.g. Apt. 123'}
+											class="input"
+										/>
+									</div>
+								</Control>
+								<FieldErrors class="text-error-500" />
+							</Field>
+						</div>
+						<div class="grid grid-cols-2 gap-4">
+							<div>
+								<Field form={accountDetailsForm} name="address_postal_code">
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="address_postal_code">
+													<span>Postal code</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.address_postal_code}
+												id="address_postal_code"
+												placeholder={$user.addressPostalCode !== ''
+													? $user.addressPostalCode
+													: 'e.g. 52066'}
+												class="input"
+											/>
+										</div>
+									</Control>
+									<FieldErrors class="text-error-500" />
+								</Field>
+							</div>
+							<div>
+								<Field form={accountDetailsForm} name="address_city">
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="address_city">
+													<span>City</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.address_city}
+												id="address_city"
+												placeholder={$user.addressCity !== '' ? $user.addressCity : 'e.g. Aachen'}
+												class="input"
+											/>
+										</div>
+									</Control>
+									<FieldErrors class="text-error-500" />
+								</Field>
+							</div>
+						</div>
+						<div class="grid grid-cols-2 gap-4">
+							<div>
+								<Field form={accountDetailsForm} name="address_state_province">
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="address_state_province">
+													<span>Province/State</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.address_state_province}
+												id="address_state_province"
+												placeholder={$user.addressStateProvince !== ''
+													? $user.addressStateProvince
+													: 'e.g. North Rhine-Westphalia'}
+												class="input"
+											/>
+										</div>
+									</Control>
+									<FieldErrors class="text-error-500" />
+								</Field>
+							</div>
+							<div>
+								<Field form={accountDetailsForm} name="address_country">
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="address_country">
+													<span>Country</span>
+												</label>
+											</Label>
+											<select
+												{...attrs}
+												id="address_country"
+												class="select"
+												bind:value={$accountDetailsFormData.address_country}
+											>
+												{#each supportedCountries as country}
+													{#if $user.addressCountry === country}
+														<option selected value={country}>{country}</option>
+													{:else}
+														<option value={country}>{country}</option>
+													{/if}
+												{/each}
+											</select>
+										</div>
+									</Control>
+									<FieldErrors class="text-error-500" />
+								</Field>
+							</div>
+						</div>
+					</div>
+				</form>
 			</div>
 		</section>
 	</div>

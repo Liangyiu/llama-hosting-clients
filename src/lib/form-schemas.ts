@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { supportedCountries } from './utils';
 
 export const resetPasswordSchema = z.object({
 	email: z.string().email({ message: 'Must be a valid email' })
@@ -6,13 +7,22 @@ export const resetPasswordSchema = z.object({
 
 export const loginSchema = z.object({
 	email: z.string().email({ message: 'Must be a valid email' }),
-	password: z.string().min(8, { message: 'Must be at least 8 characters long' })
+	password: z
+		.string()
+		.min(8, { message: 'Must be at least 8 characters long' })
+		.max(64, { message: 'Can not exceed 64 characters' })
 });
 
 export const registerSchema = z
 	.object({
-		first_name: z.string().min(3, { message: 'Please enter a valid name' }),
-		last_name: z.string().min(3, { message: 'Please enter a valid name' }),
+		first_name: z
+			.string()
+			.min(3, { message: 'Please enter a valid name' })
+			.max(50, { message: 'Can not exceed 50 characters' }),
+		last_name: z
+			.string()
+			.min(3, { message: 'Please enter a valid name' })
+			.max(50, { message: 'Can not exceed 50 characters' }),
 		email: z.string().email({ message: 'Must be a valid email' }),
 		password: z
 			.string()
@@ -62,4 +72,45 @@ export const avatarSchema = z.object({
 	avatar: z
 		.instanceof(File, { message: 'Please upload a file' })
 		.refine((file) => file.size < 5_000_000, 'Max 5 MB file size')
+});
+
+export const accountDetailsSchema = z.object({
+	first_name: z
+		.string()
+		.min(3, { message: 'Please enter a valid name' })
+		.max(50, { message: 'Can not exceed 50 characters' })
+		.optional(),
+	last_name: z
+		.string()
+		.min(3, { message: 'Please enter a valid name' })
+		.max(50, { message: 'Can not exceed 50 characters' })
+		.optional(),
+	address_line_one: z
+		.string()
+		.min(10, { message: 'Please enter a valid address' })
+		.max(50, { message: 'Can not exceed 50 characters' })
+		.optional(),
+	address_line_two: z
+		.string()
+		.min(5, { message: 'Please enter a valid address' })
+		.max(50, { message: 'Can not exceed 50 characters' })
+		.optional(),
+	address_city: z
+		.string()
+		.min(5, { message: 'Please enter a valid city' })
+		.max(50, { message: 'Can not exceed 50 characters' })
+		.optional(),
+	address_state_province: z
+		.string()
+		.min(5, { message: 'Please enter a valid state/province' })
+		.max(50, { message: 'Can not exceed 50 characters' })
+		.optional(),
+	address_country: z
+		.enum(supportedCountries, { errorMap: () => ({ message: 'Invalid country' }) })
+		.optional(),
+	address_postal_code: z
+		.string()
+		.min(2, { message: 'Please enter a valid postal code' })
+		.max(15, { message: 'Can not exceed 15 characters' })
+		.optional()
 });

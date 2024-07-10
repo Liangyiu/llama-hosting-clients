@@ -1,12 +1,13 @@
 import { message, superValidate } from 'sveltekit-superforms';
 import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
-import { avatarSchema } from '$lib/form-schemas';
+import { accountDetailsSchema, avatarSchema } from '$lib/form-schemas';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const load = (async () => {
 	return {
-		avatarForm: await superValidate(zod(avatarSchema))
+		avatarForm: await superValidate(zod(avatarSchema)),
+		accountDetailsForm: await superValidate(zod(accountDetailsSchema))
 	};
 }) satisfies PageServerLoad;
 

@@ -16,6 +16,7 @@
 		addressLineOne: data.userDetails?.address_line_one,
 		addressLineTwo: data.userDetails?.address_line_two,
 		addressStateProvince: data.userDetails?.address_state_province,
+		addressPostalCode: data.userDetails?.address_postal_code,
 		defaultSshKeys: data.userDetails?.default_ssh_keys,
 		phoneNumber: data.userDetails?.phone_number,
 		vatId: data.userDetails?.vat_id
@@ -26,7 +27,7 @@
 	<Navigation />
 
 	<main class="h-screen pt-[80px] lg:pl-56">
-		<div class="p-4 mx-auto max-w-[1450px] border h-full">
+		<div class="p-4 mx-auto max-w-[1450px] border h-fit min-h-full md:h-full">
 			<slot />
 		</div>
 	</main>

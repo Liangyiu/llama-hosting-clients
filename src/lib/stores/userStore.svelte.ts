@@ -11,6 +11,7 @@ type UserData = {
 	addressLineOne?: string;
 	addressLineTwo?: string;
 	addressStateProvince?: string;
+	addressPostalCode?: string;
 	avatar?: string;
 	defaultSshKeys?: RecordIdString[];
 	phoneNumber?: string;
