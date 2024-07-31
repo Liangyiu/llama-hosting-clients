@@ -25,12 +25,12 @@ export const actions: Actions = {
 
 		try {
 			await pb.collection('user_details').update(user.user_details, form.data);
+
+			return message(form, 'Avatar uploaded successfully');
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (_) {
 			return message(form, 'An error occurred during avatar upload');
 		}
-
-		return message(form, 'Avatar uploaded successfully');
 	},
 	removeAvatar: async (event) => {
 		const {
@@ -38,14 +38,31 @@ export const actions: Actions = {
 		} = event;
 
 		try {
-			await pb.collection('user_details').update(user.user_details, {
+			return await pb.collection('user_details').update(user.user_details, {
 				avatar: null
 			});
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (_) {
-			return redirect(303, '/settings/account?error=An+error+occurred+during+avatar+upload');
+			return redirect(303, '/settings/account?error=An+error+occurred+during+avatar+removal');
+		}
+	},
+	updateAccountDetails: async (event) => {
+		const {
+			locals: { pb, user }
+		} = event;
+
+		const form = await superValidate(event, zod(accountDetailsSchema));
+
+		if (!form.valid) {
+			return fail(400, { form });
 		}
 
-		return;
+		try {
+			await pb.collection('user_details').update(user.user_details, form.data);
+			return message(form, 'Account details updated successfully');
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (_) {
+			return message(form, 'An error occurred during account details update');
+		}
 	}
 };

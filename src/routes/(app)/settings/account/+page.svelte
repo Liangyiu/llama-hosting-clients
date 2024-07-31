@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { accountDetailsSchema, avatarSchema } from '$lib/form-schemas.js';
-	import { getUserState } from '$lib/stores/userStore.svelte';
-	import { supportedCountries } from '$lib/utils.js';
+	import { accountDetailsSchema, avatarSchema } from '$lib/form-schemas';
+	import { getUserState } from '$lib/stores/userStore';
+	import { supportedCountriesList } from '$lib/utils';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import { IconBug, IconCheck } from '@tabler/icons-svelte';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
@@ -10,6 +10,8 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let data;
+
+	const supportedCountries = ['', ...supportedCountriesList];
 
 	const accountDetailsForm = superForm(data.accountDetailsForm, {
 		validators: zodClient(accountDetailsSchema)
@@ -60,6 +62,19 @@
 			: `${$user.avatarUrl}?thumb=800x800`;
 
 	$: customAvatarSet = $user.avatarUrl !== '';
+
+	accountDetailsFormData.set({
+		first_name: $user.firstName,
+		last_name: $user.lastName,
+		address_line_one: $user.addressLineOne,
+		address_line_two: $user.addressLineTwo,
+		address_city: $user.addressCity,
+		address_state_province: $user.addressStateProvince,
+		address_country: $user.addressCountry,
+		address_postal_code: $user.addressPostalCode,
+		phone_number: $user.phoneNumber,
+		vat_id: $user.vatId
+	});
 </script>
 
 <div class="w-full">
@@ -140,6 +155,27 @@
 		</section>
 		<section class="space-y-4">
 			<h5 class="h5">Account Details</h5>
+			{#if $accountDetailsFormMessage}
+				{#if $accountDetailsFormMessage === 'Account details updated successfully'}
+					<aside class="alert variant-soft-success w-full mb-4">
+						<div>
+							<IconCheck class="size-4" />
+						</div>
+						<div class="alert-message">
+							<p>Success! <br class="md:hidden" />Your account details have been updated</p>
+						</div>
+					</aside>
+				{:else}
+					<aside class="alert variant-soft-error w-full mb-4">
+						<div>
+							<IconBug class="size-4" />
+						</div>
+						<div class="alert-message">
+							<p>An error occurred while updating your account details</p>
+						</div>
+					</aside>
+				{/if}
+			{/if}
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				<form
 					action="/settings/account/?/updateAccountDetails"
@@ -336,6 +372,57 @@
 								</Field>
 							</div>
 						</div>
+						<div class="grid grid-cols-2 gap-4">
+							<div>
+								<Field form={accountDetailsForm} name="vat_id">
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="vat_id">
+													<span>VAT ID</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.vat_id}
+												id="vat_id"
+												placeholder={$user.vatId !== '' ? $user.vatId : 'optional'}
+												class="input"
+											/>
+										</div>
+									</Control>
+									<FieldErrors class="text-error-500" />
+								</Field>
+							</div>
+							<div>
+								<Field form={accountDetailsForm} name="phone_number">
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="phone_number">
+													<span>Phone number</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.phone_number}
+												id="phone_number"
+												placeholder={$user.phoneNumber !== '' ? $user.phoneNumber : 'optional'}
+												class="input"
+											/>
+										</div>
+									</Control>
+									<FieldErrors class="text-error-500" />
+								</Field>
+							</div>
+						</div>
+						<button type="submit" class="btn variant-soft-primary">
+							{#if $accountDetailsFormDelayed}
+								<Loader2 class="size-6 animate-spin" />
+							{:else}
+								Submit
+							{/if}
+						</button>
 					</div>
 				</form>
 			</div>

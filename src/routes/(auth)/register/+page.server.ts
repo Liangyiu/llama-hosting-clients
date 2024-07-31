@@ -5,12 +5,6 @@ import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { ClientResponseError } from 'pocketbase';
 import { pbAdmin } from '$lib/server/pb-admin';
 import type { PageServerLoad } from './$types';
-import type {
-	UsersRecord,
-	UsersResponse,
-	UserDetailsRecord,
-	UserDetailsResponse
-} from '$lib/types/pbTypes';
 
 export const load = (async () => {
 	return {
@@ -26,16 +20,12 @@ export const actions: Actions = {
 		}
 
 		try {
-			const newUser = await pbAdmin
-				.collection('users')
-				.create<UsersResponse<UsersRecord>>(form.data);
+			const newUser = await pbAdmin.from('users').create(form.data);
 			await pbAdmin.collection('users').requestVerification(form.data.email);
 
-			const newUserDetails = await pbAdmin
-				.collection('user_details')
-				.create<UserDetailsResponse<UserDetailsRecord>>({
-					user: newUser.id
-				});
+			const newUserDetails = await pbAdmin.from('user_details').create({
+				user: newUser.id
+			});
 
 			await pbAdmin.collection('users').update(newUser.id, {
 				user_details: newUserDetails.id

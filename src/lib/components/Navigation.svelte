@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getUserState } from '$lib/stores/userStore.svelte';
+	import { getUserState } from '$lib/stores/userStore';
 	import type { UsersRecord } from '$lib/types/pbTypes';
 	import Navbar from './Navbar.svelte';
 	import Sidebar from './Sidebar.svelte';

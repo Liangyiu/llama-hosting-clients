@@ -1,5 +1,6 @@
 import { pbAdmin } from '$lib/server/pb-admin';
 import { type UserDetailsRecord, type UserDetailsResponse } from '$lib/types/pbTypes';
+import type { ClientResponseError } from 'pocketbase';
 import type { LayoutServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {
@@ -7,9 +8,7 @@ export const load = (async ({ locals }) => {
 
 	if (user.user_details !== '') {
 		try {
-			const userDetails = await pb
-				.collection('user_details')
-				.getOne<UserDetailsResponse<UserDetailsRecord>>(user.user_details);
+			const userDetails = await pb.from('user_details').getOne(user.user_details);
 
 			if (userDetails.avatar === '') {
 				return { user: locals.user, avatarUrl: '', userDetails };
@@ -17,6 +16,7 @@ export const load = (async ({ locals }) => {
 
 			const avatarUrl = await pb.getFileUrl(userDetails, userDetails.avatar);
 			return { user: locals.user, avatarUrl, userDetails };
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (_) {
 			return { user: locals.user, avatarUrl: '' };
 		}
@@ -28,11 +28,16 @@ export const load = (async ({ locals }) => {
 				UserDetailsResponse<UserDetailsRecord>
 			>('user="' + user?.id + '"', { requestKey: 'fetchUserDetails' });
 
+		await pb.collection('users').update(user.id, {
+			user_details: userDetails.id
+		});
+
 		const avatarUrl = await pb.getFileUrl(userDetails, userDetails.avatar);
 
 		return { user: locals.user, avatarUrl, userDetails };
 	} catch (e) {
-		if (e.status === 404) {
+		const { status } = e as ClientResponseError;
+		if (status === 404) {
 			try {
 				const data = {
 					user: user.id
@@ -45,6 +50,7 @@ export const load = (async ({ locals }) => {
 				});
 
 				return { user: locals.user, userDetails: newUserDetails, avatarUrl: '' };
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (_) {
 				return { user: locals.user, avatarUrl: '' };
 			}

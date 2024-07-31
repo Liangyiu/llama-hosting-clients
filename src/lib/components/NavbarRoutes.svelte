@@ -4,7 +4,7 @@
 	import { Avatar, popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import ThemeSelector from './ThemeSelector.svelte';
 	import Wallet from '@tabler/icons-svelte/icons/wallet';
-	import { getUserState } from '$lib/stores/userStore.svelte';
+	import { getUserState } from '$lib/stores/userStore';
 
 	const user = getUserState();
 

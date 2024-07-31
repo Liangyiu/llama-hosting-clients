@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { supportedCountries } from './utils';
+import { supportedCountriesList } from './utils';
 
 export const resetPasswordSchema = z.object({
 	email: z.string().email({ message: 'Must be a valid email' })
@@ -92,8 +92,8 @@ export const accountDetailsSchema = z.object({
 		.optional(),
 	address_line_two: z
 		.string()
-		.min(5, { message: 'Please enter a valid address' })
 		.max(50, { message: 'Can not exceed 50 characters' })
+		.default('')
 		.optional(),
 	address_city: z
 		.string()
@@ -102,15 +102,17 @@ export const accountDetailsSchema = z.object({
 		.optional(),
 	address_state_province: z
 		.string()
-		.min(5, { message: 'Please enter a valid state/province' })
+		.min(2, { message: 'Please enter a valid state/province' })
 		.max(50, { message: 'Can not exceed 50 characters' })
 		.optional(),
 	address_country: z
-		.enum(supportedCountries, { errorMap: () => ({ message: 'Invalid country' }) })
+		.enum(supportedCountriesList, { errorMap: () => ({ message: 'Invalid country' }) })
 		.optional(),
 	address_postal_code: z
 		.string()
 		.min(2, { message: 'Please enter a valid postal code' })
 		.max(15, { message: 'Can not exceed 15 characters' })
-		.optional()
+		.optional(),
+	vat_id: z.string().max(20).default('').optional(),
+	phone_number: z.string().max(20).default('').optional()
 });

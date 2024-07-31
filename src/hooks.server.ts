@@ -1,7 +1,9 @@
+import { dev } from '$app/environment';
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
-import type { TypedPocketBase } from '$lib/types/pbTypes';
+import { TypedPocketBase } from 'typed-pocketbase';
 import { redirect } from '@sveltejs/kit';
 import PocketBase from 'pocketbase';
+import type { Schema } from '$lib/pocketbase/PB-Schema';
 
 export async function handle({ event, resolve }) {
 	// theme logic
@@ -20,7 +22,7 @@ export async function handle({ event, resolve }) {
 	// pb logic
 	const { locals, request, url } = event;
 
-	locals.pb = new PocketBase(PUBLIC_POCKETBASE_URL) as TypedPocketBase;
+	locals.pb = new TypedPocketBase<Schema>(dev ? 'http://127.0.0.1:8090' : PUBLIC_POCKETBASE_URL);
 
 	// load the store data from the request cookie string
 	locals.pb.authStore.loadFromCookie(request.headers.get('cookie') || '');

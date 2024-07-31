@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export const supportedCountries = [
+export const supportedCountriesList = [
 	'Australia',
 	'Austria',
 	'Belgium',

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Navigation from '$lib/components/Navigation.svelte';
-	import { setUserState } from '$lib/stores/userStore.svelte.js';
+	import { setUserState } from '$lib/stores/userStore';
 
 	export let data;
 
