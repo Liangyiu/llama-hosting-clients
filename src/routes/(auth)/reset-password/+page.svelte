@@ -6,6 +6,7 @@
 	import { focusTrap, LightSwitch, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { goto } from '$app/navigation';
 
 	const toastStore = getToastStore();
 
@@ -25,7 +26,14 @@
 				const toastConfig: ToastSettings = {
 					message: m.message,
 					background: 'variant-soft-success',
-					autohide: false
+					autohide: false,
+					action: {
+						label: 'Login',
+						response: () => {
+							goto('/login');
+							toastStore.clear();
+						}
+					}
 				};
 
 				toastStore.trigger(toastConfig);
