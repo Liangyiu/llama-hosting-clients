@@ -1,7 +1,7 @@
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { resetPasswordSchema } from '$lib/form-schemas';
-import { fail, redirect, type Actions } from '@sveltejs/kit';
+import { fail, type Actions } from '@sveltejs/kit';
 import type { ClientResponseError } from 'pocketbase';
 import type { PageServerLoad } from './$types';
 
@@ -21,11 +21,17 @@ export const actions: Actions = {
 
 		try {
 			await pb.collection('users').requestPasswordReset(form.data.email);
+			return message(form, {
+				status: 200,
+				message: 'An email has been sent to ' + form.data.email
+			});
 		} catch (e) {
 			const { status } = e as ClientResponseError;
 
-			return message(form, { status, message: 'An error occurred' });
+			return message(form, {
+				status,
+				message: 'An error occurred during the password reset process'
+			});
 		}
-		return redirect(303, '/reset-password/success');
 	}
 };

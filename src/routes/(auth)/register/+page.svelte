@@ -3,8 +3,12 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { registerSchema } from '$lib/form-schemas';
 	import { CircleAlertIcon, Loader2 } from 'lucide-svelte';
-	import { focusTrap, LightSwitch } from '@skeletonlabs/skeleton';
+	import { focusTrap, LightSwitch, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+
+	const toastStore = getToastStore();
+
 	export let data;
 
 	const form = superForm(data.form, {
@@ -14,6 +18,28 @@
 	const { enhance, form: formData, delayed, message } = form;
 
 	let isFocused: boolean = true;
+
+	message.subscribe((m) => {
+		if (m) {
+			if (m.message === 'Email already in use or not yet verified') {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else if (m.message === 'An error occurred during the registration process') {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			}
+		}
+	});
 </script>
 
 <div class="card">
@@ -27,19 +53,6 @@
 		</div>
 	</div>
 	<section class="flex flex-col items-center justify-center p-4 w-full">
-		{#if $message}
-			<aside class="alert variant-ghost-error w-full mb-4">
-				<!-- Icon -->
-				<div>
-					<CircleAlertIcon class="size-4" />
-				</div>
-				<!-- Message -->
-				<div class="alert-message">
-					<p>{$message.message}</p>
-				</div>
-				<!-- Actions -->
-			</aside>
-		{/if}
 		<form method="post" use:enhance action="/register" class="w-full" use:focusTrap={isFocused}>
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div class="grid grid-cols-2 gap-4">

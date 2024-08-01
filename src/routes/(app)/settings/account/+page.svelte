@@ -2,12 +2,15 @@
 	import { accountDetailsSchema, avatarSchema, changeEmailSchema } from '$lib/form-schemas';
 	import { getUserState } from '$lib/stores/userStore';
 	import { supportedCountriesList } from '$lib/utils';
-	import { Avatar } from '@skeletonlabs/skeleton';
+	import { Avatar, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { IconBug, IconCheck } from '@tabler/icons-svelte';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { Loader2 } from 'lucide-svelte';
 	import { fileProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+
+	const toastStore = getToastStore();
 
 	export let data;
 
@@ -22,6 +25,28 @@
 		delayed: changeEmailFormDelayed
 	} = changeEmailForm;
 
+	changeEmailFormMessage.subscribe((m) => {
+		if (m) {
+			if (m.status === 200) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-success',
+					timeout: 5000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					autohide: false
+				};
+
+				toastStore.trigger(toastConfig);
+			}
+		}
+	});
+
 	const supportedCountries = ['', ...supportedCountriesList];
 
 	const accountDetailsForm = superForm(data.accountDetailsForm, {
@@ -35,6 +60,28 @@
 		delayed: accountDetailsFormDelayed
 	} = accountDetailsForm;
 
+	accountDetailsFormMessage.subscribe((m) => {
+		if (m) {
+			if (m.status === 200) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-success',
+					timeout: 5000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					autohide: false
+				};
+
+				toastStore.trigger(toastConfig);
+			}
+		}
+	});
+
 	const avatarForm = superForm(data.avatarForm, {
 		validators: zodClient(avatarSchema)
 	});
@@ -45,6 +92,28 @@
 		message: avatarFormMessage,
 		delayed: avatarFormDelayed
 	} = avatarForm;
+
+	avatarFormMessage.subscribe((m) => {
+		if (m) {
+			if (m.status === 200) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-success',
+					timeout: 5000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					autohide: false
+				};
+
+				toastStore.trigger(toastConfig);
+			}
+		}
+	});
 
 	const avatarFile = fileProxy(avatarFormData, 'avatar');
 
@@ -96,27 +165,7 @@
 	<div class="md:py-6 py-4 space-y-8 md:space-y-14">
 		<section class="space-y-4">
 			<h5 class="h5">Avatar</h5>
-			{#if $avatarFormMessage}
-				{#if $avatarFormMessage === 'Avatar uploaded successfully'}
-					<aside class="alert variant-soft-success w-full mb-4">
-						<div>
-							<IconCheck class="size-4" />
-						</div>
-						<div class="alert-message">
-							<p>Success! <br class="md:hidden" />To see changes, refresh the page</p>
-						</div>
-					</aside>
-				{:else}
-					<aside class="alert variant-soft-error w-full mb-4">
-						<div>
-							<IconBug class="size-4" />
-						</div>
-						<div class="alert-message">
-							<p>An error occurred while uploading your avatar</p>
-						</div>
-					</aside>
-				{/if}
-			{/if}
+
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				<Avatar src={avatar ? avatar : avatarUrl} width="w-28 md:w-32" rounded="rounded-full" />
 				<div class="md:ml-6 space-y-4 mt-4 md:mt-0 max-w-60 sm:max-w-96">
@@ -166,27 +215,7 @@
 		</section>
 		<section class="space-y-4">
 			<h5 class="h5">Account Details</h5>
-			{#if $accountDetailsFormMessage}
-				{#if $accountDetailsFormMessage === 'Account details updated successfully'}
-					<aside class="alert variant-soft-success w-full mb-4">
-						<div>
-							<IconCheck class="size-4" />
-						</div>
-						<div class="alert-message">
-							<p>Success! <br class="md:hidden" />Your account details have been updated</p>
-						</div>
-					</aside>
-				{:else}
-					<aside class="alert variant-soft-error w-full mb-4">
-						<div>
-							<IconBug class="size-4" />
-						</div>
-						<div class="alert-message">
-							<p>An error occurred while updating your account details</p>
-						</div>
-					</aside>
-				{/if}
-			{/if}
+
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				<form
 					action="/settings/account/?/updateAccountDetails"
@@ -440,27 +469,7 @@
 		</section>
 		<section class="space-y-4">
 			<h5 class="h5">Email</h5>
-			{#if $changeEmailFormMessage}
-				{#if $changeEmailFormMessage === 'Email change instructions sent'}
-					<aside class="alert variant-soft-success w-full mb-4">
-						<div>
-							<IconCheck class="size-4" />
-						</div>
-						<div class="alert-message">
-							<p>Success! <br class="md:hidden" />Email change instructions sent</p>
-						</div>
-					</aside>
-				{:else}
-					<aside class="alert variant-soft-error w-full mb-4">
-						<div>
-							<IconBug class="size-4" />
-						</div>
-						<div class="alert-message">
-							<p>An error occurred while requesting email change</p>
-						</div>
-					</aside>
-				{/if}
-			{/if}
+
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				<form action="/settings/account/?/updateEmail" method="post" use:changeEmailFormEnhance>
 					<div class="space-y-4 md:space-y-6">

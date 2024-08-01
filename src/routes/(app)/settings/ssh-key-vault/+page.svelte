@@ -4,6 +4,9 @@
 	import { Loader2 } from 'lucide-svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+
+	const toastStore = getToastStore();
 
 	export let data;
 
@@ -12,6 +15,36 @@
 	});
 
 	const { form: addSshKeyFormData, enhance, delayed, message } = addSshKeyForm;
+
+	message.subscribe((m) => {
+		if (m) {
+			if (m.message === 'SSH key added successfully' && m.status === 200) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-success',
+					timeout: 3000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else if (m.message === 'SSH key already exists' && m.status === 400) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else if (m.message === 'Error: Failed to add SSH key' && m.status === 400) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			}
+		}
+	});
 </script>
 
 <div class="w-full">

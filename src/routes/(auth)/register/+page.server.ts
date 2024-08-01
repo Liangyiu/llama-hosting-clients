@@ -30,6 +30,8 @@ export const actions: Actions = {
 			await pbAdmin.collection('users').update(newUser.id, {
 				user_details: newUserDetails.id
 			});
+
+			return redirect(303, '/login?new_user=true');
 		} catch (e) {
 			const { status, response } = e as ClientResponseError;
 
@@ -38,8 +40,10 @@ export const actions: Actions = {
 					return message(form, { status, message: 'Email already in use or not yet verified' });
 				}
 
-			return message(form, { status, message: 'An error occurred' });
+			return message(form, {
+				status,
+				message: 'An error occurred during the registration process'
+			});
 		}
-		return redirect(303, '/login?new_user=true');
 	}
 };

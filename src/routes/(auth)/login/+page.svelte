@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { focusTrap, LightSwitch } from '@skeletonlabs/skeleton';
+	import { focusTrap, LightSwitch, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -7,6 +7,9 @@
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { CircleAlertIcon, Loader2, MailWarning } from 'lucide-svelte';
 	import { page } from '$app/stores';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+
+	const toastStore = getToastStore();
 
 	export let data: PageData;
 	let newUser = $page.url.searchParams.get('new_user');
@@ -18,6 +21,36 @@
 	const { form: formData, enhance, message, delayed } = form;
 
 	let isFocused: boolean = true;
+
+	message.subscribe((m) => {
+		if (m) {
+			if (m.status === 403 && m.message === 'Please verify your email') {
+				const toastConfig: ToastSettings = {
+					message: 'Please verify your email',
+					background: 'variant-soft-warning',
+					autohide: false
+				};
+
+				toastStore.trigger(toastConfig);
+			} else if (m.status === 400 && m.message === 'Invalid credentials') {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			}
+		}
+	});
 </script>
 
 <div class="card">
@@ -50,16 +83,6 @@
 				</div>
 				<div class="alert-message">
 					<p>You have been logged out</p>
-				</div>
-			</aside>
-		{/if}
-		{#if $message}
-			<aside class="alert variant-ghost-error w-full mb-4">
-				<div>
-					<CircleAlertIcon class="size-4" />
-				</div>
-				<div class="alert-message">
-					<p>{$message.message}</p>
 				</div>
 			</aside>
 		{/if}

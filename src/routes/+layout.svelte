@@ -4,7 +4,7 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 
 	import { autoModeWatcher } from '@skeletonlabs/skeleton';
-	import { initializeStores, Drawer } from '@skeletonlabs/skeleton';
+	import { initializeStores, Drawer, Toast } from '@skeletonlabs/skeleton';
 
 	initializeStores();
 
@@ -20,6 +20,8 @@
 <Drawer position="left" regionDrawer="max-w-sm">
 	<Sidebar />
 </Drawer>
+
+<Toast />
 
 <div class="h-screen">
 	<slot />

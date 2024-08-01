@@ -17,12 +17,15 @@ export const actions: Actions = {
 			locals: { pb }
 		} = event;
 		const form = await superValidate(event, zod(loginSchema));
+
 		if (!form.valid) {
 			return fail(400, { form });
 		}
 
 		try {
 			await pb.collection('users').authWithPassword(form.data.email, form.data.password);
+
+			return redirect(303, '/dashboard');
 		} catch (e) {
 			const { status, response } = e as ClientResponseError;
 
@@ -34,6 +37,5 @@ export const actions: Actions = {
 
 			return message(form, { status, message: 'An error occurred during authentication' });
 		}
-		return redirect(303, '/dashboard');
 	}
 };

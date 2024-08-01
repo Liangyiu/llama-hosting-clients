@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
 import { accountDetailsSchema, avatarSchema, changeEmailSchema } from '$lib/form-schemas';
 import { fail, redirect } from '@sveltejs/kit';
+import type { ClientResponseError } from 'pocketbase';
 
 export const load = (async () => {
 	return {
@@ -27,10 +28,16 @@ export const actions: Actions = {
 		try {
 			await pb.collection('user_details').update(user.user_details, form.data);
 
-			return message(form, 'Avatar uploaded successfully');
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (_) {
-			return message(form, 'An error occurred during avatar upload');
+			return message(form, {
+				status: 200,
+				message: 'Avatar uploaded successfully. Refresh to see changes.'
+			});
+		} catch (e) {
+			const { status } = e as ClientResponseError;
+			return message(form, {
+				status: status,
+				message: 'An error occurred during avatar upload'
+			});
 		}
 	},
 	removeAvatar: async (event) => {
@@ -60,10 +67,16 @@ export const actions: Actions = {
 
 		try {
 			await pb.collection('user_details').update(user.user_details, form.data);
-			return message(form, 'Account details updated successfully');
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (_) {
-			return message(form, 'An error occurred during account details update');
+			return message(form, {
+				status: 200,
+				message: 'Account details updated successfully'
+			});
+		} catch (e) {
+			const { status } = e as ClientResponseError;
+			return message(form, {
+				status: status,
+				message: 'An error occurred during account details update'
+			});
 		}
 	},
 	updateEmail: async (event) => {
@@ -79,10 +92,16 @@ export const actions: Actions = {
 
 		try {
 			await pb.collection('users').requestEmailChange(form.data.email);
-			return message(form, 'Email change instructions sent');
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (_) {
-			return message(form, 'An error occurred during email update');
+			return message(form, {
+				status: 200,
+				message: 'An email has been sent to ' + form.data.email
+			});
+		} catch (e) {
+			const { status } = e as ClientResponseError;
+			return message(form, {
+				status: status,
+				message: 'An error occurred during the email change process'
+			});
 		}
 	}
 };

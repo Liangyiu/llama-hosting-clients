@@ -3,6 +3,8 @@ import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
 import { addSshKeySchema } from '$lib/form-schemas';
 import { fail } from '@sveltejs/kit';
+import type { ClientResponseError } from 'pocketbase';
+import { and, eq } from 'typed-pocketbase';
 
 export const load = (async () => {
 	return {
@@ -22,6 +24,14 @@ export const actions: Actions = {
 		}
 
 		try {
+			const key = await pb.from('ssh_keys').getFullList({
+				filter: and(eq('public_key', form.data.public_key), eq('user', user.id))
+			});
+
+			if (key.length > 0) {
+				return message(form, { status: 400, message: 'SSH key already exists' });
+			}
+
 			await pb.from('ssh_keys').create({
 				user: user.id,
 				public_key: form.data.public_key,
@@ -29,8 +39,9 @@ export const actions: Actions = {
 			});
 
 			return message(form, { status: 200, message: 'SSH key added successfully' });
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (_) {
+		} catch (e) {
+			console.log(e);
+
 			return message(form, { status: 400, message: 'Error: Failed to add SSH key' });
 		}
 	}
