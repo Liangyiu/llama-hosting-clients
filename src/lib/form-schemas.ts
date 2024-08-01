@@ -10,7 +10,7 @@ export const loginSchema = z.object({
 	password: z
 		.string()
 		.min(8, { message: 'Must be at least 8 characters long' })
-		.max(64, { message: 'Can not exceed 64 characters' })
+		.max(72, { message: 'Can not exceed 72 characters' })
 });
 
 export const registerSchema = z
@@ -27,7 +27,7 @@ export const registerSchema = z
 		password: z
 			.string()
 			.min(8, { message: 'Must be at least 8 characters long' })
-			.max(64, { message: 'Can not exceed 64 characters' }),
+			.max(72, { message: 'Can not exceed 72 characters' }),
 		passwordConfirm: z.string(),
 		accept_terms: z.boolean()
 	})
@@ -115,4 +115,25 @@ export const accountDetailsSchema = z.object({
 		.optional(),
 	vat_id: z.string().max(20).default('').optional(),
 	phone_number: z.string().max(20).default('').optional()
+});
+
+export const changeEmailSchema = z.object({
+	email: z.string().email({ message: 'Please enter a valid email' })
+});
+
+export const addSshKeySchema = z.object({
+	key_name: z
+		.string()
+		.max(48, { message: 'Can not exceed 48 characters' })
+		.regex(new RegExp(/^[a-zA-Z \-_+#().:]+$/g), { message: 'Invalid key name' })
+		.optional(),
+	public_key: z
+		.string()
+		.regex(
+			new RegExp(
+				/^(ssh-rsa [A-Za-z0-9+/=]{1,800}|ssh-ed25519 [A-Za-z0-9+/=]{1,68}|sk-ssh-ed25519 [A-Za-z0-9+/=]{1,200})( .*)?$/
+			),
+			{ message: 'Invalid public key' }
+		)
+		.max(1000, { message: 'Can not exceed 1000 characters' })
 });

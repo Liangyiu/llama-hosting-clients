@@ -23,11 +23,11 @@
 	});
 </script>
 
-<div class="h-full">
+<div class="min-h-screen">
 	<Navigation />
 
-	<main class="h-screen pt-[80px] lg:pl-56">
-		<div class="p-4 mx-auto max-w-[1450px] border h-fit min-h-full md:h-full">
+	<main class="h-full min-h-screen pt-[80px] lg:pl-56">
+		<div class="p-4 mx-auto max-w-[1450px] border h-full min-h-full md:h-full">
 			<slot />
 		</div>
 	</main>

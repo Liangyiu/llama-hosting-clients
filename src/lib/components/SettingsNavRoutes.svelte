@@ -12,7 +12,7 @@
 		},
 		{
 			label: 'SSH Key Vault',
-			href: '/settings/keys'
+			href: '/settings/ssh-key-vault'
 		}
 	];
 </script>

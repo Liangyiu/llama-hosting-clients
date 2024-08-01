@@ -11,7 +11,7 @@
 
 <div class="w-full">
 	<div>
-		<h4 class="h4 hidden md:block">Account</h4>
+		<h4 class="h4 hidden md:block">Security</h4>
 	</div>
 
 	<div class="md:py-6 py-4 space-y-8 md:space-y-14">

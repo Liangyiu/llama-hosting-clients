@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { accountDetailsSchema, avatarSchema } from '$lib/form-schemas';
+	import { accountDetailsSchema, avatarSchema, changeEmailSchema } from '$lib/form-schemas';
 	import { getUserState } from '$lib/stores/userStore';
 	import { supportedCountriesList } from '$lib/utils';
 	import { Avatar } from '@skeletonlabs/skeleton';
@@ -10,6 +10,17 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let data;
+
+	const changeEmailForm = superForm(data.emailChangeForm, {
+		validators: zodClient(changeEmailSchema)
+	});
+
+	const {
+		form: changeEmailFormData,
+		enhance: changeEmailFormEnhance,
+		message: changeEmailFormMessage,
+		delayed: changeEmailFormDelayed
+	} = changeEmailForm;
 
 	const supportedCountries = ['', ...supportedCountriesList];
 
@@ -420,10 +431,68 @@
 							{#if $accountDetailsFormDelayed}
 								<Loader2 class="size-6 animate-spin" />
 							{:else}
-								Submit
+								Update details
 							{/if}
 						</button>
 					</div>
+				</form>
+			</div>
+		</section>
+		<section class="space-y-4">
+			<h5 class="h5">Email</h5>
+			{#if $changeEmailFormMessage}
+				{#if $changeEmailFormMessage === 'Email change instructions sent'}
+					<aside class="alert variant-soft-success w-full mb-4">
+						<div>
+							<IconCheck class="size-4" />
+						</div>
+						<div class="alert-message">
+							<p>Success! <br class="md:hidden" />Email change instructions sent</p>
+						</div>
+					</aside>
+				{:else}
+					<aside class="alert variant-soft-error w-full mb-4">
+						<div>
+							<IconBug class="size-4" />
+						</div>
+						<div class="alert-message">
+							<p>An error occurred while requesting email change</p>
+						</div>
+					</aside>
+				{/if}
+			{/if}
+			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
+				<form action="/settings/account/?/updateEmail" method="post" use:changeEmailFormEnhance>
+					<div class="space-y-4 md:space-y-6">
+						<div>
+							<Field form={changeEmailForm} name="email">
+								<Control let:attrs>
+									<div class="space-y-1">
+										<Label asChild={true}>
+											<label class="label" for="email">
+												<span>New email</span>
+											</label>
+										</Label>
+										<input
+											{...attrs}
+											bind:value={$changeEmailFormData.email}
+											id="email"
+											class="input"
+										/>
+									</div>
+								</Control>
+								<FieldErrors class="text-error-500" />
+							</Field>
+						</div>
+					</div>
+
+					<button type="submit" class="btn variant-soft-primary mt-4">
+						{#if $changeEmailFormDelayed}
+							<Loader2 class="size-6 animate-spin" />
+						{:else}
+							Update email
+						{/if}
+					</button>
 				</form>
 			</div>
 		</section>

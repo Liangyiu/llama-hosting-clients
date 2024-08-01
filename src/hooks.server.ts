@@ -22,7 +22,9 @@ export async function handle({ event, resolve }) {
 	// pb logic
 	const { locals, request, url } = event;
 
-	locals.pb = new TypedPocketBase<Schema>(dev ? 'http://127.0.0.1:8090' : PUBLIC_POCKETBASE_URL);
+	locals.pb = new TypedPocketBase<Schema>(
+		dev ? 'https://lh-clients-test.pockethost.io' : PUBLIC_POCKETBASE_URL
+	);
 
 	// load the store data from the request cookie string
 	locals.pb.authStore.loadFromCookie(request.headers.get('cookie') || '');

@@ -2,7 +2,6 @@
 	import SettingsNav from '$lib/components/SettingsNav.svelte';
 </script>
 
-<div class="flex items-center w-full h-fit"></div>
 <div class="w-full md:grid md:grid-cols-4 variant-glass-surface rounded-lg">
 	<div class="flex md:col-span-1 md:border-r-2 md:border-surface-300-600-token">
 		<SettingsNav />

@@ -1,3 +1,0 @@
-<div class="w-full hidden md:block">
-	<h5 class="h4">SSH Key Vault</h5>
-</div>

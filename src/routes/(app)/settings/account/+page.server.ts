@@ -1,13 +1,14 @@
 import { message, superValidate } from 'sveltekit-superforms';
 import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
-import { accountDetailsSchema, avatarSchema } from '$lib/form-schemas';
+import { accountDetailsSchema, avatarSchema, changeEmailSchema } from '$lib/form-schemas';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const load = (async () => {
 	return {
 		avatarForm: await superValidate(zod(avatarSchema)),
-		accountDetailsForm: await superValidate(zod(accountDetailsSchema))
+		accountDetailsForm: await superValidate(zod(accountDetailsSchema)),
+		emailChangeForm: await superValidate(zod(changeEmailSchema))
 	};
 }) satisfies PageServerLoad;
 
@@ -63,6 +64,25 @@ export const actions: Actions = {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (_) {
 			return message(form, 'An error occurred during account details update');
+		}
+	},
+	updateEmail: async (event) => {
+		const {
+			locals: { pb }
+		} = event;
+
+		const form = await superValidate(event, zod(changeEmailSchema));
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		try {
+			await pb.collection('users').requestEmailChange(form.data.email);
+			return message(form, 'Email change instructions sent');
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (_) {
+			return message(form, 'An error occurred during email update');
 		}
 	}
 };
