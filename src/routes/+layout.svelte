@@ -4,7 +4,7 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 
 	import { autoModeWatcher } from '@skeletonlabs/skeleton';
-	import { initializeStores, Drawer, Toast } from '@skeletonlabs/skeleton';
+	import { initializeStores, Drawer, Toast, Modal } from '@skeletonlabs/skeleton';
 
 	initializeStores();
 
@@ -16,6 +16,8 @@
 </script>
 
 <svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
+
+<Modal />
 
 <Drawer position="left" regionDrawer="max-w-sm">
 	<Sidebar />

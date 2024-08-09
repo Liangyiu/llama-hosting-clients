@@ -13,10 +13,10 @@
 	$: settingsAccordion = browser ? document.getElementById('settings-accordion') : null;
 </script>
 
-<button
+<a
 	on:click={() => {
 		settingsAccordion?.click();
-		goto(href);
+
 		activeSettingsSection.set(label);
 	}}
 	class={cn(
@@ -25,8 +25,9 @@
 			'text-secondary-500-400-token bg-surface-500/20 md:bg-surface-500/10': isActive
 		}
 	)}
+	{href}
 >
 	<div class="flex items-center p-2.5 md:p-5">
 		{label}
 	</div>
-</button>
+</a>

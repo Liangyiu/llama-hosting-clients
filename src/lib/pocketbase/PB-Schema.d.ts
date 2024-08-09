@@ -291,21 +291,42 @@ export interface OrderItemsCollection {
 export interface OrdersResponse extends BaseCollectionResponse {
 	collectionName: 'orders';
 	user: string;
-	status: 'pending' | 'awaiting-payment' | 'completed' | 'cancelled' | 'declined' | 'refunded' | 'partially-refunded';
+	status:
+		| 'pending'
+		| 'awaiting-payment'
+		| 'completed'
+		| 'cancelled'
+		| 'declined'
+		| 'refunded'
+		| 'partially-refunded';
 	order_details: string;
 	order_total: number;
 }
 
 export interface OrdersCreate extends BaseCollectionCreate {
 	user: string;
-	status: 'pending' | 'awaiting-payment' | 'completed' | 'cancelled' | 'declined' | 'refunded' | 'partially-refunded';
+	status:
+		| 'pending'
+		| 'awaiting-payment'
+		| 'completed'
+		| 'cancelled'
+		| 'declined'
+		| 'refunded'
+		| 'partially-refunded';
 	order_details?: string;
 	order_total: number;
 }
 
 export interface OrdersUpdate extends BaseCollectionUpdate {
 	user?: string;
-	status?: 'pending' | 'awaiting-payment' | 'completed' | 'cancelled' | 'declined' | 'refunded' | 'partially-refunded';
+	status?:
+		| 'pending'
+		| 'awaiting-payment'
+		| 'completed'
+		| 'cancelled'
+		| 'declined'
+		| 'refunded'
+		| 'partially-refunded';
 	order_details?: string;
 	order_total?: number;
 	'order_total+'?: number;
@@ -375,18 +396,21 @@ export interface SshKeysResponse extends BaseCollectionResponse {
 	user: string;
 	public_key: string;
 	key_name: string;
+	is_default: boolean;
 }
 
 export interface SshKeysCreate extends BaseCollectionCreate {
 	user: string;
 	public_key: string;
 	key_name?: string;
+	is_default?: boolean;
 }
 
 export interface SshKeysUpdate extends BaseCollectionUpdate {
 	user?: string;
 	public_key?: string;
 	key_name?: string;
+	is_default?: boolean;
 }
 
 export interface SshKeysCollection {

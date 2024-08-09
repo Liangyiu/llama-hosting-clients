@@ -5,6 +5,8 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import KeyVault from '$lib/components/KeyVault.svelte';
+	import { goto } from '$app/navigation';
 
 	const toastStore = getToastStore();
 
@@ -45,6 +47,18 @@
 			}
 		}
 	});
+
+	let vaultPage = 1;
+	let vaultAmount = 5;
+
+	function onPageChange(page: number) {
+		vaultPage = page + 1;
+		goto(`?page=${vaultPage}&pageSize=${vaultAmount}`);
+	}
+	function onAmountChange(amount: number) {
+		vaultAmount = amount;
+		goto(`?pageSize=${vaultAmount}`);
+	}
 </script>
 
 <div class="w-full">
@@ -111,6 +125,24 @@
 						{/if}
 					</button>
 				</form>
+			</div>
+		</section>
+		<section class="space-y-4">
+			<h5 class="h5">Key Vault</h5>
+			<div class="p-2 flex flex-col w-full">
+				{#await data.sshKeysPagePromise}
+					<div class="w-full justify-center">
+						<Loader2 class="animate-spin size-12" />
+					</div>
+				{:then sshKeysPage}
+					<KeyVault
+						{sshKeysPage}
+						on:amount={(e) => onAmountChange(e.detail)}
+						on:page={(e) => onPageChange(e.detail)}
+					/>
+				{:catch error}
+					<p>an error occurred</p>
+				{/await}
 			</div>
 		</section>
 	</div>

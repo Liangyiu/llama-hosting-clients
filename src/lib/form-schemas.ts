@@ -137,3 +137,11 @@ export const addSshKeySchema = z.object({
 		)
 		.max(1000, { message: 'Can not exceed 1000 characters' })
 });
+
+export const addDefaultSshKeySchema = z.object({
+	key_id: z.string().max(15, { message: 'Can not exceed 15 characters' })
+});
+
+export const removeDefaultSshKeySchema = z.object({
+	key_id: z.string().max(15, { message: 'Can not exceed 15 characters' })
+});
