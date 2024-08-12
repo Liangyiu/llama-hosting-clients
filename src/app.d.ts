@@ -6,7 +6,9 @@ import type { AuthModel } from 'pocketbase';
 import type { TypedPocketBase } from 'typed-pocketbase';
 declare global {
 	namespace App {
-		// interface Error {}
+		interface Error {
+			errorId: string;
+		}
 		interface Locals {
 			pb: TypedPocketBase<Schema>;
 			user: AuthModel<UsersRecord> | null;

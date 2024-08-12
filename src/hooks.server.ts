@@ -1,11 +1,40 @@
+import { sequence } from '@sveltejs/kit/hooks';
+import * as Sentry from '@sentry/sveltekit';
 import { dev } from '$app/environment';
-import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+import {
+	PUBLIC_GLITCHTOP_DSN_DEV,
+	PUBLIC_GLITCHTOP_DSN_PROD,
+	PUBLIC_POCKETBASE_URL
+} from '$env/static/public';
 import { TypedPocketBase } from 'typed-pocketbase';
-import { redirect } from '@sveltejs/kit';
-import PocketBase from 'pocketbase';
+import { redirect, type HandleServerError } from '@sveltejs/kit';
 import type { Schema } from '$lib/pocketbase/PB-Schema';
+import crypto from 'crypto';
 
-export async function handle({ event, resolve }) {
+Sentry.init({
+	dsn: dev ? PUBLIC_GLITCHTOP_DSN_DEV : PUBLIC_GLITCHTOP_DSN_PROD,
+	tracesSampleRate: 1
+});
+
+export const handleError: HandleServerError = ({ error, event }) => {
+	const errorId = crypto.randomUUID();
+
+	Sentry.captureException(error, {
+		contexts: {
+			sveltekit: {
+				errorId,
+				event
+			}
+		}
+	});
+
+	return {
+		message: "An unexpected error occurred. We're working on it!",
+		errorId
+	};
+};
+
+export const handle = sequence(Sentry.sentryHandle(), async function _handle({ event, resolve }) {
 	// theme logic
 	let theme = '';
 
@@ -68,4 +97,4 @@ export async function handle({ event, resolve }) {
 	response.headers.append('set-cookie', locals.pb.authStore.exportToCookie());
 
 	return response;
-}
+});

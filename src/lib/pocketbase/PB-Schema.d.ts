@@ -169,6 +169,7 @@ export interface UsersCollection {
 		'user_details_admin(user)': UserDetailsAdminCollection;
 		'user_details(user)': UserDetailsCollection;
 		'services(user)': ServicesCollection[];
+		'deployed_vms(user)': DeployedVmsCollection[];
 	};
 }
 
@@ -282,7 +283,7 @@ export interface OrderItemsCollection {
 	update: OrderItemsUpdate;
 	relations: {
 		order: OrdersCollection;
-		product: ProductsCollection;
+		product: ProductsKvmCollection;
 	};
 }
 
@@ -347,45 +348,58 @@ export interface OrdersCollection {
 	};
 }
 
-// ===== products =====
+// ===== products_kvm =====
 
-export interface ProductsResponse extends BaseCollectionResponse {
-	collectionName: 'products';
+export interface ProductsKvmResponse extends BaseCollectionResponse {
+	collectionName: 'products_kvm';
 	product_key: string;
-	product_details: string;
+	product_name: string;
 	unit_price: number;
-	status: 'active' | 'archived' | 'deleted' | 'draft';
-	custom_value1: string;
+	status: 'active' | 'archived' | 'deleted' | 'draft' | 'sale' | 'promo';
+	config: string;
+	available_from: string;
+	available_until: string;
+	matrix: string;
 }
 
-export interface ProductsCreate extends BaseCollectionCreate {
+export interface ProductsKvmCreate extends BaseCollectionCreate {
 	product_key: string;
-	product_details?: string;
+	product_name?: string;
 	unit_price: number;
-	status: 'active' | 'archived' | 'deleted' | 'draft';
-	custom_value1: string;
+	status: 'active' | 'archived' | 'deleted' | 'draft' | 'sale' | 'promo';
+	config: string;
+	available_from?: string | Date;
+	available_until?: string | Date;
+	matrix: string;
 }
 
-export interface ProductsUpdate extends BaseCollectionUpdate {
+export interface ProductsKvmUpdate extends BaseCollectionUpdate {
 	product_key?: string;
-	product_details?: string;
+	product_name?: string;
 	unit_price?: number;
 	'unit_price+'?: number;
 	'unit_price-'?: number;
-	status?: 'active' | 'archived' | 'deleted' | 'draft';
-	custom_value1?: string;
+	status?: 'active' | 'archived' | 'deleted' | 'draft' | 'sale' | 'promo';
+	config?: string;
+	available_from?: string | Date;
+	available_until?: string | Date;
+	matrix?: string;
 }
 
-export interface ProductsCollection {
+export interface ProductsKvmCollection {
 	type: 'base';
 	collectionId: string;
-	collectionName: 'products';
-	response: ProductsResponse;
-	create: ProductsCreate;
-	update: ProductsUpdate;
+	collectionName: 'products_kvm';
+	response: ProductsKvmResponse;
+	create: ProductsKvmCreate;
+	update: ProductsKvmUpdate;
 	relations: {
 		'order_items(product)': OrderItemsCollection[];
+		config: ProductConfigKvmCollection;
+		matrix: KvmServerMatrixCollection;
 		'services(product)': ServicesCollection[];
+		'deployed_vms(product)': DeployedVmsCollection[];
+		'kvm_server_matrix(products)': KvmServerMatrixCollection[];
 	};
 }
 
@@ -560,9 +574,142 @@ export interface ServicesCollection {
 	create: ServicesCreate;
 	update: ServicesUpdate;
 	relations: {
-		product: ProductsCollection;
+		product: ProductsKvmCollection;
 		user: UsersCollection;
 		invoice: InvoicesCollection;
+	};
+}
+
+// ===== product_config_kvm =====
+
+export interface ProductConfigKvmResponse extends BaseCollectionResponse {
+	collectionName: 'product_config_kvm';
+	name: string;
+	cores: number;
+	ram: number;
+	storage: number;
+	network: number;
+	ips: number;
+	traffic: number;
+}
+
+export interface ProductConfigKvmCreate extends BaseCollectionCreate {
+	name: string;
+	cores: number;
+	ram: number;
+	storage: number;
+	network: number;
+	ips: number;
+	traffic?: number;
+}
+
+export interface ProductConfigKvmUpdate extends BaseCollectionUpdate {
+	name?: string;
+	cores?: number;
+	'cores+'?: number;
+	'cores-'?: number;
+	ram?: number;
+	'ram+'?: number;
+	'ram-'?: number;
+	storage?: number;
+	'storage+'?: number;
+	'storage-'?: number;
+	network?: number;
+	'network+'?: number;
+	'network-'?: number;
+	ips?: number;
+	'ips+'?: number;
+	'ips-'?: number;
+	traffic?: number;
+	'traffic+'?: number;
+	'traffic-'?: number;
+}
+
+export interface ProductConfigKvmCollection {
+	type: 'base';
+	collectionId: string;
+	collectionName: 'product_config_kvm';
+	response: ProductConfigKvmResponse;
+	create: ProductConfigKvmCreate;
+	update: ProductConfigKvmUpdate;
+	relations: {
+		'products_kvm(config)': ProductsKvmCollection[];
+	};
+}
+
+// ===== deployed_vms =====
+
+export interface DeployedVmsResponse extends BaseCollectionResponse {
+	collectionName: 'deployed_vms';
+	vmid_24fire: string;
+	product: string;
+	node: string;
+	ipv4: any;
+	ipv6: any;
+	user: string;
+}
+
+export interface DeployedVmsCreate extends BaseCollectionCreate {
+	vmid_24fire: string;
+	product: string;
+	node?: string;
+	ipv4: any;
+	ipv6: any;
+	user: string;
+}
+
+export interface DeployedVmsUpdate extends BaseCollectionUpdate {
+	vmid_24fire?: string;
+	product?: string;
+	node?: string;
+	ipv4?: any;
+	ipv6?: any;
+	user?: string;
+}
+
+export interface DeployedVmsCollection {
+	type: 'base';
+	collectionId: string;
+	collectionName: 'deployed_vms';
+	response: DeployedVmsResponse;
+	create: DeployedVmsCreate;
+	update: DeployedVmsUpdate;
+	relations: {
+		product: ProductsKvmCollection;
+		user: UsersCollection;
+	};
+}
+
+// ===== kvm_server_matrix =====
+
+export interface KvmServerMatrixResponse extends BaseCollectionResponse {
+	collectionName: 'kvm_server_matrix';
+	key: string;
+	products: Array<string>;
+}
+
+export interface KvmServerMatrixCreate extends BaseCollectionCreate {
+	key: string;
+	products?: MaybeArray<string>;
+}
+
+export interface KvmServerMatrixUpdate extends BaseCollectionUpdate {
+	key?: string;
+	products?: MaybeArray<string>;
+	'products+'?: MaybeArray<string>;
+	'products-'?: MaybeArray<string>;
+}
+
+export interface KvmServerMatrixCollection {
+	type: 'base';
+	collectionId: string;
+	collectionName: 'kvm_server_matrix';
+	response: KvmServerMatrixResponse;
+	create: KvmServerMatrixCreate;
+	update: KvmServerMatrixUpdate;
+	relations: {
+		'products_kvm(matrix)': ProductsKvmCollection[];
+		products: ProductsKvmCollection[];
 	};
 }
 
@@ -574,9 +721,12 @@ export type Schema = {
 	invoices: InvoicesCollection;
 	order_items: OrderItemsCollection;
 	orders: OrdersCollection;
-	products: ProductsCollection;
+	products_kvm: ProductsKvmCollection;
 	ssh_keys: SshKeysCollection;
 	user_details_admin: UserDetailsAdminCollection;
 	user_details: UserDetailsCollection;
 	services: ServicesCollection;
+	product_config_kvm: ProductConfigKvmCollection;
+	deployed_vms: DeployedVmsCollection;
+	kvm_server_matrix: KvmServerMatrixCollection;
 };
