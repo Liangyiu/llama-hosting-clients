@@ -44,6 +44,22 @@
 				};
 
 				toastStore.trigger(toastConfig);
+			} else if (m.status === 429) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else {
+				const toastConfig: ToastSettings = {
+					message: 'Something went wrong',
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
 			}
 		}
 	});
