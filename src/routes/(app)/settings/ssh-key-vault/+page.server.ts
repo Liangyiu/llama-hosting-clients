@@ -4,6 +4,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { addSshKeySchema } from '$lib/form-schemas';
 import { fail } from '@sveltejs/kit';
 import { and, eq } from 'typed-pocketbase';
+import { rateLimiters } from '$lib/server/rate-limiter';
 
 export const load = (async ({ locals, url }) => {
 	const { pb, user } = locals;
@@ -28,6 +29,15 @@ export const actions: Actions = {
 		const form = await superValidate(event, zod(addSshKeySchema));
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		const { success, timeRemaining } = await rateLimiters.sshKeyAdd.limit(user.id);
+
+		if (!success) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
+			});
 		}
 
 		try {

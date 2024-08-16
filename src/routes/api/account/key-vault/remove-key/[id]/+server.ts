@@ -1,7 +1,31 @@
-import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { rateLimiters } from '$lib/server/rate-limiter';
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
+	if (!locals.user) {
+		return new Response(
+			JSON.stringify({
+				message: 'Not authenticated'
+			}),
+			{
+				status: 403
+			}
+		);
+	}
+
+	const { success, timeRemaining } = await rateLimiters.sshKeyDelete.limit(locals.user.id);
+
+	if (!success) {
+		return new Response(
+			JSON.stringify({
+				message: `Rate limit exceeded. Please try again in ' + timeRemaining + ' ${timeRemaining === 1 ? 'second' : 'seconds'}`
+			}),
+			{
+				status: 429
+			}
+		);
+	}
+
 	try {
 		await locals.pb.from('ssh_keys').delete(params.id);
 
@@ -15,8 +39,13 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 		);
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (_) {
-		return error(500, {
-			message: 'Error: Failed to remove default SSH key'
-		});
+		return new Response(
+			JSON.stringify({
+				message: 'Error: Failed to remove default SSH key'
+			}),
+			{
+				status: 500
+			}
+		);
 	}
 };

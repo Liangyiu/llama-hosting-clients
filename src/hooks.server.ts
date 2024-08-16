@@ -1,6 +1,6 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import * as Sentry from '@sentry/sveltekit';
-import { dev } from '$app/environment';
+import { browser, dev } from '$app/environment';
 import {
 	PUBLIC_GLITCHTOP_DSN_DEV,
 	PUBLIC_GLITCHTOP_DSN_PROD,
@@ -69,6 +69,12 @@ export const handle = sequence(Sentry.sentryHandle(), async function _handle({ e
 		locals.user = null;
 	}
 
+	if (locals.user === null && url.pathname.startsWith('/api')) {
+		if (!browser) {
+			return await resolve(event);
+		}
+	}
+
 	if (
 		url.pathname.startsWith('/') &&
 		locals.user === null &&
@@ -79,6 +85,10 @@ export const handle = sequence(Sentry.sentryHandle(), async function _handle({ e
 
 	if (url.pathname === '/') {
 		return redirect(303, '/dashboard');
+	}
+
+	if ((url.pathname === '/settings/' || url.pathname === '/settings') && locals.user) {
+		return redirect(303, '/settings/account');
 	}
 
 	if (
