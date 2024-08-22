@@ -2,7 +2,7 @@ import { REDIS_URI } from '$env/static/private';
 import { RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import { createClient } from 'redis';
 import * as Sentry from '@sentry/sveltekit';
-import { PUBLIC_GLITCHTOP_DSN_DEV, PUBLIC_GLITCHTOP_DSN_PROD } from '$env/static/public';
+import { PUBLIC_GLITCHTOP_DSN } from '$env/static/public';
 import { dev } from '$app/environment';
 
 const redis = createClient({
@@ -10,7 +10,8 @@ const redis = createClient({
 });
 
 Sentry.init({
-	dsn: dev ? PUBLIC_GLITCHTOP_DSN_DEV : PUBLIC_GLITCHTOP_DSN_PROD,
+	environment: dev ? 'development' : 'production',
+	dsn: PUBLIC_GLITCHTOP_DSN,
 	tracesSampleRate: 1
 });
 
@@ -75,5 +76,40 @@ export const rateLimiters = {
 		duration: 10, // Per second(s)
 		useRedisPackage: true,
 		keyPrefix: 'rl:sshkey:default:remove' // must be unique for limiters with different purpose
+	}),
+	avatarUpload: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1, // Number of points
+		duration: 30, // Per second(s)
+		useRedisPackage: true,
+		keyPrefix: 'rl:avatar:upload' // must be unique for limiters with different purpose
+	}),
+	avatarDelete: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1, // Number of points
+		duration: 30, // Per second(s)
+		useRedisPackage: true,
+		keyPrefix: 'rl:avatar:delete' // must be unique for limiters with different purpose
+	}),
+	accountDetailsUpdate: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1, // Number of points
+		duration: 15, // Per second(s)
+		useRedisPackage: true,
+		keyPrefix: 'rl:accountdetails:update' // must be unique for limiters with different purpose
+	}),
+	emailChange: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1, // Number of points
+		duration: 60, // Per second(s)
+		useRedisPackage: true,
+		keyPrefix: 'rl:email:change' // must be unique for limiters with different purpose
+	}),
+	passwordReset: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1, // Number of points
+		duration: 60, // Per second(s)
+		useRedisPackage: true,
+		keyPrefix: 'rl:password:reset' // must be unique for limiters with different purpose
 	})
 };

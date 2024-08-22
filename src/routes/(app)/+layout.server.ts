@@ -2,6 +2,7 @@ import { pbAdmin } from '$lib/server/pb-admin';
 import { type UserDetailsRecord, type UserDetailsResponse } from '$lib/types/pbTypes';
 import type { ClientResponseError } from 'pocketbase';
 import type { LayoutServerLoad } from './$types';
+import { eq } from 'typed-pocketbase';
 
 export const load = (async ({ locals }) => {
 	const { user, pb } = locals;
@@ -22,11 +23,9 @@ export const load = (async ({ locals }) => {
 		}
 	}
 	try {
-		const userDetails = await pb
-			.collection('user_details')
-			.getFirstListItem<
-				UserDetailsResponse<UserDetailsRecord>
-			>('user="' + user?.id + '"', { requestKey: 'fetchUserDetails' });
+		const userDetails = await pb.from('user_details').getFirstListItem(eq('user', user.id), {
+			requestKey: 'fetchUserDetails'
+		});
 
 		await pb.collection('users').update(user.id, {
 			user_details: userDetails.id
@@ -43,9 +42,9 @@ export const load = (async ({ locals }) => {
 					user: user.id
 				};
 
-				const newUserDetails = await pbAdmin.collection('user_details').create(data);
+				const newUserDetails = await pbAdmin.from('user_details').create(data);
 
-				await pb.collection('users').update(user.id, {
+				await pb.from('users').update(user.id, {
 					user_details: newUserDetails.id
 				});
 

@@ -170,13 +170,14 @@ export interface UsersCollection {
 		'user_details(user)': UserDetailsCollection;
 		'services(user)': ServicesCollection[];
 		'deployed_vms(user)': DeployedVmsCollection[];
+		'user_mfa_totp_secrets(user)': UserMfaTotpSecretsCollection;
 	};
 }
 
-// ===== host_systems =====
+// ===== host_systems_vps =====
 
-export interface HostSystemsResponse extends BaseCollectionResponse {
-	collectionName: 'host_systems';
+export interface HostSystemsVpsResponse extends BaseCollectionResponse {
+	collectionName: 'host_systems_vps';
 	identifier: string;
 	cpu: string;
 	ram: string;
@@ -186,7 +187,7 @@ export interface HostSystemsResponse extends BaseCollectionResponse {
 	city: string;
 }
 
-export interface HostSystemsCreate extends BaseCollectionCreate {
+export interface HostSystemsVpsCreate extends BaseCollectionCreate {
 	identifier?: string;
 	cpu?: string;
 	ram?: string;
@@ -196,7 +197,7 @@ export interface HostSystemsCreate extends BaseCollectionCreate {
 	city?: string;
 }
 
-export interface HostSystemsUpdate extends BaseCollectionUpdate {
+export interface HostSystemsVpsUpdate extends BaseCollectionUpdate {
 	identifier?: string;
 	cpu?: string;
 	ram?: string;
@@ -206,14 +207,16 @@ export interface HostSystemsUpdate extends BaseCollectionUpdate {
 	city?: string;
 }
 
-export interface HostSystemsCollection {
+export interface HostSystemsVpsCollection {
 	type: 'base';
 	collectionId: string;
-	collectionName: 'host_systems';
-	response: HostSystemsResponse;
-	create: HostSystemsCreate;
-	update: HostSystemsUpdate;
-	relations: Record<string, never>;
+	collectionName: 'host_systems_vps';
+	response: HostSystemsVpsResponse;
+	create: HostSystemsVpsCreate;
+	update: HostSystemsVpsUpdate;
+	relations: {
+		'products(host_vps)': ProductsCollection[];
+	};
 }
 
 // ===== invoices =====
@@ -251,42 +254,6 @@ export interface InvoicesCollection {
 	};
 }
 
-// ===== order_items =====
-
-export interface OrderItemsResponse extends BaseCollectionResponse {
-	collectionName: 'order_items';
-	order: string;
-	product: string;
-	amount: number;
-}
-
-export interface OrderItemsCreate extends BaseCollectionCreate {
-	order: string;
-	product: string;
-	amount: number;
-}
-
-export interface OrderItemsUpdate extends BaseCollectionUpdate {
-	order?: string;
-	product?: string;
-	amount?: number;
-	'amount+'?: number;
-	'amount-'?: number;
-}
-
-export interface OrderItemsCollection {
-	type: 'base';
-	collectionId: string;
-	collectionName: 'order_items';
-	response: OrderItemsResponse;
-	create: OrderItemsCreate;
-	update: OrderItemsUpdate;
-	relations: {
-		order: OrdersCollection;
-		product: ProductsKvmCollection;
-	};
-}
-
 // ===== orders =====
 
 export interface OrdersResponse extends BaseCollectionResponse {
@@ -300,6 +267,7 @@ export interface OrdersResponse extends BaseCollectionResponse {
 		| 'declined'
 		| 'refunded'
 		| 'partially-refunded';
+	product: string;
 	order_details: string;
 	order_total: number;
 }
@@ -314,6 +282,7 @@ export interface OrdersCreate extends BaseCollectionCreate {
 		| 'declined'
 		| 'refunded'
 		| 'partially-refunded';
+	product: string;
 	order_details?: string;
 	order_total: number;
 }
@@ -328,6 +297,7 @@ export interface OrdersUpdate extends BaseCollectionUpdate {
 		| 'declined'
 		| 'refunded'
 		| 'partially-refunded';
+	product?: string;
 	order_details?: string;
 	order_total?: number;
 	'order_total+'?: number;
@@ -343,63 +313,65 @@ export interface OrdersCollection {
 	update: OrdersUpdate;
 	relations: {
 		'invoices(order)': InvoicesCollection[];
-		'order_items(order)': OrderItemsCollection[];
 		user: UsersCollection;
+		product: ProductsCollection;
 	};
 }
 
-// ===== products_kvm =====
+// ===== products =====
 
-export interface ProductsKvmResponse extends BaseCollectionResponse {
-	collectionName: 'products_kvm';
+export interface ProductsResponse extends BaseCollectionResponse {
+	collectionName: 'products';
 	product_key: string;
 	product_name: string;
+	type: 'vps' | 'webhosting' | 'clouddrive';
 	unit_price: number;
 	status: 'active' | 'archived' | 'deleted' | 'draft' | 'sale' | 'promo';
-	config: string;
+	config_vps: string;
+	host_vps: string;
 	available_from: string;
 	available_until: string;
-	matrix: string;
 }
 
-export interface ProductsKvmCreate extends BaseCollectionCreate {
+export interface ProductsCreate extends BaseCollectionCreate {
 	product_key: string;
 	product_name?: string;
+	type: 'vps' | 'webhosting' | 'clouddrive';
 	unit_price: number;
 	status: 'active' | 'archived' | 'deleted' | 'draft' | 'sale' | 'promo';
-	config: string;
+	config_vps?: string;
+	host_vps?: string;
 	available_from?: string | Date;
 	available_until?: string | Date;
-	matrix: string;
 }
 
-export interface ProductsKvmUpdate extends BaseCollectionUpdate {
+export interface ProductsUpdate extends BaseCollectionUpdate {
 	product_key?: string;
 	product_name?: string;
+	type?: 'vps' | 'webhosting' | 'clouddrive';
 	unit_price?: number;
 	'unit_price+'?: number;
 	'unit_price-'?: number;
 	status?: 'active' | 'archived' | 'deleted' | 'draft' | 'sale' | 'promo';
-	config?: string;
+	config_vps?: string;
+	host_vps?: string;
 	available_from?: string | Date;
 	available_until?: string | Date;
-	matrix?: string;
 }
 
-export interface ProductsKvmCollection {
+export interface ProductsCollection {
 	type: 'base';
 	collectionId: string;
-	collectionName: 'products_kvm';
-	response: ProductsKvmResponse;
-	create: ProductsKvmCreate;
-	update: ProductsKvmUpdate;
+	collectionName: 'products';
+	response: ProductsResponse;
+	create: ProductsCreate;
+	update: ProductsUpdate;
 	relations: {
-		'order_items(product)': OrderItemsCollection[];
-		config: ProductConfigKvmCollection;
-		matrix: KvmServerMatrixCollection;
+		'orders(product)': OrdersCollection[];
+		config_vps: ProductConfigVpsCollection;
+		host_vps: HostSystemsVpsCollection;
 		'services(product)': ServicesCollection[];
 		'deployed_vms(product)': DeployedVmsCollection[];
-		'kvm_server_matrix(products)': KvmServerMatrixCollection[];
 	};
 }
 
@@ -490,6 +462,7 @@ export interface UserDetailsResponse extends BaseCollectionResponse {
 	vat_id: string;
 	default_ssh_keys: Array<string>;
 	avatar: string;
+	mfa_totp: boolean;
 }
 
 export interface UserDetailsCreate extends BaseCollectionCreate {
@@ -504,6 +477,7 @@ export interface UserDetailsCreate extends BaseCollectionCreate {
 	vat_id?: string;
 	default_ssh_keys?: MaybeArray<string>;
 	avatar?: File | null;
+	mfa_totp?: boolean;
 }
 
 export interface UserDetailsUpdate extends BaseCollectionUpdate {
@@ -520,6 +494,7 @@ export interface UserDetailsUpdate extends BaseCollectionUpdate {
 	'default_ssh_keys+'?: MaybeArray<string>;
 	'default_ssh_keys-'?: MaybeArray<string>;
 	avatar?: File | null;
+	mfa_totp?: boolean;
 }
 
 export interface UserDetailsCollection {
@@ -574,36 +549,40 @@ export interface ServicesCollection {
 	create: ServicesCreate;
 	update: ServicesUpdate;
 	relations: {
-		product: ProductsKvmCollection;
+		product: ProductsCollection;
 		user: UsersCollection;
 		invoice: InvoicesCollection;
 	};
 }
 
-// ===== product_config_kvm =====
+// ===== product_config_vps =====
 
-export interface ProductConfigKvmResponse extends BaseCollectionResponse {
-	collectionName: 'product_config_kvm';
+export interface ProductConfigVpsResponse extends BaseCollectionResponse {
+	collectionName: 'product_config_vps';
 	name: string;
 	cores: number;
 	ram: number;
-	storage: number;
-	network: number;
+	disk: number;
 	ips: number;
+	network_speed: number;
+	backup_slots: number;
+	storage: number;
 	traffic: number;
 }
 
-export interface ProductConfigKvmCreate extends BaseCollectionCreate {
+export interface ProductConfigVpsCreate extends BaseCollectionCreate {
 	name: string;
 	cores: number;
 	ram: number;
-	storage: number;
-	network: number;
+	disk: number;
 	ips: number;
+	network_speed: number;
+	backup_slots: number;
+	storage?: number;
 	traffic?: number;
 }
 
-export interface ProductConfigKvmUpdate extends BaseCollectionUpdate {
+export interface ProductConfigVpsUpdate extends BaseCollectionUpdate {
 	name?: string;
 	cores?: number;
 	'cores+'?: number;
@@ -611,29 +590,35 @@ export interface ProductConfigKvmUpdate extends BaseCollectionUpdate {
 	ram?: number;
 	'ram+'?: number;
 	'ram-'?: number;
-	storage?: number;
-	'storage+'?: number;
-	'storage-'?: number;
-	network?: number;
-	'network+'?: number;
-	'network-'?: number;
+	disk?: number;
+	'disk+'?: number;
+	'disk-'?: number;
 	ips?: number;
 	'ips+'?: number;
 	'ips-'?: number;
+	network_speed?: number;
+	'network_speed+'?: number;
+	'network_speed-'?: number;
+	backup_slots?: number;
+	'backup_slots+'?: number;
+	'backup_slots-'?: number;
+	storage?: number;
+	'storage+'?: number;
+	'storage-'?: number;
 	traffic?: number;
 	'traffic+'?: number;
 	'traffic-'?: number;
 }
 
-export interface ProductConfigKvmCollection {
+export interface ProductConfigVpsCollection {
 	type: 'base';
 	collectionId: string;
-	collectionName: 'product_config_kvm';
-	response: ProductConfigKvmResponse;
-	create: ProductConfigKvmCreate;
-	update: ProductConfigKvmUpdate;
+	collectionName: 'product_config_vps';
+	response: ProductConfigVpsResponse;
+	create: ProductConfigVpsCreate;
+	update: ProductConfigVpsUpdate;
 	relations: {
-		'products_kvm(config)': ProductsKvmCollection[];
+		'products(config_vps)': ProductsCollection[];
 	};
 }
 
@@ -675,41 +660,38 @@ export interface DeployedVmsCollection {
 	create: DeployedVmsCreate;
 	update: DeployedVmsUpdate;
 	relations: {
-		product: ProductsKvmCollection;
+		product: ProductsCollection;
 		user: UsersCollection;
 	};
 }
 
-// ===== kvm_server_matrix =====
+// ===== user_mfa_totp_secrets =====
 
-export interface KvmServerMatrixResponse extends BaseCollectionResponse {
-	collectionName: 'kvm_server_matrix';
-	key: string;
-	products: Array<string>;
+export interface UserMfaTotpSecretsResponse extends BaseCollectionResponse {
+	collectionName: 'user_mfa_totp_secrets';
+	user: string;
+	secret: string;
 }
 
-export interface KvmServerMatrixCreate extends BaseCollectionCreate {
-	key: string;
-	products?: MaybeArray<string>;
+export interface UserMfaTotpSecretsCreate extends BaseCollectionCreate {
+	user: string;
+	secret: string;
 }
 
-export interface KvmServerMatrixUpdate extends BaseCollectionUpdate {
-	key?: string;
-	products?: MaybeArray<string>;
-	'products+'?: MaybeArray<string>;
-	'products-'?: MaybeArray<string>;
+export interface UserMfaTotpSecretsUpdate extends BaseCollectionUpdate {
+	user?: string;
+	secret?: string;
 }
 
-export interface KvmServerMatrixCollection {
+export interface UserMfaTotpSecretsCollection {
 	type: 'base';
 	collectionId: string;
-	collectionName: 'kvm_server_matrix';
-	response: KvmServerMatrixResponse;
-	create: KvmServerMatrixCreate;
-	update: KvmServerMatrixUpdate;
+	collectionName: 'user_mfa_totp_secrets';
+	response: UserMfaTotpSecretsResponse;
+	create: UserMfaTotpSecretsCreate;
+	update: UserMfaTotpSecretsUpdate;
 	relations: {
-		'products_kvm(matrix)': ProductsKvmCollection[];
-		products: ProductsKvmCollection[];
+		user: UsersCollection;
 	};
 }
 
@@ -717,16 +699,15 @@ export interface KvmServerMatrixCollection {
 
 export type Schema = {
 	users: UsersCollection;
-	host_systems: HostSystemsCollection;
+	host_systems_vps: HostSystemsVpsCollection;
 	invoices: InvoicesCollection;
-	order_items: OrderItemsCollection;
 	orders: OrdersCollection;
-	products_kvm: ProductsKvmCollection;
+	products: ProductsCollection;
 	ssh_keys: SshKeysCollection;
 	user_details_admin: UserDetailsAdminCollection;
 	user_details: UserDetailsCollection;
 	services: ServicesCollection;
-	product_config_kvm: ProductConfigKvmCollection;
+	product_config_vps: ProductConfigVpsCollection;
 	deployed_vms: DeployedVmsCollection;
-	kvm_server_matrix: KvmServerMatrixCollection;
+	user_mfa_totp_secrets: UserMfaTotpSecretsCollection;
 };

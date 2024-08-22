@@ -1,11 +1,12 @@
 import { dev } from '$app/environment';
-import { PUBLIC_GLITCHTOP_DSN_DEV, PUBLIC_GLITCHTOP_DSN_PROD } from '$env/static/public';
+import { PUBLIC_GLITCHTOP_DSN } from '$env/static/public';
 import { handleErrorWithSentry, replayIntegration } from '@sentry/sveltekit';
 import * as Sentry from '@sentry/sveltekit';
 import type { HandleClientError } from '@sveltejs/kit';
 
 Sentry.init({
-	dsn: dev ? PUBLIC_GLITCHTOP_DSN_DEV : PUBLIC_GLITCHTOP_DSN_PROD,
+	environment: dev ? 'development' : 'production',
+	dsn: PUBLIC_GLITCHTOP_DSN,
 	tracesSampleRate: 1.0,
 
 	// This sets the sample rate to be 10%. You may want this to be 100% while

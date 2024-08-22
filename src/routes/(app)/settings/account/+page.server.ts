@@ -4,6 +4,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { accountDetailsSchema, avatarSchema, changeEmailSchema } from '$lib/form-schemas';
 import { fail, redirect } from '@sveltejs/kit';
 import type { ClientResponseError } from 'pocketbase';
+import { rateLimiters } from '$lib/server/rate-limiter';
 
 export const load = (async () => {
 	return {
@@ -25,8 +26,17 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
+		const { success, timeRemaining } = await rateLimiters.avatarUpload.limit(user.id);
+
+		if (!success) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
+			});
+		}
+
 		try {
-			await pb.collection('user_details').update(user.user_details, form.data);
+			await pb.from('user_details').update(user.user_details, form.data);
 
 			return message(form, {
 				status: 200,
@@ -44,6 +54,19 @@ export const actions: Actions = {
 		const {
 			locals: { pb, user }
 		} = event;
+
+		const { success, timeRemaining } = await rateLimiters.avatarDelete.limit(user.id);
+
+		if (!success) {
+			return new Response(
+				JSON.stringify({
+					message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
+				}),
+				{
+					status: 429
+				}
+			);
+		}
 
 		try {
 			return await pb.collection('user_details').update(user.user_details, {
@@ -65,6 +88,15 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
+		const { success, timeRemaining } = await rateLimiters.accountDetailsUpdate.limit(user.id);
+
+		if (!success) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
+			});
+		}
+
 		try {
 			await pb.collection('user_details').update(user.user_details, form.data);
 			return message(form, {
@@ -81,13 +113,22 @@ export const actions: Actions = {
 	},
 	updateEmail: async (event) => {
 		const {
-			locals: { pb }
+			locals: { pb, user }
 		} = event;
 
 		const form = await superValidate(event, zod(changeEmailSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		const { success, timeRemaining } = await rateLimiters.emailChange.limit(user.id);
+
+		if (!success) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
+			});
 		}
 
 		try {

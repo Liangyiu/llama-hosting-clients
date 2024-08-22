@@ -1,18 +1,15 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import * as Sentry from '@sentry/sveltekit';
 import { browser, dev } from '$app/environment';
-import {
-	PUBLIC_GLITCHTOP_DSN_DEV,
-	PUBLIC_GLITCHTOP_DSN_PROD,
-	PUBLIC_POCKETBASE_URL
-} from '$env/static/public';
+import { PUBLIC_GLITCHTOP_DSN, PUBLIC_POCKETBASE_URL } from '$env/static/public';
 import { TypedPocketBase } from 'typed-pocketbase';
 import { redirect, type HandleServerError } from '@sveltejs/kit';
 import type { Schema } from '$lib/pocketbase/PB-Schema';
 import crypto from 'crypto';
 
 Sentry.init({
-	dsn: dev ? PUBLIC_GLITCHTOP_DSN_DEV : PUBLIC_GLITCHTOP_DSN_PROD,
+	environment: dev ? 'development' : 'production',
+	dsn: PUBLIC_GLITCHTOP_DSN,
 	tracesSampleRate: 1
 });
 

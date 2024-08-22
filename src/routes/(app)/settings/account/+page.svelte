@@ -35,6 +35,14 @@
 				};
 
 				toastStore.trigger(toastConfig);
+			} else if (m.status === 429) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
 			} else {
 				const toastConfig: ToastSettings = {
 					message: m.message,
@@ -70,6 +78,14 @@
 				};
 
 				toastStore.trigger(toastConfig);
+			} else if (m.status === 429) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
 			} else {
 				const toastConfig: ToastSettings = {
 					message: m.message,
@@ -100,6 +116,14 @@
 					message: m.message,
 					background: 'variant-soft-success',
 					timeout: 5000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else if (m.status === 429) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
 				};
 
 				toastStore.trigger(toastConfig);

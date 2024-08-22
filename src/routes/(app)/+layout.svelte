@@ -19,7 +19,8 @@
 		addressPostalCode: data.userDetails?.address_postal_code,
 		defaultSshKeys: data.userDetails?.default_ssh_keys,
 		phoneNumber: data.userDetails?.phone_number,
-		vatId: data.userDetails?.vat_id
+		vatId: data.userDetails?.vat_id,
+		mfaTotp: data.userDetails?.mfa_totp
 	});
 </script>
 

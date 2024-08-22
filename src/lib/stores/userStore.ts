@@ -1,4 +1,3 @@
-import type { RecordIdString } from '$lib/types/pbTypes';
 import { getContext, setContext } from 'svelte';
 import { type Writable, writable } from 'svelte/store';
 
@@ -13,12 +12,13 @@ type UserData = {
 	addressStateProvince?: string;
 	addressPostalCode?: string;
 	avatar?: string;
-	defaultSshKeys?: RecordIdString[];
+	defaultSshKeys?: string[];
 	phoneNumber?: string;
-	user: RecordIdString;
+	user: string;
 	vatId?: string;
 	avatarUrl?: string;
 	balance?: number;
+	mfaTotp: boolean;
 };
 
 const USER_CTX = 'USER_CTX';
