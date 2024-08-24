@@ -118,7 +118,7 @@
 
 		if (!(await confirmed)) return;
 
-		const response = await fetch(`/api/account/key-vault/remove-default/${id}`, {
+		const response = await fetch(`/api/account/key-vault/remove-key/${id}`, {
 			method: 'DELETE'
 		});
 
