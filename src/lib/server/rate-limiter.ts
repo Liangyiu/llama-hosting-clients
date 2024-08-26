@@ -133,11 +133,11 @@ export const rateLimiters = {
 		useRedisPackage: true,
 		keyPrefix: 'rl:totp:validate' // must be unique for limiters with different purpose
 	}),
-	deactivateTotp: new extendedRateLimiterRedis({
+	loginEmail: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1, // Number of points
+		points: 3, // Number of points
 		duration: 10, // Per second(s)
 		useRedisPackage: true,
-		keyPrefix: 'rl:totp:deactivate' // must be unique for limiters with different purpose
+		keyPrefix: 'rl:login:email' // must be unique for limiters with different purpose
 	})
 };

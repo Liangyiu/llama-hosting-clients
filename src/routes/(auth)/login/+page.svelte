@@ -20,7 +20,11 @@
 	});
 	const { form: formData, enhance, message, delayed } = form;
 
+	let formElement: HTMLFormElement;
+
 	let isFocused: boolean = true;
+
+	let totpCodeRequired: boolean = false;
 
 	message.subscribe((m) => {
 		if (m) {
@@ -40,6 +44,24 @@
 				};
 
 				toastStore.trigger(toastConfig);
+			} else if (m.status === 400 && m.message === 'Please enter your TOTP code') {
+				totpCodeRequired = true;
+			} else if (m.status === 400 && m.message === 'Invalid TOTP code') {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else if (m.status === 429) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
 			} else {
 				const toastConfig: ToastSettings = {
 					message: m.message,
@@ -51,6 +73,26 @@
 			}
 		}
 	});
+
+	let capturedFormData = {
+		email: '',
+		password: ''
+	};
+
+	$: {
+		if (totpCodeRequired) {
+			$formData.email = capturedFormData.email;
+			$formData.password = capturedFormData.password;
+			capturedFormData = { email: '', password: '' };
+		}
+	}
+
+	async function handleSubmit() {
+		capturedFormData.email = $formData.email;
+		capturedFormData.password = $formData.password;
+
+		formElement.requestSubmit();
+	}
 </script>
 
 <div class="card">
@@ -86,7 +128,24 @@
 				</div>
 			</aside>
 		{/if}
-		<form method="post" use:enhance action="/login" class="w-full" use:focusTrap={isFocused}>
+		{#if totpCodeRequired}
+			<aside class="alert variant-soft-warning w-full mb-4">
+				<div>
+					<CircleAlertIcon class="size-4" />
+				</div>
+				<div class="alert-message">
+					<p>Additional authorization required</p>
+				</div>
+			</aside>
+		{/if}
+		<form
+			bind:this={formElement}
+			method="post"
+			use:enhance
+			action="/login"
+			class="w-full"
+			use:focusTrap={isFocused}
+		>
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div>
 					<Field {form} name="email">
@@ -138,18 +197,51 @@
 						<FieldErrors class="text-error-500" />
 					</Field>
 				</div>
-			</div>
 
-			<button type="submit" class="w-full btn variant-filled">
-				{#if $delayed}
-					<Loader2 class="size-6 animate-spin" />
-				{:else}
-					Login
+				{#if totpCodeRequired}
+					<div>
+						<Field {form} name="totp_code">
+							<Control let:attrs>
+								<div class="space-y-1">
+									<Label asChild={true}>
+										<label class="label" for="totp_code">
+											<span>TOTP Code</span>
+										</label>
+									</Label>
+									<input
+										{...attrs}
+										bind:value={$formData.totp_code}
+										type="text"
+										id="totp_code"
+										placeholder="123456"
+										class="input"
+									/>
+								</div>
+							</Control>
+							<FieldErrors class="text-error-500" />
+						</Field>
+					</div>
 				{/if}
-			</button>
-			<div class="text-sm w-full text-center pt-2">
-				Don't have an account yet? <a href="/register" class="font-medium anchor">Sign up</a>
 			</div>
 		</form>
+
+		<button class="w-full btn variant-filled" on:click={handleSubmit}>
+			{#if $delayed}
+				<Loader2 class="size-6 animate-spin" />
+			{:else if totpCodeRequired}
+				Submit
+			{:else}
+				Login
+			{/if}
+		</button>
+		<div class="text-sm w-full text-center pt-2">
+			Don't have an account yet? <a href="/register" class="font-medium anchor">Sign up</a>
+		</div>
 	</section>
 </div>
+
+<svelte:window
+	on:keydown={(e) => {
+		if (e.key === 'Enter') handleSubmit();
+	}}
+/>

@@ -73,8 +73,6 @@
 			modalStore.trigger(modal);
 		});
 
-		console.log(modalResponse);
-
 		if (modalResponse) {
 			$user.mfaTotp = false;
 			$user.mfaTotpSecretId = undefined;

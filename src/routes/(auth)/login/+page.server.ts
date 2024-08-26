@@ -4,6 +4,10 @@ import type { PageServerLoad } from './$types';
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { ClientResponseError } from 'pocketbase';
+import { pbAdmin } from '$lib/server/pb-admin';
+import { eq } from 'typed-pocketbase';
+import { rateLimiters } from '$lib/server/rate-limiter';
+import { validateTotpCode } from '$lib/server/totp';
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -20,6 +24,51 @@ export const actions: Actions = {
 
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		const { success, timeRemaining } = await rateLimiters.loginEmail.limit(form.data.email);
+
+		if (!success) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
+			});
+		}
+
+		let secretId = '';
+		let mfaEnabled = false;
+
+		try {
+			const user = await pbAdmin
+				.from('users')
+				.getFirstListItem(eq('email', form.data.email.toLowerCase()));
+
+			if (user.mfa_totp) {
+				secretId = user.mfa_totp_secret_id;
+				mfaEnabled = true;
+
+				if (!form.data.totp_code) {
+					return message(form, {
+						status: 400,
+						message: 'Please enter your TOTP code'
+					});
+				}
+			}
+		} catch (e) {
+			const { status } = e as ClientResponseError;
+
+			return message(form, { status, message: 'An error occurred during authentication' });
+		}
+
+		if (mfaEnabled) {
+			const { success: totpValid } = await validateTotpCode(secretId, form.data.totp_code || '');
+
+			if (!totpValid) {
+				return message(form, {
+					status: 400,
+					message: 'Invalid TOTP code'
+				});
+			}
 		}
 
 		try {
