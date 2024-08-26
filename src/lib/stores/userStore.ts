@@ -19,6 +19,7 @@ type UserData = {
 	avatarUrl?: string;
 	balance?: number;
 	mfaTotp: boolean;
+	mfaTotpSecretId?: string;
 };
 
 const USER_CTX = 'USER_CTX';

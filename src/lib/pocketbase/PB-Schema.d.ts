@@ -140,18 +140,24 @@ export interface UsersResponse extends AuthCollectionResponse {
 	first_name: string;
 	last_name: string;
 	user_details: string;
+	mfa_totp: boolean;
+	mfa_totp_secret_id: string;
 }
 
 export interface UsersCreate extends AuthCollectionCreate {
 	first_name: string;
 	last_name: string;
 	user_details?: string;
+	mfa_totp?: boolean;
+	mfa_totp_secret_id?: string;
 }
 
 export interface UsersUpdate extends AuthCollectionUpdate {
 	first_name?: string;
 	last_name?: string;
 	user_details?: string;
+	mfa_totp?: boolean;
+	mfa_totp_secret_id?: string;
 }
 
 export interface UsersCollection {
@@ -163,6 +169,7 @@ export interface UsersCollection {
 	update: UsersUpdate;
 	relations: {
 		user_details: UserDetailsCollection;
+		mfa_totp_secret_id: UserMfaTotpSecretsCollection;
 		'invoices(user)': InvoicesCollection[];
 		'orders(user)': OrdersCollection[];
 		'ssh_keys(user)': SshKeysCollection[];
@@ -462,7 +469,6 @@ export interface UserDetailsResponse extends BaseCollectionResponse {
 	vat_id: string;
 	default_ssh_keys: Array<string>;
 	avatar: string;
-	mfa_totp: boolean;
 }
 
 export interface UserDetailsCreate extends BaseCollectionCreate {
@@ -477,7 +483,6 @@ export interface UserDetailsCreate extends BaseCollectionCreate {
 	vat_id?: string;
 	default_ssh_keys?: MaybeArray<string>;
 	avatar?: File | null;
-	mfa_totp?: boolean;
 }
 
 export interface UserDetailsUpdate extends BaseCollectionUpdate {
@@ -494,7 +499,6 @@ export interface UserDetailsUpdate extends BaseCollectionUpdate {
 	'default_ssh_keys+'?: MaybeArray<string>;
 	'default_ssh_keys-'?: MaybeArray<string>;
 	avatar?: File | null;
-	mfa_totp?: boolean;
 }
 
 export interface UserDetailsCollection {
@@ -691,6 +695,7 @@ export interface UserMfaTotpSecretsCollection {
 	create: UserMfaTotpSecretsCreate;
 	update: UserMfaTotpSecretsUpdate;
 	relations: {
+		'users(mfa_totp_secret_id)': UsersCollection[];
 		user: UsersCollection;
 	};
 }

@@ -145,3 +145,25 @@ export const addDefaultSshKeySchema = z.object({
 export const removeDefaultSshKeySchema = z.object({
 	key_id: z.string().max(15, { message: 'Can not exceed 15 characters' })
 });
+
+export const activateTotpSchema = z.object({
+	totp_code: z
+		.string()
+		.regex(new RegExp(/^[0-9]{6}$/), { message: 'Invalid TOTP code' })
+		.max(6, { message: 'Can not exceed 6 characters' }),
+	totp_secret: z.string()
+});
+
+export const deactivateTotpSchema = z.object({
+	totp_code: z
+		.string()
+		.regex(new RegExp(/^[0-9]{6}$/), { message: 'Invalid TOTP code' })
+		.max(6, { message: 'Can not exceed 6 characters' })
+});
+
+export const totpCodeInputSchema = z.object({
+	totp_code: z
+		.string()
+		.regex(new RegExp(/^[0-9]{6}$/), { message: 'Invalid TOTP code' })
+		.max(6, { message: 'Can not exceed 6 characters' })
+});

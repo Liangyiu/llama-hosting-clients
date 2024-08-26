@@ -1,6 +1,19 @@
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { rateLimiters } from '$lib/server/rate-limiter';
+import type { PageServerLoad } from './$types';
+import { activateTotpSchema, deactivateTotpSchema } from '$lib/form-schemas';
+import { fail, message, superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { TOTP } from 'otpauth';
+import { pbAdmin } from '$lib/server/pb-admin';
+
+export const load = (async () => {
+	return {
+		activateTotp: await superValidate(zod(activateTotpSchema)),
+		deactivateTotp: await superValidate(zod(deactivateTotpSchema))
+	};
+}) satisfies PageServerLoad;
 
 export const actions: Actions = {
 	resetPassword: async ({ request, locals }) => {
@@ -34,26 +47,80 @@ export const actions: Actions = {
 
 		await locals.pb.collection('users').requestPasswordReset(email);
 		return redirect(303, '/settings/security?passwordReset=true');
+	},
+	activate2fa: async (event) => {
+		const {
+			locals: { pb, user }
+		} = event;
+
+		const form = await superValidate(event, zod(activateTotpSchema));
+
+		if (!user) {
+			return fail(400, { form });
+		}
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		if (user.mfa_totp) {
+			return message(form, {
+				status: 400,
+				message: '2FA/TOTP already activated'
+			});
+		}
+
+		const { success, timeRemaining } = await rateLimiters.activateTotp.limit(user.id);
+
+		if (!success) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
+			});
+		}
+
+		const totp = new TOTP({
+			secret: form.data.totp_secret,
+			digits: 6,
+			period: 30,
+			algorithm: 'SHA1'
+		});
+
+		const delta = totp.validate({
+			token: form.data.totp_code,
+			window: 1
+		});
+
+		if (delta === null) {
+			return message(form, {
+				status: 400,
+				message: 'Invalid TOTP code'
+			});
+		}
+
+		try {
+			const { id } = await pbAdmin.from('user_mfa_totp_secrets').create({
+				user: user.id,
+				secret: form.data.totp_secret
+			});
+
+			await pb.from('users').update(user.id, {
+				mfa_totp: true,
+				mfa_totp_secret_id: id
+			});
+
+			user.mfa_totp = true;
+			user.mfa_totp_secret_id = id;
+		} catch {
+			return message(form, {
+				status: 400,
+				message: 'An error occurred while activating 2FA/TOTP'
+			});
+		}
+
+		return message(form, {
+			status: 200,
+			message: 'Successfully activated 2FA/TOTP'
+		});
 	}
 };
-
-// import { error, redirect } from '@sveltejs/kit';
-// import type { Actions } from './$types';
-// import { message } from 'sveltekit-superforms';
-// import type { ClientResponseError } from 'pocketbase';
-
-// export const actions: Actions = {
-// 	resetPassword: async ({ locals }) => {
-// 		const email = locals.user.email;
-
-// 		try {
-// 		await locals.pb.collection('users').requestPasswordReset(email);
-
-// 		} catch (e) {
-// 			const {status} = e as ClientResponseError
-// 			return message()
-// 		}
-
-// 		return redirect(303, '/settings/security?passwordReset=true');
-// 	}
-// };

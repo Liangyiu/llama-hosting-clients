@@ -111,5 +111,33 @@ export const rateLimiters = {
 		duration: 60, // Per second(s)
 		useRedisPackage: true,
 		keyPrefix: 'rl:password:reset' // must be unique for limiters with different purpose
+	}),
+	activateTotp: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1, // Number of points
+		duration: 10, // Per second(s)
+		useRedisPackage: true,
+		keyPrefix: 'rl:totp:activate' // must be unique for limiters with different purpose
+	}),
+	deactivateTotp: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1, // Number of points
+		duration: 10, // Per second(s)
+		useRedisPackage: true,
+		keyPrefix: 'rl:totp:deactivate' // must be unique for limiters with different purpose
+	}),
+	validateTotpCode: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1, // Number of points
+		duration: 5, // Per second(s)
+		useRedisPackage: true,
+		keyPrefix: 'rl:totp:validate' // must be unique for limiters with different purpose
+	}),
+	deactivateTotp: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1, // Number of points
+		duration: 10, // Per second(s)
+		useRedisPackage: true,
+		keyPrefix: 'rl:totp:deactivate' // must be unique for limiters with different purpose
 	})
 };
