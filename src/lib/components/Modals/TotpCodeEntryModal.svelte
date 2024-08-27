@@ -9,18 +9,8 @@
 
 	async function handleSubmit() {
 		if ($modalStore[0].response) {
-			const response = await fetch(`/api/account/totp/deactivate`, {
-				method: 'POST',
-				body: JSON.stringify({ totp_code: totpCode })
-			});
-
-			if (response.ok) {
-				$modalStore[0].response(true);
-				modalStore.close();
-			} else {
-				// todo show asides tooltip on error
-				$modalStore[0].response(false);
-			}
+			$modalStore[0].response({ confirmed: true, totp_code: totpCode });
+			modalStore.close();
 		}
 	}
 

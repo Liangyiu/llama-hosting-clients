@@ -6,12 +6,19 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { activateTotpSchema, deactivateTotpSchema } from '$lib/form-schemas.js';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { Control, Field } from 'formsnap';
-	import { getModalStore, type ModalComponent, type ModalSettings } from '@skeletonlabs/skeleton';
+	import {
+		getToastStore,
+		getModalStore,
+		type ModalComponent,
+		type ModalSettings,
+		type ToastSettings
+	} from '@skeletonlabs/skeleton';
 	import ActivateTotpModal from '$lib/components/Modals/ActivateTotpModal.svelte';
-	import TotpCodeEntryModal from '$lib/components/Modals/TotpCodeEntryModal.svelte';
+	import { Control, Field, FieldErrors } from 'formsnap';
+	import { Loader2 } from 'lucide-svelte';
 
 	const modalStore = getModalStore();
+	const toastStore = getToastStore();
 
 	export let data;
 
@@ -28,11 +35,55 @@
 		delayed: deactivateTotpFormDelayed
 	} = deactivateTotpForm;
 
+	let deactivateTotpFormElement: HTMLFormElement;
+	let totpCodeInput: HTMLInputElement;
+
+	deactivateTotpFormMessage.subscribe((m) => {
+		if (m) {
+			if (m.status === 200) {
+				$user.mfaTotp = false;
+				$user.mfaTotpSecretId = undefined;
+
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-success',
+					timeout: 5000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else if (m.status === 429) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else if (m.status === 498) {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					timeout: 8000
+				};
+
+				toastStore.trigger(toastConfig);
+			} else {
+				const toastConfig: ToastSettings = {
+					message: m.message,
+					background: 'variant-soft-error',
+					autohide: false
+				};
+
+				toastStore.trigger(toastConfig);
+			}
+		}
+	});
+
 	$: pwReset = $page.url.searchParams.get('passwordReset') === 'true';
 
 	const user = getUserState();
 
-	async function showActivateTotp() {
+	async function showActivateTotpModal() {
 		const modalComponent: ModalComponent = {
 			ref: ActivateTotpModal
 		};
@@ -57,25 +108,33 @@
 		}
 	}
 
-	async function showTotpTokenCheck() {
-		const modalComponent: ModalComponent = {
-			ref: TotpCodeEntryModal
-		};
+	interface TotpModalResponse {
+		confirmed: boolean;
+		totp_code: string;
+	}
 
-		const modalResponse = await new Promise<boolean>((resolve) => {
+	export async function showTotpEntryModal() {
+		const modalResponse = new Promise<TotpModalResponse>((resolve) => {
 			const modal: ModalSettings = {
 				type: 'component',
-				component: modalComponent,
-				response(r: boolean) {
+				component: 'totpEntryModal',
+				response(r: TotpModalResponse) {
 					resolve(r);
 				}
 			};
 			modalStore.trigger(modal);
 		});
 
-		if (modalResponse) {
-			$user.mfaTotp = false;
-			$user.mfaTotpSecretId = undefined;
+		return modalResponse;
+	}
+
+	async function showTotpTokenCheck() {
+		const { confirmed, totp_code } = await showTotpEntryModal();
+
+		if (confirmed) {
+			totpCodeInput.value = totp_code;
+			$deactivateTotpFormData.totp_code = totp_code;
+			deactivateTotpFormElement.requestSubmit();
 		}
 	}
 </script>
@@ -91,13 +150,39 @@
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				{#if $user.mfaTotp}
 					<div>
-						<button on:click={showTotpTokenCheck} class="btn variant-soft-error w-full"
-							>Deactivate 2FA/TOTP</button
+						<button on:click={showTotpTokenCheck} class="btn variant-soft-error w-full">
+							{#if $deactivateTotpFormDelayed}
+								<Loader2 class="size-6 animate-spin" />
+							{:else}
+								Deactivate 2FA/TOTP
+							{/if}
+						</button>
+					</div>
+
+					<div>
+						<form
+							bind:this={deactivateTotpFormElement}
+							action="/settings/security/?/deactivateTotp"
+							method="post"
+							use:deactivateTotpFormEnhance
 						>
+							<Field form={deactivateTotpForm} name="totp_code">
+								<Control>
+									<input
+										bind:this={totpCodeInput}
+										type="text"
+										name="totp_code"
+										class="hidden"
+										bind:value={$deactivateTotpFormData.totp_code}
+									/>
+								</Control>
+								<FieldErrors class="text-error-500" />
+							</Field>
+						</form>
 					</div>
 				{:else}
 					<div>
-						<button on:click={showActivateTotp} class="btn variant-soft-success w-full"
+						<button on:click={showActivateTotpModal} class="btn variant-soft-success w-full"
 							>Activate 2FA/TOTP</button
 						>
 					</div>

@@ -108,7 +108,7 @@
 			<form
 				class="p-4"
 				bind:this={formElement}
-				action="/settings/security/?/activate2fa"
+				action="/settings/security/?/activateTotp"
 				method="post"
 				use:enhance
 			>

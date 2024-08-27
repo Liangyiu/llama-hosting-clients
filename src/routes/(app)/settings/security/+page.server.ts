@@ -7,6 +7,7 @@ import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { TOTP } from 'otpauth';
 import { pbAdmin } from '$lib/server/pb-admin';
+import { validateTotpCode } from '$lib/server/totp';
 
 export const load = (async () => {
 	return {
@@ -18,6 +19,17 @@ export const load = (async () => {
 export const actions: Actions = {
 	resetPassword: async ({ request, locals }) => {
 		const { user } = locals;
+
+		if (!user) {
+			return new Response(
+				JSON.stringify({
+					message: 'Not authenticated'
+				}),
+				{
+					status: 401
+				}
+			);
+		}
 
 		const formData = await request.formData();
 		const email = formData.get('email')?.toString();
@@ -48,7 +60,7 @@ export const actions: Actions = {
 		await locals.pb.collection('users').requestPasswordReset(email);
 		return redirect(303, '/settings/security?passwordReset=true');
 	},
-	activate2fa: async (event) => {
+	activateTotp: async (event) => {
 		const {
 			locals: { pb, user }
 		} = event;
@@ -122,5 +134,71 @@ export const actions: Actions = {
 			status: 200,
 			message: 'Successfully activated 2FA/TOTP'
 		});
+	},
+	deactivateTotp: async (event) => {
+		const {
+			locals: { pb, user }
+		} = event;
+
+		const form = await superValidate(event, zod(deactivateTotpSchema));
+
+		if (!user) {
+			return fail(400, { form });
+		}
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		if (!user.mfa_totp) {
+			return message(form, {
+				status: 400,
+				message: '2FA/TOTP not activated'
+			});
+		}
+
+		const { success, timeRemaining } = await rateLimiters.deactivateTotp.limit(user.id);
+
+		if (!success) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
+			});
+		}
+
+		const {
+			message: returnMessage,
+			status,
+			success: successValidate
+		} = await validateTotpCode(user.mfa_totp_secret_id, form.data.totp_code);
+
+		if (successValidate) {
+			try {
+				await pb.from('users').update(user.id, {
+					mfa_totp: false,
+					mfa_totp_secret_id: undefined
+				});
+
+				await pbAdmin.from('user_mfa_totp_secrets').delete(user.mfa_totp_secret_id);
+
+				user.mfa_totp = false;
+				user.mfa_totp_secret_id = '';
+
+				return message(form, {
+					status,
+					message: '2FA/TOTP deactivated'
+				});
+			} catch {
+				return message(form, {
+					status: 500,
+					message: 'An error occurred while deactivating 2FA/TOTP'
+				});
+			}
+		} else {
+			return message(form, {
+				status,
+				message: returnMessage
+			});
+		}
 	}
 };
