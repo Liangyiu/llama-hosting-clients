@@ -1,7 +1,11 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import * as Sentry from '@sentry/sveltekit';
 import { browser, dev } from '$app/environment';
-import { PUBLIC_GLITCHTOP_DSN, PUBLIC_POCKETBASE_URL } from '$env/static/public';
+import {
+	PUBLIC_GLITCHTOP_DSN,
+	PUBLIC_POCKETBASE_URL,
+	PUBLIC_DEV_POCKETBASE_URL
+} from '$env/static/public';
 import { TypedPocketBase } from 'typed-pocketbase';
 import { redirect, type HandleServerError } from '@sveltejs/kit';
 import type { Schema } from '$lib/pocketbase/PB-Schema';
@@ -48,7 +52,7 @@ export const handle = sequence(Sentry.sentryHandle(), async function _handle({ e
 	// pb logic
 	const { locals, request, url } = event;
 
-	locals.pb = new TypedPocketBase<Schema>(dev ? 'http://127.0.0.1:8090' : PUBLIC_POCKETBASE_URL);
+	locals.pb = new TypedPocketBase<Schema>(dev ? PUBLIC_DEV_POCKETBASE_URL : PUBLIC_POCKETBASE_URL);
 
 	// load the store data from the request cookie string
 	locals.pb.authStore.loadFromCookie(request.headers.get('cookie') || '');
