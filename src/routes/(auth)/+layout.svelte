@@ -1,4 +1,9 @@
 <script lang="ts">
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
 <main class="mx-auto h-screen w-full max-w-lg content-center items-center space-y-4 p-4">
@@ -18,6 +23,6 @@
 	</div>
 
 	<div class="shadow-lg">
-		<slot />
+		{@render children?.()}
 	</div>
 </main>

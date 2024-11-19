@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import {
 		Accordion,
 		AccordionItem,
@@ -8,7 +10,8 @@
 	import type { ListResult } from 'pocketbase';
 	import KeyVaultItem from './KeyVaultItem.svelte';
 
-	export let sshKeysPage: ListResult<{
+	interface Props {
+		sshKeysPage: ListResult<{
 		collectionName: 'ssh_keys';
 		user: string;
 		public_key: string;
@@ -19,13 +22,19 @@
 		updated: string;
 		collectionId: string;
 	}>;
+	}
 
-	$: paginationSettings = {
-		page: sshKeysPage.page - 1,
-		limit: sshKeysPage.perPage,
-		size: sshKeysPage.totalItems,
-		amounts: [5, 10, 15, 20]
-	} satisfies PaginationSettings;
+	let { sshKeysPage }: Props = $props();
+
+	let paginationSettings;
+	run(() => {
+		paginationSettings = {
+			page: sshKeysPage.page - 1,
+			limit: sshKeysPage.perPage,
+			size: sshKeysPage.totalItems,
+			amounts: [5, 10, 15, 20]
+		} satisfies PaginationSettings;
+	});
 </script>
 
 {#if sshKeysPage.items.length === 0}
@@ -35,25 +44,29 @@
 		{#each sshKeysPage.items as keyData}
 			<Accordion class="rounded-[var(--theme-rounded-container)] variant-ghost-surface">
 				<AccordionItem>
-					<svelte:fragment slot="summary">
-						<span class="text-lg">
-							{keyData.key_name || 'undefined'}
-						</span>
-						{#if keyData.is_default}
-							<span class="ml-2 badge variant-filled-surface">default</span>
-						{/if}
-					</svelte:fragment>
-					<svelte:fragment slot="content">
-						<KeyVaultItem
-							{keyData}
-							on:defaultKeyAdded={() => {
-								keyData.is_default = true;
-							}}
-							on:defaultKeyRemoved={() => {
-								keyData.is_default = false;
-							}}
-						/>
-					</svelte:fragment>
+					{#snippet summary()}
+									
+							<span class="text-lg">
+								{keyData.key_name || 'undefined'}
+							</span>
+							{#if keyData.is_default}
+								<span class="ml-2 badge variant-filled-surface">default</span>
+							{/if}
+						
+									{/snippet}
+					{#snippet content()}
+									
+							<KeyVaultItem
+								{keyData}
+								on:defaultKeyAdded={() => {
+									keyData.is_default = true;
+								}}
+								on:defaultKeyRemoved={() => {
+									keyData.is_default = false;
+								}}
+							/>
+						
+									{/snippet}
 				</AccordionItem>
 			</Accordion>
 		{/each}

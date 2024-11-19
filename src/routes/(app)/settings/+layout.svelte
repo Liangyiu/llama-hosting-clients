@@ -1,5 +1,10 @@
 <script lang="ts">
 	import SettingsNav from '$lib/components/SettingsNav.svelte';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
 <div class="w-full md:grid md:grid-cols-4 variant-glass-surface rounded-lg">
@@ -7,6 +12,6 @@
 		<SettingsNav />
 	</div>
 	<div class="md:col-span-3 md:py-4 px-3 flex md:bg-surface-500/10 md:pt-4 pl-4">
-		<slot />
+		{@render children?.()}
 	</div>
 </div>

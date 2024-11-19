@@ -11,7 +11,8 @@
 	const modalStore = getModalStore();
 	const toastStore = getToastStore();
 
-	export let keyData: {
+	interface Props {
+		keyData: {
 		collectionName: string;
 		user: string;
 		public_key: string;
@@ -22,6 +23,9 @@
 		updated: string;
 		collectionId: string;
 	};
+	}
+
+	let { keyData = $bindable() }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 
@@ -143,7 +147,7 @@
 	<section class="p-2 space-y-2">
 		<div class="max-w-full overflow-x-scroll">
 			<div>
-				<textarea class="textarea" readonly rows="2" bind:value={keyData.public_key} />
+				<textarea class="textarea" readonly rows="2" bind:value={keyData.public_key}></textarea>
 			</div>
 		</div>
 		<div>
@@ -154,17 +158,17 @@
 				{#if keyData.is_default}
 					<button
 						class="btn btn-sm variant-filled-warning"
-						on:click={() => removeDefaultKey(keyData.id)}>Remove Default</button
+						onclick={() => removeDefaultKey(keyData.id)}>Remove Default</button
 					>
 				{:else}
 					<button
 						class="btn btn-sm variant-filled-surface"
-						on:click={() => addDefaultKey(keyData.id)}>Make Default</button
+						onclick={() => addDefaultKey(keyData.id)}>Make Default</button
 					>
 				{/if}
 			</div>
 			<div>
-				<button class="btn btn-sm variant-filled-error" on:click={() => removeKey(keyData.id)}
+				<button class="btn btn-sm variant-filled-error" onclick={() => removeKey(keyData.id)}
 					>Delete</button
 				>
 			</div>

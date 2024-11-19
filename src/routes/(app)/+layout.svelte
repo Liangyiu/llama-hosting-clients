@@ -2,7 +2,7 @@
 	import Navigation from '$lib/components/Navigation.svelte';
 	import { setUserState } from '$lib/stores/userStore';
 
-	export let data;
+	let { data, children } = $props();
 
 	if (data.user) {
 		setUserState({
@@ -32,7 +32,7 @@
 
 	<main class="h-full min-h-screen pt-[80px] lg:pl-56">
 		<div class="p-4 mx-auto max-w-[1450px] border h-full min-h-full md:h-full">
-			<slot />
+			{@render children?.()}
 		</div>
 	</main>
 </div>

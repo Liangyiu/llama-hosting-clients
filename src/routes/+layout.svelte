@@ -12,6 +12,11 @@
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	import TotpCodeEntryModal from '$lib/components/Modals/TotpCodeEntryModal.svelte';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -33,5 +38,5 @@
 <Toast />
 
 <div class="h-screen">
-	<slot />
+	{@render children?.()}
 </div>

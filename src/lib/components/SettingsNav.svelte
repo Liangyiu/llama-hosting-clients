@@ -11,10 +11,14 @@
 	<div class="md:hidden variant-ghost-surface rounded-t-lg w-full">
 		<Accordion>
 			<AccordionItem id="settings-accordion" regionControl="h5 font-semibold">
-				<svelte:fragment slot="summary">{$activeSettingsSection}</svelte:fragment>
-				<svelte:fragment slot="content">
-					<SettingsNavRoutes />
-				</svelte:fragment>
+				{#snippet summary()}
+								{$activeSettingsSection}
+							{/snippet}
+				{#snippet content()}
+							
+						<SettingsNavRoutes />
+					
+							{/snippet}
 			</AccordionItem>
 		</Accordion>
 	</div>
