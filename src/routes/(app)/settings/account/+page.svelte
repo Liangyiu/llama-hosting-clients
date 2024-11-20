@@ -155,15 +155,17 @@
 
 	const user = getUserState();
 
-	let initials =
-		$derived(($user.firstName.charAt(0).toUpperCase() || 'L') +
-		($user.lastName.charAt(0).toUpperCase() || 'L'));
+	let initials = $derived(
+		($user.firstName.charAt(0).toUpperCase() || 'L') +
+			($user.lastName.charAt(0).toUpperCase() || 'L')
+	);
 
-	let avatarUrl =
-		$derived($user.avatarUrl === ''
+	let avatarUrl = $derived(
+		$user.avatarUrl === ''
 			? `https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
-				initials
-			: `${$user.avatarUrl}?thumb=800x800`);
+					initials
+			: `${$user.avatarUrl}?thumb=800x800`
+	);
 
 	let customAvatarSet = $derived($user.avatarUrl !== '');
 
@@ -200,20 +202,18 @@
 						use:avatarFormEnhance
 					>
 						<Field form={avatarForm} name="avatar">
-							<Control >
-								{#snippet children({ attrs })}
-																<input
-										{...attrs}
-										type="file"
-										name="avatar"
-										id="avatarInput"
-										accept="image/png, image/jpeg"
-										bind:files={$avatarFile}
-										class="input w-full"
-										onchange={() => onFileSelected()}
-									/>
-																							{/snippet}
-														</Control>
+							<Control let:attrs>
+								<input
+									{...attrs}
+									type="file"
+									name="avatar"
+									id="avatarInput"
+									accept="image/png, image/jpeg"
+									bind:files={$avatarFile}
+									class="input w-full"
+									onchange={() => onFileSelected()}
+								/>
+							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>
 						{#if $avatarFile.length > 0}
@@ -252,9 +252,9 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="first_name">
-									<Control >
+									<Control>
 										{#snippet children({ attrs })}
-																				<div class="space-y-1">
+											<div class="space-y-1">
 												<Label asChild={true}>
 													<label class="label" for="first_name">
 														<span>First name</span>
@@ -268,40 +268,38 @@
 													class="input"
 												/>
 											</div>
-																													{/snippet}
-																		</Control>
+										{/snippet}
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="last_name">
-									<Control >
-										{#snippet children({ attrs })}
-																				<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="last_name">
-														<span>Last name</span>
-													</label>
-												</Label>
-												<input
-													{...attrs}
-													bind:value={$accountDetailsFormData.last_name}
-													id="last_name"
-													placeholder={$user.lastName}
-													class="input"
-												/>
-											</div>
-																													{/snippet}
-																		</Control>
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="last_name">
+													<span>Last name</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.last_name}
+												id="last_name"
+												placeholder={$user.lastName}
+												class="input"
+											/>
+										</div>
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 						</div>
 						<div>
 							<Field form={accountDetailsForm} name="address_line_one">
-								<Control >
+								<Control>
 									{#snippet children({ attrs })}
-																		<div class="space-y-1">
+										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="address_line_one">
 													<span>Address Line 1</span>
@@ -317,16 +315,16 @@
 												class="input"
 											/>
 										</div>
-																										{/snippet}
-																</Control>
+									{/snippet}
+								</Control>
 								<FieldErrors class="text-error-500" />
 							</Field>
 						</div>
 						<div>
 							<Field form={accountDetailsForm} name="address_line_two">
-								<Control >
+								<Control>
 									{#snippet children({ attrs })}
-																		<div class="space-y-1">
+										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="address_line_two">
 													<span>Address Line 2</span>
@@ -342,57 +340,53 @@
 												class="input"
 											/>
 										</div>
-																										{/snippet}
-																</Control>
+									{/snippet}
+								</Control>
 								<FieldErrors class="text-error-500" />
 							</Field>
 						</div>
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="address_postal_code">
-									<Control >
-										{#snippet children({ attrs })}
-																				<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="address_postal_code">
-														<span>Postal code</span>
-													</label>
-												</Label>
-												<input
-													{...attrs}
-													bind:value={$accountDetailsFormData.address_postal_code}
-													id="address_postal_code"
-													placeholder={$user.addressPostalCode !== ''
-														? $user.addressPostalCode
-														: 'e.g. 52066'}
-													class="input"
-												/>
-											</div>
-																													{/snippet}
-																		</Control>
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="address_postal_code">
+													<span>Postal code</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.address_postal_code}
+												id="address_postal_code"
+												placeholder={$user.addressPostalCode !== ''
+													? $user.addressPostalCode
+													: 'e.g. 52066'}
+												class="input"
+											/>
+										</div>
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="address_city">
-									<Control >
-										{#snippet children({ attrs })}
-																				<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="address_city">
-														<span>City</span>
-													</label>
-												</Label>
-												<input
-													{...attrs}
-													bind:value={$accountDetailsFormData.address_city}
-													id="address_city"
-													placeholder={$user.addressCity !== '' ? $user.addressCity : 'e.g. Aachen'}
-													class="input"
-												/>
-											</div>
-																													{/snippet}
-																		</Control>
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="address_city">
+													<span>City</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.address_city}
+												id="address_city"
+												placeholder={$user.addressCity !== '' ? $user.addressCity : 'e.g. Aachen'}
+												class="input"
+											/>
+										</div>
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
@@ -400,9 +394,9 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="address_state_province">
-									<Control >
+									<Control>
 										{#snippet children({ attrs })}
-																				<div class="space-y-1">
+											<div class="space-y-1">
 												<Label asChild={true}>
 													<label class="label" for="address_state_province">
 														<span>Province/State</span>
@@ -418,16 +412,16 @@
 													class="input"
 												/>
 											</div>
-																													{/snippet}
-																		</Control>
+										{/snippet}
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="address_country">
-									<Control >
+									<Control>
 										{#snippet children({ attrs })}
-																				<div class="space-y-1">
+											<div class="space-y-1">
 												<Label asChild={true}>
 													<label class="label" for="address_country">
 														<span>Country</span>
@@ -448,8 +442,8 @@
 													{/each}
 												</select>
 											</div>
-																													{/snippet}
-																		</Control>
+										{/snippet}
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
@@ -457,47 +451,43 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="vat_id">
-									<Control >
-										{#snippet children({ attrs })}
-																				<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="vat_id">
-														<span>VAT ID</span>
-													</label>
-												</Label>
-												<input
-													{...attrs}
-													bind:value={$accountDetailsFormData.vat_id}
-													id="vat_id"
-													placeholder={$user.vatId !== '' ? $user.vatId : 'optional'}
-													class="input"
-												/>
-											</div>
-																													{/snippet}
-																		</Control>
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="vat_id">
+													<span>VAT ID</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.vat_id}
+												id="vat_id"
+												placeholder={$user.vatId !== '' ? $user.vatId : 'optional'}
+												class="input"
+											/>
+										</div>
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="phone_number">
-									<Control >
-										{#snippet children({ attrs })}
-																				<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="phone_number">
-														<span>Phone number</span>
-													</label>
-												</Label>
-												<input
-													{...attrs}
-													bind:value={$accountDetailsFormData.phone_number}
-													id="phone_number"
-													placeholder={$user.phoneNumber !== '' ? $user.phoneNumber : 'optional'}
-													class="input"
-												/>
-											</div>
-																													{/snippet}
-																		</Control>
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="phone_number">
+													<span>Phone number</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.phone_number}
+												id="phone_number"
+												placeholder={$user.phoneNumber !== '' ? $user.phoneNumber : 'optional'}
+												class="input"
+											/>
+										</div>
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
@@ -521,23 +511,21 @@
 					<div class="space-y-4 md:space-y-6">
 						<div>
 							<Field form={changeEmailForm} name="email">
-								<Control >
-									{#snippet children({ attrs })}
-																		<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="email">
-													<span>New email</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$changeEmailFormData.email}
-												id="email"
-												class="input"
-											/>
-										</div>
-																										{/snippet}
-																</Control>
+								<Control let:attrs>
+									<div class="space-y-1">
+										<Label asChild={true}>
+											<label class="label" for="email">
+												<span>New email</span>
+											</label>
+										</Label>
+										<input
+											{...attrs}
+											bind:value={$changeEmailFormData.email}
+											id="email"
+											class="input"
+										/>
+									</div>
+								</Control>
 								<FieldErrors class="text-error-500" />
 							</Field>
 						</div>

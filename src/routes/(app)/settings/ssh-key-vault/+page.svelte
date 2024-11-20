@@ -6,7 +6,6 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import KeyVault from '$lib/components/KeyVault.svelte';
-	import { goto } from '$app/navigation';
 
 	const toastStore = getToastStore();
 
@@ -63,18 +62,6 @@
 			}
 		}
 	});
-
-	let vaultPage = 1;
-	let vaultAmount = 5;
-
-	function onPageChange(page: number) {
-		vaultPage = page + 1;
-		goto(`?page=${vaultPage}&pageSize=${vaultAmount}`);
-	}
-	function onAmountChange(amount: number) {
-		vaultAmount = amount;
-		goto(`?pageSize=${vaultAmount}`);
-	}
 </script>
 
 <div class="w-full">
@@ -91,47 +78,43 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={addSshKeyForm} name="public_key">
-									<Control >
-										{#snippet children({ attrs })}
-																				<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="public_key">
-														<span>Public Key</span>
-													</label>
-												</Label>
-												<input
-													{...attrs}
-													bind:value={$addSshKeyFormData.public_key}
-													id="public_key"
-													placeholder="e.g. ssh-ed25519 ..."
-													class="input"
-												/>
-											</div>
-																													{/snippet}
-																		</Control>
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="public_key">
+													<span>Public Key</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$addSshKeyFormData.public_key}
+												id="public_key"
+												placeholder="e.g. ssh-ed25519 ..."
+												class="input"
+											/>
+										</div>
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={addSshKeyForm} name="key_name">
-									<Control >
-										{#snippet children({ attrs })}
-																				<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="key_name">
-														<span>Key Description</span>
-													</label>
-												</Label>
-												<input
-													{...attrs}
-													bind:value={$addSshKeyFormData.key_name}
-													id="last_name"
-													placeholder="optional e.g. user (at) machine"
-													class="input"
-												/>
-											</div>
-																													{/snippet}
-																		</Control>
+									<Control let:attrs>
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="key_name">
+													<span>Key Description</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$addSshKeyFormData.key_name}
+												id="last_name"
+												placeholder="optional e.g. user (at) machine"
+												class="input"
+											/>
+										</div>
+									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
@@ -155,11 +138,7 @@
 						<Loader2 class="animate-spin size-12" />
 					</div>
 				{:then sshKeysPage}
-					<KeyVault
-						{sshKeysPage}
-						on:amount={(e) => onAmountChange(e.detail)}
-						on:page={(e) => onPageChange(e.detail)}
-					/>
+					<KeyVault {sshKeysPage} page={data.page} pageSize={data.pageSize} />
 				{:catch error}
 					<p>an error occurred</p>
 				{/await}

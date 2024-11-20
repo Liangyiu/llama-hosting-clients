@@ -52,6 +52,9 @@
 				toastStore.trigger(toastConfig);
 			} else if (m.status === 400 && m.message === 'Please enter your TOTP code') {
 				totpCodeRequired = true;
+				$formData.email = capturedFormData.email;
+				$formData.password = capturedFormData.password;
+				capturedFormData = { email: '', password: '' };
 			} else if (m.status === 400 && m.message === 'Invalid TOTP code') {
 				const toastConfig: ToastSettings = {
 					message: m.message,
@@ -83,14 +86,6 @@
 	let capturedFormData = $state({
 		email: '',
 		password: ''
-	});
-
-	run(() => {
-		if (totpCodeRequired) {
-			$formData.email = capturedFormData.email;
-			$formData.password = capturedFormData.password;
-			capturedFormData = { email: '', password: '' };
-		}
 	});
 
 	async function handleSubmit() {
@@ -155,55 +150,51 @@
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div>
 					<Field {form} name="email">
-						<Control >
-							{#snippet children({ attrs })}
-														<div class="space-y-1">
-									<Label asChild={true}>
-										<label class="label" for="email">
-											<span>Email</span>
-										</label>
-									</Label>
-									<input
-										{...attrs}
-										bind:value={$formData.email}
-										type="email"
-										id="email"
-										placeholder="name@example.com"
-										class="input"
-									/>
-								</div>
-																				{/snippet}
-												</Control>
+						<Control let:attrs>
+							<div class="space-y-1">
+								<Label asChild={true}>
+									<label class="label" for="email">
+										<span>Email</span>
+									</label>
+								</Label>
+								<input
+									{...attrs}
+									bind:value={$formData.email}
+									type="email"
+									id="email"
+									placeholder="name@example.com"
+									class="input"
+								/>
+							</div>
+						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>
 				</div>
 
 				<div>
 					<Field {form} name="password">
-						<Control >
-							{#snippet children({ attrs })}
-														<div class="space-y-1">
-									<Label asChild={true}>
-										<div class="flex items-center justify-between">
-											<label for="password" class="label">
-												<span>Password</span>
-											</label>
+						<Control let:attrs>
+							<div class="space-y-1">
+								<Label asChild={true}>
+									<div class="flex items-center justify-between">
+										<label for="password" class="label">
+											<span>Password</span>
+										</label>
 
-											<a href="/reset-password" class="text-sm font-medium anchor">Forgot password?</a
-											>
-										</div>
-									</Label>
-									<input
-										{...attrs}
-										type="password"
-										bind:value={$formData.password}
-										id="password"
-										class="input"
-										placeholder="•••••••••••••"
-									/>
-								</div>
-																				{/snippet}
-												</Control>
+										<a href="/reset-password" class="text-sm font-medium anchor">Forgot password?</a
+										>
+									</div>
+								</Label>
+								<input
+									{...attrs}
+									type="password"
+									bind:value={$formData.password}
+									id="password"
+									class="input"
+									placeholder="•••••••••••••"
+								/>
+							</div>
+						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>
 				</div>
@@ -211,25 +202,23 @@
 				{#if totpCodeRequired}
 					<div>
 						<Field {form} name="totp_code">
-							<Control >
-								{#snippet children({ attrs })}
-																<div class="space-y-1">
-										<Label asChild={true}>
-											<label class="label" for="totp_code">
-												<span>TOTP Code</span>
-											</label>
-										</Label>
-										<input
-											{...attrs}
-											bind:value={$formData.totp_code}
-											type="text"
-											id="totp_code"
-											placeholder="123456"
-											class="input"
-										/>
-									</div>
-																							{/snippet}
-														</Control>
+							<Control let:attrs>
+								<div class="space-y-1">
+									<Label asChild={true}>
+										<label class="label" for="totp_code">
+											<span>TOTP Code</span>
+										</label>
+									</Label>
+									<input
+										{...attrs}
+										bind:value={$formData.totp_code}
+										type="text"
+										id="totp_code"
+										placeholder="123456"
+										class="input"
+									/>
+								</div>
+							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>
 					</div>

@@ -71,25 +71,23 @@
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div>
 					<Field {form} name="email">
-						<Control >
-							{#snippet children({ attrs })}
-														<div class="space-y-1">
-									<Label asChild={true}>
-										<label class="label" for="email">
-											<span>Email</span>
-										</label>
-									</Label>
-									<input
-										{...attrs}
-										bind:value={$formData.email}
-										type="email"
-										id="email"
-										placeholder="name@example.com"
-										class="input"
-									/>
-								</div>
-																				{/snippet}
-												</Control>
+						<Control let:attrs>
+							<div class="space-y-1">
+								<Label asChild={true}>
+									<label class="label" for="email">
+										<span>Email</span>
+									</label>
+								</Label>
+								<input
+									{...attrs}
+									bind:value={$formData.email}
+									type="email"
+									id="email"
+									placeholder="name@example.com"
+									class="input"
+								/>
+							</div>
+						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>
 				</div>

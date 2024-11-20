@@ -12,6 +12,8 @@ export const load = (async ({ locals, url }) => {
 	const pageSize = parseInt(url.searchParams.get('pageSize') || '5');
 
 	return {
+		page,
+		pageSize,
 		sshKeyForm: await superValidate(zod(addSshKeySchema)),
 		sshKeysPagePromise: pb.from('ssh_keys').getList(page, pageSize, {
 			filter: eq('user', user.id),

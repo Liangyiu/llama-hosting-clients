@@ -9,7 +9,6 @@
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { Secret, TOTP } from 'otpauth';
 
-	
 	interface Props {
 		// expose parent props to comp
 		parent: SvelteComponent;
@@ -129,24 +128,22 @@
 					</Control>
 				</Field>
 				<Field form={activateTotpForm} name="totp_code">
-					<Control >
-						{#snippet children({ attrs })}
-												<Label asChild={true}>
-								<label class="label sr-only" for="totp_code">
-									<span>Code</span>
-								</label>
-							</Label>
-							<input
-								{...attrs}
-								class="input"
-								type="text"
-								name="totp_code"
-								id="totp_code"
-								bind:value={$formData.totp_code}
-								placeholder="Enter TOTP Code"
-							/>
-																	{/snippet}
-										</Control>
+					<Control let:attrs>
+						<Label asChild={true}>
+							<label class="label sr-only" for="totp_code">
+								<span>Code</span>
+							</label>
+						</Label>
+						<input
+							{...attrs}
+							class="input"
+							type="text"
+							name="totp_code"
+							id="totp_code"
+							bind:value={$formData.totp_code}
+							placeholder="Enter TOTP Code"
+						/>
+					</Control>
 					<FieldErrors class="text-error-500" />
 				</Field>
 			</form>
