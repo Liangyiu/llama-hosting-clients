@@ -14,9 +14,9 @@
 		placement: 'bottom'
 	};
 
-	$: initials =
-		($user.firstName.charAt(0).toUpperCase() || 'L') +
-		($user.lastName.charAt(0).toUpperCase() || 'L');
+	let initials =
+		$derived(($user.firstName.charAt(0).toUpperCase() || 'L') +
+		($user.lastName.charAt(0).toUpperCase() || 'L'));
 
 	async function logout() {
 		await fetch('/dashboard/?/logout', {
@@ -76,7 +76,7 @@
 		{#each links as { href, text }}
 			<button
 				class="hover:bg-surface-600/75 w-full text-left transition-colors"
-				on:click={() => goto(href)}
+				onclick={() => goto(href)}
 			>
 				<div class="flex items-center space-x-2 px-3 py-2">
 					<span>
@@ -89,7 +89,7 @@
 		<hr class="my-2" />
 		<button
 			class="hover:bg-surface-600/75 w-full px-3 text-left transition-colors py-2"
-			on:click={logout}
+			onclick={logout}
 		>
 			<div class="flex items-center space-x-2">
 				<span>Logout</span>

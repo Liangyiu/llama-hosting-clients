@@ -2,8 +2,13 @@
 	import type { SvelteComponent } from 'svelte';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 
-	// expose parent props to comp
-	export let parent: SvelteComponent;
+	
+	interface Props {
+		// expose parent props to comp
+		parent: SvelteComponent;
+	}
+
+	let { parent }: Props = $props();
 
 	const modalStore = getModalStore();
 
@@ -14,7 +19,7 @@
 		}
 	}
 
-	let totpCode = '';
+	let totpCode = $state('');
 
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
@@ -35,8 +40,8 @@
 
 		<!-- prettier-ignore -->
 		<footer class="modal-footer {parent.regionFooter}">
-			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-			<button class="btn {parent.buttonPositive}" on:click={handleSubmit}>{parent.buttonTextSubmit}</button>
+			<button class="btn {parent.buttonNeutral}" onclick={parent.onClose}>{parent.buttonTextCancel}</button>
+			<button class="btn {parent.buttonPositive}" onclick={handleSubmit}>{parent.buttonTextSubmit}</button>
 		</footer>
 	</div>
 {/if}

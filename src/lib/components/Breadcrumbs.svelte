@@ -1,5 +1,9 @@
 <script lang="ts">
-	export let pathname: string;
+	interface Props {
+		pathname: string;
+	}
+
+	let { pathname }: Props = $props();
 
 	const crumbs = pathname.split('/').filter((crumb) => crumb !== '');
 

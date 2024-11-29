@@ -9,8 +9,12 @@
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { Secret, TOTP } from 'otpauth';
 
-	// expose parent props to comp
-	export let parent: SvelteComponent;
+	interface Props {
+		// expose parent props to comp
+		parent: SvelteComponent;
+	}
+
+	let { parent }: Props = $props();
 
 	const modalStore = getModalStore();
 	const toastStore = getToastStore();
@@ -72,8 +76,8 @@
 	});
 
 	// Form Element
-	let formElement: HTMLFormElement;
-	let secretInput: HTMLInputElement;
+	let formElement: HTMLFormElement = $state();
+	let secretInput: HTMLInputElement = $state();
 
 	// custom form submit function
 	function onFormSubmit(): void {
@@ -147,8 +151,8 @@
 
 		<!-- prettier-ignore -->
 		<footer class="modal-footer {parent.regionFooter}">
-			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-			<button class="btn {parent.buttonPositive}" on:click={onFormSubmit}>{parent.buttonTextSubmit}</button>
+			<button class="btn {parent.buttonNeutral}" onclick={parent.onClose}>{parent.buttonTextCancel}</button>
+			<button class="btn {parent.buttonPositive}" onclick={onFormSubmit}>{parent.buttonTextSubmit}</button>
 		</footer>
 	</div>
 {/if}

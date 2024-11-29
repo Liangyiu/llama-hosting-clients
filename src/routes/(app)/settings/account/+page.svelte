@@ -12,7 +12,7 @@
 
 	const toastStore = getToastStore();
 
-	export let data;
+	let { data } = $props();
 
 	const changeEmailForm = superForm(data.emailChangeForm, {
 		validators: zodClient(changeEmailSchema)
@@ -141,7 +141,7 @@
 
 	const avatarFile = fileProxy(avatarFormData, 'avatar');
 
-	let avatar: string | undefined = undefined;
+	let avatar: string | undefined = $state(undefined);
 
 	function onFileSelected() {
 		const image = $avatarFile[0];
@@ -155,17 +155,19 @@
 
 	const user = getUserState();
 
-	$: initials =
+	let initials = $derived(
 		($user.firstName.charAt(0).toUpperCase() || 'L') +
-		($user.lastName.charAt(0).toUpperCase() || 'L');
+			($user.lastName.charAt(0).toUpperCase() || 'L')
+	);
 
-	$: avatarUrl =
+	let avatarUrl = $derived(
 		$user.avatarUrl === ''
 			? `https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
-				initials
-			: `${$user.avatarUrl}?thumb=800x800`;
+					initials
+			: `${$user.avatarUrl}?thumb=800x800`
+	);
 
-	$: customAvatarSet = $user.avatarUrl !== '';
+	let customAvatarSet = $derived($user.avatarUrl !== '');
 
 	accountDetailsFormData.set({
 		first_name: $user.firstName,
@@ -209,7 +211,7 @@
 									accept="image/png, image/jpeg"
 									bind:files={$avatarFile}
 									class="input w-full"
-									on:change={() => onFileSelected()}
+									onchange={() => onFileSelected()}
 								/>
 							</Control>
 							<FieldErrors class="text-error-500" />
@@ -250,21 +252,23 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="first_name">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="first_name">
-													<span>First name</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.first_name}
-												id="first_name"
-												placeholder={$user.firstName}
-												class="input"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ attrs })}
+											<div class="space-y-1">
+												<Label asChild={true}>
+													<label class="label" for="first_name">
+														<span>First name</span>
+													</label>
+												</Label>
+												<input
+													{...attrs}
+													bind:value={$accountDetailsFormData.first_name}
+													id="first_name"
+													placeholder={$user.firstName}
+													class="input"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
@@ -293,46 +297,50 @@
 						</div>
 						<div>
 							<Field form={accountDetailsForm} name="address_line_one">
-								<Control let:attrs>
-									<div class="space-y-1">
-										<Label asChild={true}>
-											<label class="label" for="address_line_one">
-												<span>Address Line 1</span>
-											</label>
-										</Label>
-										<input
-											{...attrs}
-											bind:value={$accountDetailsFormData.address_line_one}
-											id="address_line_one"
-											placeholder={$user.addressLineOne !== ''
-												? $user.addressLineOne
-												: 'e.g. Example Street 5'}
-											class="input"
-										/>
-									</div>
+								<Control>
+									{#snippet children({ attrs })}
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="address_line_one">
+													<span>Address Line 1</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.address_line_one}
+												id="address_line_one"
+												placeholder={$user.addressLineOne !== ''
+													? $user.addressLineOne
+													: 'e.g. Example Street 5'}
+												class="input"
+											/>
+										</div>
+									{/snippet}
 								</Control>
 								<FieldErrors class="text-error-500" />
 							</Field>
 						</div>
 						<div>
 							<Field form={accountDetailsForm} name="address_line_two">
-								<Control let:attrs>
-									<div class="space-y-1">
-										<Label asChild={true}>
-											<label class="label" for="address_line_two">
-												<span>Address Line 2</span>
-											</label>
-										</Label>
-										<input
-											{...attrs}
-											bind:value={$accountDetailsFormData.address_line_two}
-											id="address_line_two"
-											placeholder={$user.addressLineTwo !== ''
-												? $user.addressLineTwo
-												: 'e.g. Apt. 123'}
-											class="input"
-										/>
-									</div>
+								<Control>
+									{#snippet children({ attrs })}
+										<div class="space-y-1">
+											<Label asChild={true}>
+												<label class="label" for="address_line_two">
+													<span>Address Line 2</span>
+												</label>
+											</Label>
+											<input
+												{...attrs}
+												bind:value={$accountDetailsFormData.address_line_two}
+												id="address_line_two"
+												placeholder={$user.addressLineTwo !== ''
+													? $user.addressLineTwo
+													: 'e.g. Apt. 123'}
+												class="input"
+											/>
+										</div>
+									{/snippet}
 								</Control>
 								<FieldErrors class="text-error-500" />
 							</Field>
@@ -386,51 +394,55 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="address_state_province">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_state_province">
-													<span>Province/State</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.address_state_province}
-												id="address_state_province"
-												placeholder={$user.addressStateProvince !== ''
-													? $user.addressStateProvince
-													: 'e.g. North Rhine-Westphalia'}
-												class="input"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ attrs })}
+											<div class="space-y-1">
+												<Label asChild={true}>
+													<label class="label" for="address_state_province">
+														<span>Province/State</span>
+													</label>
+												</Label>
+												<input
+													{...attrs}
+													bind:value={$accountDetailsFormData.address_state_province}
+													id="address_state_province"
+													placeholder={$user.addressStateProvince !== ''
+														? $user.addressStateProvince
+														: 'e.g. North Rhine-Westphalia'}
+													class="input"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="address_country">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_country">
-													<span>Country</span>
-												</label>
-											</Label>
-											<select
-												{...attrs}
-												id="address_country"
-												class="select"
-												bind:value={$accountDetailsFormData.address_country}
-											>
-												{#each supportedCountries as country}
-													{#if $user.addressCountry === country}
-														<option selected value={country}>{country}</option>
-													{:else}
-														<option value={country}>{country}</option>
-													{/if}
-												{/each}
-											</select>
-										</div>
+									<Control>
+										{#snippet children({ attrs })}
+											<div class="space-y-1">
+												<Label asChild={true}>
+													<label class="label" for="address_country">
+														<span>Country</span>
+													</label>
+												</Label>
+												<select
+													{...attrs}
+													id="address_country"
+													class="select"
+													bind:value={$accountDetailsFormData.address_country}
+												>
+													{#each supportedCountries as country}
+														{#if $user.addressCountry === country}
+															<option selected value={country}>{country}</option>
+														{:else}
+															<option value={country}>{country}</option>
+														{/if}
+													{/each}
+												</select>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
