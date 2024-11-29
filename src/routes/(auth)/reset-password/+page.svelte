@@ -10,7 +10,7 @@
 
 	const toastStore = getToastStore();
 
-	export let data;
+	let { data } = $props();
 
 	const form = superForm(data.form, {
 		validators: zodClient(resetPasswordSchema)

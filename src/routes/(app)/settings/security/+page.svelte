@@ -20,7 +20,7 @@
 	const modalStore = getModalStore();
 	const toastStore = getToastStore();
 
-	export let data;
+	let { data } = $props();
 
 	const { activateTotp, deactivateTotp } = data;
 
@@ -35,8 +35,8 @@
 		delayed: deactivateTotpFormDelayed
 	} = deactivateTotpForm;
 
-	let deactivateTotpFormElement: HTMLFormElement;
-	let totpCodeInput: HTMLInputElement;
+	let deactivateTotpFormElement: HTMLFormElement = $state();
+	let totpCodeInput: HTMLInputElement = $state();
 
 	deactivateTotpFormMessage.subscribe((m) => {
 		if (m) {
@@ -79,7 +79,7 @@
 		}
 	});
 
-	$: pwReset = $page.url.searchParams.get('passwordReset') === 'true';
+	let pwReset = $derived($page.url.searchParams.get('passwordReset') === 'true');
 
 	const user = getUserState();
 
@@ -150,7 +150,7 @@
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				{#if $user.mfaTotp}
 					<div>
-						<button on:click={showTotpTokenCheck} class="btn variant-soft-error w-full">
+						<button onclick={showTotpTokenCheck} class="btn variant-soft-error w-full">
 							{#if $deactivateTotpFormDelayed}
 								<Loader2 class="size-6 animate-spin" />
 							{:else}
@@ -182,7 +182,7 @@
 					</div>
 				{:else}
 					<div>
-						<button on:click={showActivateTotpModal} class="btn variant-soft-success w-full"
+						<button onclick={showActivateTotpModal} class="btn variant-soft-success w-full"
 							>Activate 2FA/TOTP</button
 						>
 					</div>

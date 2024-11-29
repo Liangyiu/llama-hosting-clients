@@ -7,11 +7,22 @@
 
 	const drawerStore = getDrawerStore();
 
-	export let label: string;
-	export let icon: ComponentType<Icon>;
-	export let href: string;
-	export let href2: string;
-	$: isActive = $page.url.pathname.includes(href) || $page.url.pathname.includes(href2);
+	interface Props {
+		label: string;
+		icon: ComponentType<Icon>;
+		href: string;
+		href2: string;
+	}
+
+	let {
+		label,
+		icon,
+		href,
+		href2
+	}: Props = $props();
+	let isActive = $derived($page.url.pathname.includes(href) || $page.url.pathname.includes(href2));
+
+	const SvelteComponent = $derived(icon);
 </script>
 
 <a
@@ -22,11 +33,10 @@
 			'text-secondary-500-400-token': isActive
 		}
 	)}
-	on:click={() => drawerStore.close()}
+	onclick={() => drawerStore.close()}
 >
 	<div class="flex items-center gap-x-2 py-4">
-		<svelte:component
-			this={icon}
+		<SvelteComponent
 			class={cn('text-muted-foreground', {
 				'text-primary': isActive
 			})}

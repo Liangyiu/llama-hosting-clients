@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { focusTrap, LightSwitch, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
@@ -11,7 +13,11 @@
 
 	const toastStore = getToastStore();
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 	let newUser = $page.url.searchParams.get('new_user');
 	let loggedOut = $page.url.searchParams.get('logout');
 
@@ -20,11 +26,11 @@
 	});
 	const { form: formData, enhance, message, delayed } = form;
 
-	let formElement: HTMLFormElement;
+	let formElement: HTMLFormElement = $state();
 
 	let isFocused: boolean = true;
 
-	let totpCodeRequired: boolean = false;
+	let totpCodeRequired: boolean = $state(false);
 
 	message.subscribe((m) => {
 		if (m) {
@@ -46,6 +52,9 @@
 				toastStore.trigger(toastConfig);
 			} else if (m.status === 400 && m.message === 'Please enter your TOTP code') {
 				totpCodeRequired = true;
+				$formData.email = capturedFormData.email;
+				$formData.password = capturedFormData.password;
+				capturedFormData = { email: '', password: '' };
 			} else if (m.status === 400 && m.message === 'Invalid TOTP code') {
 				const toastConfig: ToastSettings = {
 					message: m.message,
@@ -74,18 +83,10 @@
 		}
 	});
 
-	let capturedFormData = {
+	let capturedFormData = $state({
 		email: '',
 		password: ''
-	};
-
-	$: {
-		if (totpCodeRequired) {
-			$formData.email = capturedFormData.email;
-			$formData.password = capturedFormData.password;
-			capturedFormData = { email: '', password: '' };
-		}
-	}
+	});
 
 	async function handleSubmit() {
 		capturedFormData.email = $formData.email;
@@ -225,7 +226,7 @@
 			</div>
 		</form>
 
-		<button class="w-full btn variant-filled" on:click={handleSubmit}>
+		<button class="w-full btn variant-filled" onclick={handleSubmit}>
 			{#if $delayed}
 				<Loader2 class="size-6 animate-spin" />
 			{:else if totpCodeRequired}
@@ -241,7 +242,7 @@
 </div>
 
 <svelte:window
-	on:keydown={(e) => {
+	onkeydown={(e) => {
 		if (e.key === 'Enter') handleSubmit();
 	}}
 />

@@ -1,28 +1,13 @@
 import { REDIS_URI } from '$env/static/private';
 import { RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import { createClient } from 'redis';
-import * as Sentry from '@sentry/sveltekit';
-import { PUBLIC_GLITCHTOP_DSN } from '$env/static/public';
-import { dev } from '$app/environment';
 
 const redis = createClient({
 	url: REDIS_URI
 });
 
-Sentry.init({
-	environment: dev ? 'development' : 'production',
-	dsn: PUBLIC_GLITCHTOP_DSN,
-	tracesSampleRate: 1
-});
-
 redis.on('error', (err) => {
-	Sentry.captureException(err, {
-		contexts: {
-			redis: {
-				time: new Date().toUTCString()
-			}
-		}
-	});
+	console.log('Redis Client Error:\n', err);
 });
 
 if (!redis.isOpen) {

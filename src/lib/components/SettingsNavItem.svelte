@@ -5,16 +5,20 @@
 	import { activeSettingsSection } from '$lib/stores/stores';
 	import { cn } from '$lib/utils';
 
-	export let label: string;
-	export let href: string;
-	$: pathname = $page.url.pathname;
-	$: isActive = pathname.includes(href);
+	interface Props {
+		label: string;
+		href: string;
+	}
 
-	$: settingsAccordion = browser ? document.getElementById('settings-accordion') : null;
+	let { label, href }: Props = $props();
+	let pathname = $derived($page.url.pathname);
+	let isActive = $derived(pathname.includes(href));
+
+	let settingsAccordion = $derived(browser ? document.getElementById('settings-accordion') : null);
 </script>
 
 <a
-	on:click={() => {
+	onclick={() => {
 		settingsAccordion?.click();
 
 		activeSettingsSection.set(label);

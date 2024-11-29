@@ -1,11 +1,11 @@
 import { dev } from '$app/environment';
 import { SECRET_POCKETBASE_EMAIL, SECRET_POCKETBASE_PW } from '$env/static/private';
-import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+import { PUBLIC_POCKETBASE_URL, PUBLIC_DEV_POCKETBASE_URL } from '$env/static/public';
 import type { Schema } from '$lib/pocketbase/PB-Schema';
 import { TypedPocketBase } from 'typed-pocketbase';
 
 export const pbAdmin = new TypedPocketBase<Schema>(
-	dev ? 'http://127.0.0.1:8090' : PUBLIC_POCKETBASE_URL
+	dev ? PUBLIC_DEV_POCKETBASE_URL : PUBLIC_POCKETBASE_URL
 );
 
 pbAdmin.autoCancellation(false);

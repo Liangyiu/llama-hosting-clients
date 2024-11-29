@@ -9,7 +9,7 @@
 
 	const toastStore = getToastStore();
 
-	export let data;
+	let { data } = $props();
 
 	const form = superForm(data.form, {
 		validators: zodClient(registerSchema)
@@ -182,7 +182,8 @@
 								<Label asChild={true}>
 									<label for="accept_terms" class="label">
 										<p>
-											I accept the <a href="/terms-of-service" class="anchor">terms of service</a> &
+											I accept the <a href="/terms-of-service" class="anchor">terms of service</a>
+											&
 											<a href="/privacy-policy" class="anchor">privacy policy</a>
 										</p>
 									</label>

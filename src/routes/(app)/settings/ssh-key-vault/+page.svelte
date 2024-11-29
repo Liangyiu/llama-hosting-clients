@@ -6,11 +6,10 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import KeyVault from '$lib/components/KeyVault.svelte';
-	import { goto } from '$app/navigation';
 
 	const toastStore = getToastStore();
 
-	export let data;
+	let { data } = $props();
 
 	const addSshKeyForm = superForm(data.sshKeyForm, {
 		validators: zodClient(addSshKeySchema)
@@ -63,18 +62,6 @@
 			}
 		}
 	});
-
-	let vaultPage = 1;
-	let vaultAmount = 5;
-
-	function onPageChange(page: number) {
-		vaultPage = page + 1;
-		goto(`?page=${vaultPage}&pageSize=${vaultAmount}`);
-	}
-	function onAmountChange(amount: number) {
-		vaultAmount = amount;
-		goto(`?pageSize=${vaultAmount}`);
-	}
 </script>
 
 <div class="w-full">
@@ -151,11 +138,7 @@
 						<Loader2 class="animate-spin size-12" />
 					</div>
 				{:then sshKeysPage}
-					<KeyVault
-						{sshKeysPage}
-						on:amount={(e) => onAmountChange(e.detail)}
-						on:page={(e) => onPageChange(e.detail)}
-					/>
+					<KeyVault {sshKeysPage} page={data.page} pageSize={data.pageSize} />
 				{:catch error}
 					<p>an error occurred</p>
 				{/await}
