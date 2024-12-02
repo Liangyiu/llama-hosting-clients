@@ -2,7 +2,7 @@
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { activeSettingsSection } from '$lib/stores/stores';
+	import { activeSettingsSection } from '$lib/stores/stores.svelte';
 	import { cn } from '$lib/utils';
 
 	interface Props {
@@ -24,9 +24,9 @@
 		activeSettingsSection.set(label);
 	}}
 	class={cn(
-		'flex items-center transition-all hover:text-secondary-500-400-token hover:bg-surface-hover-token',
+		'flex items-center transition-all hover:text-secondary-600-400 hover:bg-surface-hover',
 		{
-			'text-secondary-500-400-token bg-surface-500/20 md:bg-surface-500/10': isActive
+			'text-secondary-600-400 bg-surface-500/20 md:bg-surface-500/10': isActive
 		}
 	)}
 	{href}

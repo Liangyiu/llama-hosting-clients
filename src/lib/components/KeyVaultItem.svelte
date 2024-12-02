@@ -2,7 +2,7 @@
 	let { keyData = $bindable(), addDefaultKey, removeDefaultKey, deleteKey } = $props();
 </script>
 
-<div class="p-4 card variant-ghost-surface">
+<div class="p-4 card preset-ghost-surface">
 	<header>
 		<h6 class="h6">Public Key</h6>
 	</header>
@@ -19,18 +19,17 @@
 			<div>
 				{#if keyData.is_default}
 					<button
-						class="btn btn-sm variant-filled-warning"
+						class="btn btn-sm preset-filled-warning"
 						onclick={() => removeDefaultKey(keyData.id)}>Remove Default</button
 					>
 				{:else}
-					<button
-						class="btn btn-sm variant-filled-surface"
-						onclick={() => addDefaultKey(keyData.id)}>Make Default</button
+					<button class="btn btn-sm preset-filled-surface" onclick={() => addDefaultKey(keyData.id)}
+						>Make Default</button
 					>
 				{/if}
 			</div>
 			<div>
-				<button class="btn btn-sm variant-filled-error" onclick={() => deleteKey(keyData.id)}
+				<button class="btn btn-sm preset-filled-error" onclick={() => deleteKey(keyData.id)}
 					>Delete</button
 				>
 			</div>

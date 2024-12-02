@@ -3,13 +3,15 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { registerSchema } from '$lib/form-schemas';
 	import { CircleAlertIcon, Loader2 } from 'lucide-svelte';
-	import { focusTrap, LightSwitch, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { focusTrap } from '@skeletonlabs/skeleton';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
-	import { getToastStore } from '@skeletonlabs/skeleton';
-
-	const toastStore = getToastStore();
+	import LightSwitch from '$lib/components/LightSwitch.svelte';
+	import { getContext } from 'svelte';
+	import type { ToastContext } from '@skeletonlabs/skeleton-svelte';
 
 	let { data } = $props();
+
+	const toast: ToastContext = getContext('toast');
 
 	const form = superForm(data.form, {
 		validators: zodClient(registerSchema)
@@ -22,21 +24,19 @@
 	message.subscribe((m) => {
 		if (m) {
 			if (m.message === 'Email already in use or not yet verified') {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else if (m.message === 'An error occurred during the registration process') {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			}
 		}
 	});
@@ -195,7 +195,7 @@
 				</div>
 			</div>
 
-			<button type="submit" class="w-full btn variant-filled">
+			<button type="submit" class="w-full btn preset-filled">
 				{#if $delayed}
 					<Loader2 class="size-6 animate-spin" />
 				{:else}

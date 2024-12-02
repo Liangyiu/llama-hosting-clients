@@ -1,13 +1,14 @@
-<script lang="ts">
-	import type { SvelteComponent } from 'svelte';
+<!-- <script lang="ts">
+	import { getContext, type SvelteComponent } from 'svelte';
 	import QRCode from '@castlenine/svelte-qrcode';
 
-	import { getModalStore, type ToastSettings, getToastStore } from '@skeletonlabs/skeleton';
+	// import { getModalStore } from '@skeletonlabs/skeleton';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { activateTotpSchema } from '$lib/form-schemas';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { Secret, TOTP } from 'otpauth';
+	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
 
 	interface Props {
 		// expose parent props to comp
@@ -16,61 +17,60 @@
 
 	let { parent }: Props = $props();
 
-	const modalStore = getModalStore();
-	const toastStore = getToastStore();
+	const toast: ToastContext = getContext('toast');
+
+	// const modalStore = getModalStore();
 
 	const TotpSecret = new Secret({ size: 32 });
 
-	const totp = new TOTP({
-		issuer: 'llama hosting',
-		label: $modalStore[0].meta.user.email,
-		secret: TotpSecret,
-		digits: 6,
-		period: 30,
-		algorithm: 'SHA1'
-	});
+	// const totp = new TOTP({
+	// 	issuer: 'llama hosting',
+	// 	label: $modalStore[0].meta.user.email,
+	// 	secret: TotpSecret,
+	// 	digits: 6,
+	// 	period: 30,
+	// 	algorithm: 'SHA1'
+	// });
 
-	const { activateTotp } = $modalStore[0].meta;
+	// const { activateTotp } = $modalStore[0].meta;
 
-	const activateTotpForm = superForm(activateTotp, {
-		validators: zodClient(activateTotpSchema)
-	});
+	// const activateTotpForm = superForm(activateTotp, {
+	// 	validators: zodClient(activateTotpSchema)
+	// });
 
 	const { form: formData, enhance, message, delayed } = activateTotpForm;
 
 	message.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-success',
-					timeout: 5000
-				};
+				toast.create({
+					title: 'Success',
+					description: m.message,
+					type: 'success',
+					duration: 5000
+				});
 
-				toastStore.trigger(toastConfig);
+				// if ($modalStore[0].response) {
+				// 	$modalStore[0].response(true);
+				// }
 
-				if ($modalStore[0].response) {
-					$modalStore[0].response(true);
-				}
-
-				modalStore.close();
+				// modalStore.close();
 			} else if (m.status === 400) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 5000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 5000
+				});
 			} else if (m.status === 429) {
+				//TODO: handle rate limit
 			} else {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 5000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 5000
+				});
 			}
 		}
 	});
@@ -80,26 +80,26 @@
 	let secretInput: HTMLInputElement = $state();
 
 	// custom form submit function
-	function onFormSubmit(): void {
-		if ($modalStore[0].response) {
-			secretInput.value = TotpSecret.base32;
-			formElement.requestSubmit();
-		}
-	}
+	// function onFormSubmit(): void {
+	// 	if ($modalStore[0].response) {
+	// 		secretInput.value = TotpSecret.base32;
+	// 		formElement.requestSubmit();
+	// 	}
+	// }
 
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
 	const cHeader = 'text-2xl font-bold';
 </script>
 
-{#if $modalStore[0]}
+<!-- {#if $modalStore[0]}
 	<div class="modal-activate-totp {cBase}">
 		<header class={cHeader}>Activate 2FA/TOTP</header>
 		<article>
 			Scan the QR code below or enter the secret into your preferred authenticator app.
 		</article>
 
-		<div class="border border-surface-500 p-4 space-y-4 rounded-container-token">
+		<div class="border border-surface-500 p-4 space-y-4 rounded-container">
 			<div class="flex-row justify-center space-y-4 p-4">
 				<div class="flex justify-center">
 					<QRCode data={totp.toString()} />
@@ -149,10 +149,10 @@
 			</form>
 		</div>
 
-		<!-- prettier-ignore -->
 		<footer class="modal-footer {parent.regionFooter}">
 			<button class="btn {parent.buttonNeutral}" onclick={parent.onClose}>{parent.buttonTextCancel}</button>
 			<button class="btn {parent.buttonPositive}" onclick={onFormSubmit}>{parent.buttonTextSubmit}</button>
 		</footer>
 	</div>
-{/if}
+{/if}-->
+-->
