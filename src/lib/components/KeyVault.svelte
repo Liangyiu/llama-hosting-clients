@@ -1,19 +1,33 @@
 <script lang="ts">
-	import {
-		Accordion,
-		AccordionItem,
-		getModalStore,
-		getToastStore,
-		Paginator,
-		type ModalSettings,
-		type ToastSettings
-	} from '@skeletonlabs/skeleton';
+	// import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
+
+	import IconArrowLeft from 'lucide-svelte/icons/arrow-left';
+	import IconArrowRight from 'lucide-svelte/icons/arrow-right';
+	import IconEllipsis from 'lucide-svelte/icons/ellipsis';
+	import IconFirst from 'lucide-svelte/icons/chevrons-left';
+	import IconLast from 'lucide-svelte/icons/chevron-right';
+
+	import { Accordion, Modal, Pagination, type ToastContext } from '@skeletonlabs/skeleton-svelte';
 	import type { ListResult } from 'pocketbase';
 	import KeyVaultItem from './KeyVaultItem.svelte';
-	import { goto } from '$app/navigation';
 
-	const modalStore = getModalStore();
-	const toastStore = getToastStore();
+	// const modalStore = getModalStore();
+
+	let modalSettings = {
+		title: '',
+		description: ''
+	};
+
+	let modalConfirmed = $state(false);
+
+	let modalOpenState = $state(false);
+
+	function closeModal() {
+		modalOpenState = false;
+	}
+
+	import { getContext } from 'svelte';
+	const toast: ToastContext = getContext('toast');
 
 	interface Props {
 		sshKeysPage: ListResult<{
@@ -35,27 +49,31 @@
 
 	let sshKeys = $state(sshKeysPage.items);
 
-	let paginationSettings = {
-		page: page - 1,
-		limit: pageSize,
-		size: sshKeysPage.totalItems,
-		amounts: [5, 10, 15, 20]
-	};
+	// let paginationSettings = {
+	// 	page: page - 1,
+	// 	limit: pageSize,
+	// 	size: sshKeysPage.totalItems,
+	// 	amounts: [5, 10, 15, 20]
+	// };
 
 	async function addDefaultKey(id: string, index: number) {
-		const confirmed = new Promise<boolean>((resolve) => {
-			const modal: ModalSettings = {
-				type: 'confirm',
-				title: 'Please Confirm',
-				body: 'Are you sure you wish to proceed? Having a default key will deactivate password login for the root user on new KVM servers.',
-				response: (r: boolean) => {
-					resolve(r);
-				}
-			};
-			modalStore.trigger(modal);
-		});
+		modalSettings.title = 'Please Confirm';
+		modalSettings.description =
+			'Are you sure you wish to proceed? Having a default key will deactivate password login for the root user on new KVM servers.';
 
-		if (!(await confirmed)) return;
+		// const confirmed = new Promise<boolean>((resolve) => {
+		// 	const modal: ModalSettings = {
+		// 		type: 'confirm',
+		// 		title: 'Please Confirm',
+		// 		body: 'Are you sure you wish to proceed? Having a default key will deactivate password login for the root user on new KVM servers.',
+		// 		response: (r: boolean) => {
+		// 			resolve(r);
+		// 		}
+		// 	};
+		// 	modalStore.trigger(modal);
+		// });
+
+		// if (!(await confirmed)) return;
 
 		const response = await fetch(`/api/account/key-vault/add-default/${id}`, {
 			method: 'PUT'
@@ -66,36 +84,36 @@
 			updatedSshKey.is_default = true;
 			sshKeys[index] = updatedSshKey;
 		} else {
-			const toastConfig: ToastSettings = {
-				message: '',
-				background: 'variant-soft-error',
-				timeout: 8000
-			};
+			let message = '';
 
 			if (response.status === 403) {
-				toastConfig.message = 'Limit-Error: Maximum number of default SSH keys reached (5)';
+				message = 'Limit-Error: Maximum number of default SSH keys reached (5)';
 			} else {
-				toastConfig.message = 'Error: Failed to add default SSH key. Try again later';
+				message = 'Error: Failed to add default SSH key. Try again later';
 			}
 
-			toastStore.trigger(toastConfig);
+			toast.create({
+				title: 'Error',
+				description: message,
+				type: 'error'
+			});
 		}
 	}
 
 	async function removeDefaultKey(id: string, index: number) {
-		const confirmed = new Promise<boolean>((resolve) => {
-			const modal: ModalSettings = {
-				type: 'confirm',
-				title: 'Please Confirm',
-				body: 'Are you sure you wish to proceed?',
-				response: (r: boolean) => {
-					resolve(r);
-				}
-			};
-			modalStore.trigger(modal);
-		});
+		// const confirmed = new Promise<boolean>((resolve) => {
+		// 	const modal: ModalSettings = {
+		// 		type: 'confirm',
+		// 		title: 'Please Confirm',
+		// 		body: 'Are you sure you wish to proceed?',
+		// 		response: (r: boolean) => {
+		// 			resolve(r);
+		// 		}
+		// 	};
+		// 	modalStore.trigger(modal);
+		// });
 
-		if (!(await confirmed)) return;
+		// if (!(await confirmed)) return;
 
 		const response = await fetch(`/api/account/key-vault/remove-default/${id}`, {
 			method: 'DELETE'
@@ -104,30 +122,30 @@
 		if (response.ok) {
 			sshKeys[index].is_default = false;
 		} else {
-			const toastConfig: ToastSettings = {
-				message: 'Error: Failed to remove default SSH key. Try again later',
-				background: 'variant-soft-error',
-				timeout: 8000
-			};
+			toast.create({
+				title: 'Error',
+				description: 'Error: Failed to remove default SSH key. Try again later',
+				type: 'error',
 
-			toastStore.trigger(toastConfig);
+				duration: 8000
+			});
 		}
 	}
 
 	async function deleteKey(id: string) {
-		const confirmed = new Promise<boolean>((resolve) => {
-			const modal: ModalSettings = {
-				type: 'confirm',
-				title: 'Please Confirm',
-				body: 'Are you sure you wish to proceed? You will have to manually remove the SSH keys from your servers.',
-				response: (r: boolean) => {
-					resolve(r);
-				}
-			};
-			modalStore.trigger(modal);
-		});
+		// const confirmed = new Promise<boolean>((resolve) => {
+		// 	const modal: ModalSettings = {
+		// 		type: 'confirm',
+		// 		title: 'Please Confirm',
+		// 		body: 'Are you sure you wish to proceed? You will have to manually remove the SSH keys from your servers.',
+		// 		response: (r: boolean) => {
+		// 			resolve(r);
+		// 		}
+		// 	};
+		// 	modalStore.trigger(modal);
+		// });
 
-		if (!(await confirmed)) return;
+		// if (!(await confirmed)) return;
 
 		const response = await fetch(`/api/account/key-vault/remove-key/${id}`, {
 			method: 'DELETE'
@@ -136,13 +154,12 @@
 		if (response.ok) {
 			window.location.reload();
 		} else {
-			const toastConfig: ToastSettings = {
-				message: 'Error: Failed to remove SSH key. Try again later',
-				background: 'variant-soft-error',
-				timeout: 8000
-			};
-
-			toastStore.trigger(toastConfig);
+			toast.create({
+				title: 'Error',
+				description: 'Error: Failed to remove SSH key. Try again later',
+				type: 'error',
+				duration: 8000
+			});
 		}
 	}
 </script>
@@ -150,19 +167,47 @@
 {#if sshKeysPage.items.length === 0}
 	<div>No SSH Keys</div>
 {:else}
+	<!-- <Modal
+		bind:open={modalOpenState}
+		triggerBase="btn preset-tonal"
+		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+		backdropClasses="backdrop-blur-sm"
+	>
+		{#snippet content()}
+			<header class="flex justify-between">
+				<h2 class="h2">Modal Example</h2>
+			</header>
+			<article>
+				<p class="opacity-60">
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, ab adipisci. Libero cumque
+					sunt quis error veritatis amet, expedita voluptatem. Quos repudiandae consequuntur
+					voluptatem et dicta quas, reprehenderit velit excepturi?
+				</p>
+			</article>
+			<footer class="flex justify-end gap-4">
+				<button type="button" class="btn preset-tonal" onclick={closeModal}>Cancel</button>
+				<button type="button" class="btn preset-filled" onclick={closeModal}>Confirm</button>
+			</footer>
+		{/snippet}
+	</Modal> -->
+
 	<div class="space-y-4">
 		{#each sshKeys as keyData, index}
-			<Accordion class="rounded-[var(--theme-rounded-container)] variant-ghost-surface">
-				<AccordionItem>
-					{#snippet summary()}
+			<Accordion
+				collapsible
+				rounded="rounded-[var(--theme-rounded-container)]"
+				base="preset-ghost-surface"
+			>
+				<Accordion.Item value={keyData.id}>
+					{#snippet control()}
 						<span class="text-lg">
 							{keyData.key_name || 'undefined'}
 						</span>
 						{#if keyData.is_default}
-							<span class="ml-2 badge variant-filled-surface">default</span>
+							<span class="ml-2 badge preset-filled-surface">default</span>
 						{/if}
 					{/snippet}
-					{#snippet content()}
+					{#snippet panel()}
 						<KeyVaultItem
 							bind:keyData={sshKeys[index]}
 							addDefaultKey={async (id: string) => {
@@ -176,11 +221,29 @@
 							}}
 						/>
 					{/snippet}
-				</AccordionItem>
+				</Accordion.Item>
 			</Accordion>
 		{/each}
 
-		<Paginator
+		<Pagination
+			data={[]}
+			bind:page
+			bind:pageSize
+			onPageChange={(details) => {
+				console.log(details);
+			}}
+			onPageSizeChange={(details) => {
+				console.log(details);
+			}}
+		>
+			{#snippet labelEllipsis()}<IconEllipsis class="size-4" />{/snippet}
+			{#snippet labelNext()}<IconArrowRight class="size-4" />{/snippet}
+			{#snippet labelPrevious()}<IconArrowLeft class="size-4" />{/snippet}
+			{#snippet labelFirst()}<IconFirst class="size-4" />{/snippet}
+			{#snippet labelLast()}<IconLast class="size-4" />{/snippet}
+		</Pagination>
+
+		<!-- <Paginator
 			settings={paginationSettings}
 			showFirstLastButtons={false}
 			showPreviousNextButtons={true}
@@ -194,6 +257,6 @@
 					goto(`?page=${e.detail + 1}&pageSize=${pageSize}`);
 				}
 			}}
-		/>
+		/> -->
 	</div>
 {/if}

@@ -13,8 +13,8 @@
 		"typegen": "pocketbase-typegen --json ./pocketbase/schema.json --out ./src/lib/types/pbTypes.ts"
 	},
 	"devDependencies": {
-		"@skeletonlabs/skeleton": "^2.10.3",
-		"@skeletonlabs/tw-plugin": "0.4.0",
+		"@skeletonlabs/skeleton": "^3.0.0-next.9",
+		"@skeletonlabs/skeleton-svelte": "^1.0.0-next.14",
 		"@sveltejs/adapter-auto": "^3.3.1",
 		"@sveltejs/kit": "^2.9.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.2",
@@ -51,7 +51,8 @@
 		"clsx": "^2.1.1",
 		"formsnap": "^1.0.1",
 		"ioredis": "^5.4.1",
-		"lucide-svelte": "^0.397.0",
+		"lucide-svelte": "^0.462.0",
+		"mode-watcher": "^0.5.0",
 		"otpauth": "^9.3.5",
 		"pocketbase": "^0.21.5",
 		"rate-limiter-flexible": "^5.0.4",

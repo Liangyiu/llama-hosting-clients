@@ -1,16 +1,17 @@
 <script lang="ts">
 	import { accountDetailsSchema, avatarSchema, changeEmailSchema } from '$lib/form-schemas';
-	import { getUserState } from '$lib/stores/userStore';
+	import { getUserState } from '$lib/stores/UserStore.svelte.js';
 	import { supportedCountriesList } from '$lib/utils';
-	import { Avatar, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { IconBug, IconCheck } from '@tabler/icons-svelte';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { Loader2 } from 'lucide-svelte';
 	import { fileProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { Avatar } from '@skeletonlabs/skeleton-svelte';
+	import { getContext } from 'svelte';
+	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
 
-	const toastStore = getToastStore();
+	const toast: ToastContext = getContext('toast');
 
 	let { data } = $props();
 
@@ -28,29 +29,26 @@
 	changeEmailFormMessage.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-success',
-					timeout: 5000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Success',
+					description: m.message,
+					type: 'success',
+					duration: 5000
+				});
 			} else if (m.status === 429) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					autohide: false
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			}
 		}
 	});
@@ -71,29 +69,26 @@
 	accountDetailsFormMessage.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-success',
-					timeout: 5000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Success',
+					description: m.message,
+					type: 'success',
+					duration: 5000
+				});
 			} else if (m.status === 429) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					autohide: false
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 15000
+				});
 			}
 		}
 	});
@@ -112,29 +107,26 @@
 	avatarFormMessage.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-success',
-					timeout: 5000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Success',
+					description: m.message,
+					type: 'success',
+					duration: 5000
+				});
 			} else if (m.status === 429) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					autohide: false
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 15000
+				});
 			}
 		}
 	});
@@ -155,31 +147,32 @@
 
 	const user = getUserState();
 
+	let fullName = $derived(user.firstName + ' ' + user.lastName);
+
 	let initials = $derived(
-		($user.firstName.charAt(0).toUpperCase() || 'L') +
-			($user.lastName.charAt(0).toUpperCase() || 'L')
+		(user.firstName.charAt(0).toUpperCase() || 'L') + (user.lastName.charAt(0).toUpperCase() || 'L')
 	);
 
 	let avatarUrl = $derived(
-		$user.avatarUrl === ''
+		user.avatarUrl === ''
 			? `https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
 					initials
-			: `${$user.avatarUrl}?thumb=800x800`
+			: `${user.avatarUrl}?thumb=800x800`
 	);
 
-	let customAvatarSet = $derived($user.avatarUrl !== '');
+	let customAvatarSet = $derived(user.avatarUrl !== '');
 
 	accountDetailsFormData.set({
-		first_name: $user.firstName,
-		last_name: $user.lastName,
-		address_line_one: $user.addressLineOne,
-		address_line_two: $user.addressLineTwo,
-		address_city: $user.addressCity,
-		address_state_province: $user.addressStateProvince,
-		address_country: $user.addressCountry,
-		address_postal_code: $user.addressPostalCode,
-		phone_number: $user.phoneNumber,
-		vat_id: $user.vatId
+		first_name: user.firstName,
+		last_name: user.lastName,
+		address_line_one: user.addressLineOne,
+		address_line_two: user.addressLineTwo,
+		address_city: user.addressCity,
+		address_state_province: user.addressStateProvince,
+		address_country: user.addressCountry,
+		address_postal_code: user.addressPostalCode,
+		phone_number: user.phoneNumber,
+		vat_id: user.vatId
 	});
 </script>
 
@@ -193,7 +186,12 @@
 			<h5 class="h5">Avatar</h5>
 
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
-				<Avatar src={avatar ? avatar : avatarUrl} width="w-28 md:w-32" rounded="rounded-full" />
+				<Avatar
+					name={fullName}
+					src={avatar ? avatar : avatarUrl}
+					size="w-28 h-28 md:h-32 md:w-32"
+					rounded="rounded-full"
+				/>
 				<div class="md:ml-6 space-y-4 mt-4 md:mt-0 max-w-60 sm:max-w-96">
 					<form
 						action="/settings/account/?/uploadAvatar"
@@ -217,7 +215,7 @@
 							<FieldErrors class="text-error-500" />
 						</Field>
 						{#if $avatarFile.length > 0}
-							<button type="submit" class="btn variant-soft-primary w-full mt-4">
+							<button type="submit" class="btn preset-soft-primary w-full mt-4">
 								{#if $avatarFormDelayed}
 									<Loader2 class="size-6 animate-spin" />
 								{:else}
@@ -229,10 +227,8 @@
 
 					{#if $avatarFile.length === 0}
 						<form action="/settings/account/?/removeAvatar" method="post">
-							<button
-								type="submit"
-								class="btn variant-soft-error w-full"
-								disabled={!customAvatarSet}>Remove avatar</button
+							<button type="submit" class="btn preset-soft-error w-full" disabled={!customAvatarSet}
+								>Remove avatar</button
 							>
 						</form>
 					{/if}
@@ -264,7 +260,7 @@
 													{...attrs}
 													bind:value={$accountDetailsFormData.first_name}
 													id="first_name"
-													placeholder={$user.firstName}
+													placeholder={user.firstName}
 													class="input"
 												/>
 											</div>
@@ -286,7 +282,7 @@
 												{...attrs}
 												bind:value={$accountDetailsFormData.last_name}
 												id="last_name"
-												placeholder={$user.lastName}
+												placeholder={user.lastName}
 												class="input"
 											/>
 										</div>
@@ -309,8 +305,8 @@
 												{...attrs}
 												bind:value={$accountDetailsFormData.address_line_one}
 												id="address_line_one"
-												placeholder={$user.addressLineOne !== ''
-													? $user.addressLineOne
+												placeholder={user.addressLineOne !== ''
+													? user.addressLineOne
 													: 'e.g. Example Street 5'}
 												class="input"
 											/>
@@ -334,8 +330,8 @@
 												{...attrs}
 												bind:value={$accountDetailsFormData.address_line_two}
 												id="address_line_two"
-												placeholder={$user.addressLineTwo !== ''
-													? $user.addressLineTwo
+												placeholder={user.addressLineTwo !== ''
+													? user.addressLineTwo
 													: 'e.g. Apt. 123'}
 												class="input"
 											/>
@@ -359,8 +355,8 @@
 												{...attrs}
 												bind:value={$accountDetailsFormData.address_postal_code}
 												id="address_postal_code"
-												placeholder={$user.addressPostalCode !== ''
-													? $user.addressPostalCode
+												placeholder={user.addressPostalCode !== ''
+													? user.addressPostalCode
 													: 'e.g. 52066'}
 												class="input"
 											/>
@@ -382,7 +378,7 @@
 												{...attrs}
 												bind:value={$accountDetailsFormData.address_city}
 												id="address_city"
-												placeholder={$user.addressCity !== '' ? $user.addressCity : 'e.g. Aachen'}
+												placeholder={user.addressCity !== '' ? user.addressCity : 'e.g. Aachen'}
 												class="input"
 											/>
 										</div>
@@ -406,8 +402,8 @@
 													{...attrs}
 													bind:value={$accountDetailsFormData.address_state_province}
 													id="address_state_province"
-													placeholder={$user.addressStateProvince !== ''
-														? $user.addressStateProvince
+													placeholder={user.addressStateProvince !== ''
+														? user.addressStateProvince
 														: 'e.g. North Rhine-Westphalia'}
 													class="input"
 												/>
@@ -434,7 +430,7 @@
 													bind:value={$accountDetailsFormData.address_country}
 												>
 													{#each supportedCountries as country}
-														{#if $user.addressCountry === country}
+														{#if user.addressCountry === country}
 															<option selected value={country}>{country}</option>
 														{:else}
 															<option value={country}>{country}</option>
@@ -462,7 +458,7 @@
 												{...attrs}
 												bind:value={$accountDetailsFormData.vat_id}
 												id="vat_id"
-												placeholder={$user.vatId !== '' ? $user.vatId : 'optional'}
+												placeholder={user.vatId !== '' ? user.vatId : 'optional'}
 												class="input"
 											/>
 										</div>
@@ -483,7 +479,7 @@
 												{...attrs}
 												bind:value={$accountDetailsFormData.phone_number}
 												id="phone_number"
-												placeholder={$user.phoneNumber !== '' ? $user.phoneNumber : 'optional'}
+												placeholder={user.phoneNumber !== '' ? user.phoneNumber : 'optional'}
 												class="input"
 											/>
 										</div>
@@ -492,7 +488,7 @@
 								</Field>
 							</div>
 						</div>
-						<button type="submit" class="btn variant-soft-primary">
+						<button type="submit" class="btn preset-soft-primary">
 							{#if $accountDetailsFormDelayed}
 								<Loader2 class="size-6 animate-spin" />
 							{:else}
@@ -531,7 +527,7 @@
 						</div>
 					</div>
 
-					<button type="submit" class="btn variant-soft-primary mt-4">
+					<button type="submit" class="btn preset-soft-primary mt-4">
 						{#if $changeEmailFormDelayed}
 							<Loader2 class="size-6 animate-spin" />
 						{:else}

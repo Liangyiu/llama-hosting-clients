@@ -4,12 +4,13 @@
 	import { Loader2 } from 'lucide-svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import KeyVault from '$lib/components/KeyVault.svelte';
-
-	const toastStore = getToastStore();
+	import { getContext } from 'svelte';
+	import type { ToastContext } from '@skeletonlabs/skeleton-svelte';
 
 	let { data } = $props();
+
+	const toast: ToastContext = getContext('toast');
 
 	const addSshKeyForm = superForm(data.sshKeyForm, {
 		validators: zodClient(addSshKeySchema)
@@ -20,45 +21,40 @@
 	message.subscribe((m) => {
 		if (m) {
 			if (m.message === 'SSH key added successfully' && m.status === 200) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-success',
-					timeout: 3000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Success',
+					description: m.message,
+					type: 'success',
+					duration: 3000
+				});
 			} else if (m.message === 'SSH key already exists' && m.status === 400) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else if (m.message === 'Error: Failed to add SSH key' && m.status === 400) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else if (m.status === 429) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else {
-				const toastConfig: ToastSettings = {
-					message: 'Something went wrong',
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: 'Something went wrong',
+					type: 'error',
+					duration: 8000
+				});
 			}
 		}
 	});
@@ -120,7 +116,7 @@
 							</div>
 						</div>
 					</div>
-					<button type="submit" class="btn variant-soft-primary mt-4">
+					<button type="submit" class="btn preset-soft-primary mt-4">
 						{#if $delayed}
 							<Loader2 class="size-6 animate-spin" />
 						{:else}

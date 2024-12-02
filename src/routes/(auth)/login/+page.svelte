@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { focusTrap, LightSwitch, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { focusTrap } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -9,9 +7,11 @@
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { CircleAlertIcon, Loader2, MailWarning } from 'lucide-svelte';
 	import { page } from '$app/stores';
-	import { getToastStore } from '@skeletonlabs/skeleton';
+	import LightSwitch from '$lib/components/LightSwitch.svelte';
+	import { getContext } from 'svelte';
+	import type { ToastContext } from '@skeletonlabs/skeleton-svelte';
 
-	const toastStore = getToastStore();
+	const toast: ToastContext = getContext('toast');
 
 	interface Props {
 		data: PageData;
@@ -35,50 +35,45 @@
 	message.subscribe((m) => {
 		if (m) {
 			if (m.status === 403 && m.message === 'Please verify your email') {
-				const toastConfig: ToastSettings = {
-					message: 'Please verify your email',
-					background: 'variant-soft-warning',
-					autohide: false
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Info',
+					description: 'Please verify your email',
+					type: 'info',
+					duration: 15000
+				});
 			} else if (m.status === 400 && m.message === 'Invalid credentials') {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else if (m.status === 400 && m.message === 'Please enter your TOTP code') {
 				totpCodeRequired = true;
 				$formData.email = capturedFormData.email;
 				$formData.password = capturedFormData.password;
 				capturedFormData = { email: '', password: '' };
 			} else if (m.status === 400 && m.message === 'Invalid TOTP code') {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else if (m.status === 429) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			} else {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			}
 		}
 	});
@@ -108,36 +103,44 @@
 	</div>
 	<section class="flex flex-col items-center justify-center p-4 w-full">
 		{#if newUser}
-			<aside class="alert variant-ghost w-full mb-4">
+			<div
+				class="card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-ghost w-full mb-4"
+			>
 				<!-- Icon -->
 				<div>
 					<MailWarning class="size-4" />
 				</div>
 				<!-- Message -->
 				<div class="alert-message">
-					<p>Make sure to verify your email</p>
+					<p class="font-bold">Info</p>
+					<p class="type-scale-1 opacity-60">Make sure to verify your email</p>
 				</div>
-			</aside>
+			</div>
 		{/if}
 		{#if loggedOut}
-			<aside class="alert variant-soft-success w-full mb-4">
+			<div
+				class="card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-soft-success w-full mb-4"
+			>
 				<div>
 					<CircleAlertIcon class="size-4" />
 				</div>
 				<div class="alert-message">
 					<p>You have been logged out</p>
 				</div>
-			</aside>
+			</div>
 		{/if}
 		{#if totpCodeRequired}
-			<aside class="alert variant-soft-warning w-full mb-4">
+			<div
+				class="card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-soft-warning w-full mb-4"
+			>
 				<div>
 					<CircleAlertIcon class="size-4" />
 				</div>
 				<div class="alert-message">
-					<p>Additional authorization required</p>
+					<p class="font-bold">Info</p>
+					<p class="type-scale-1 opacity-60">Additional authorization required</p>
 				</div>
-			</aside>
+			</div>
 		{/if}
 		<form
 			bind:this={formElement}
@@ -226,7 +229,7 @@
 			</div>
 		</form>
 
-		<button class="w-full btn variant-filled" onclick={handleSubmit}>
+		<button class="w-full btn preset-filled" onclick={handleSubmit}>
 			{#if $delayed}
 				<Loader2 class="size-6 animate-spin" />
 			{:else if totpCodeRequired}

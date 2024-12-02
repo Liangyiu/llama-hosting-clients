@@ -1,5 +1,4 @@
 import { getContext, setContext } from 'svelte';
-import { type Writable, writable } from 'svelte/store';
 
 type UserData = {
 	firstName: string;
@@ -25,11 +24,11 @@ type UserData = {
 const USER_CTX = 'USER_CTX';
 
 export function setUserState(initialData: UserData) {
-	const userState = writable(initialData);
+	const userState = $state(initialData);
 	setContext(USER_CTX, userState);
 	return userState;
 }
 
 export function getUserState() {
-	return getContext<Writable<UserData>>(USER_CTX);
+	return getContext<UserData>(USER_CTX);
 }

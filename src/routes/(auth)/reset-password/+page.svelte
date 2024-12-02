@@ -3,14 +3,15 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { resetPasswordSchema } from '$lib/form-schemas';
 	import { CircleAlertIcon, Loader2 } from 'lucide-svelte';
-	import { focusTrap, LightSwitch, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { focusTrap } from '@skeletonlabs/skeleton';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
-	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { goto } from '$app/navigation';
-
-	const toastStore = getToastStore();
+	import LightSwitch from '$lib/components/LightSwitch.svelte';
+	import { getContext } from 'svelte';
+	import type { ToastContext } from '@skeletonlabs/skeleton-svelte';
 
 	let { data } = $props();
+
+	const toast: ToastContext = getContext('toast');
 
 	const form = superForm(data.form, {
 		validators: zodClient(resetPasswordSchema)
@@ -23,28 +24,19 @@
 	message.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-success',
-					autohide: false,
-					action: {
-						label: 'Login',
-						response: () => {
-							goto('/login');
-							toastStore.clear();
-						}
-					}
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Success',
+					description: m.message,
+					type: 'success',
+					duration: 15000
+				});
 			} else if (m.message === 'An error occurred during the password reset process') {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				toast.create({
+					title: 'Error',
+					description: m.message,
+					type: 'error',
+					duration: 8000
+				});
 			}
 		}
 	});
@@ -93,7 +85,7 @@
 				</div>
 			</div>
 
-			<button type="submit" class="w-full btn variant-filled">
+			<button type="submit" class="w-full btn preset-filled">
 				{#if $delayed}
 					<Loader2 class="size-6 animate-spin" />
 				{:else}
