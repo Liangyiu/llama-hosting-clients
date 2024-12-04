@@ -3,7 +3,6 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { registerSchema } from '$lib/form-schemas';
 	import { CircleAlertIcon, Loader2 } from 'lucide-svelte';
-	import { focusTrap } from '@skeletonlabs/skeleton';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import LightSwitch from '$lib/components/LightSwitch.svelte';
 	import { getContext } from 'svelte';
@@ -18,8 +17,6 @@
 	});
 
 	const { enhance, form: formData, delayed, message } = form;
-
-	let isFocused: boolean = true;
 
 	message.subscribe((m) => {
 		if (m) {
@@ -42,7 +39,7 @@
 	});
 </script>
 
-<div class="card">
+<div class="card preset-filled-surface-100-900 border-[1px] border-surface-200-800 p-4">
 	<div class="card-header">
 		<div class="w-full justify-between align-middle flex">
 			<h1 class="h3">Register</h1>
@@ -53,7 +50,7 @@
 		</div>
 	</div>
 	<section class="flex flex-col items-center justify-center p-4 w-full">
-		<form method="post" use:enhance action="/register" class="w-full" use:focusTrap={isFocused}>
+		<form method="post" use:enhance action="/register" class="w-full">
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div class="grid grid-cols-2 gap-4">
 					<div>
@@ -71,6 +68,7 @@
 										id="first_name"
 										placeholder="John"
 										class="input"
+										tabindex="1"
 									/>
 								</div>
 							</Control>
@@ -92,6 +90,7 @@
 										id="last_name"
 										placeholder="Doe"
 										class="input"
+										tabindex="2"
 									/>
 								</div>
 							</Control>
@@ -115,6 +114,7 @@
 									id="email"
 									placeholder="name@example.com"
 									class="input"
+									tabindex="3"
 								/>
 							</div>
 						</Control>
@@ -138,6 +138,7 @@
 									id="password"
 									class="input"
 									placeholder="•••••••••••••"
+									tabindex="4"
 								/>
 							</div>
 						</Control>
@@ -161,6 +162,7 @@
 									id="password_confirm"
 									class="input"
 									placeholder="•••••••••••••"
+									tabindex="5"
 								/>
 							</div>
 						</Control>
@@ -178,13 +180,21 @@
 									bind:checked={$formData.accept_terms}
 									id="accept_terms"
 									class="checkbox"
+									tabindex="6"
 								/>
 								<Label asChild={true}>
 									<label for="accept_terms" class="label">
 										<p>
-											I accept the <a href="/terms-of-service" class="anchor">terms of service</a>
+											I accept the <a
+												href="/terms-of-service"
+												class="anchor"
+												tabindex="7"
+												target="_blank">terms of service</a
+											>
 											&
-											<a href="/privacy-policy" class="anchor">privacy policy</a>
+											<a href="/privacy-policy" class="anchor" tabindex="8" target="_blank"
+												>privacy policy</a
+											>
 										</p>
 									</label>
 								</Label>
@@ -195,7 +205,7 @@
 				</div>
 			</div>
 
-			<button type="submit" class="w-full btn preset-filled">
+			<button type="submit" class="w-full btn preset-filled" tabindex="9">
 				{#if $delayed}
 					<Loader2 class="size-6 animate-spin" />
 				{:else}
@@ -203,7 +213,7 @@
 				{/if}
 			</button>
 			<div class="text-sm w-full text-center pt-2">
-				Already have an account? <a href="/login" class="font-medium anchor">Login</a>
+				Already have an account? <a href="/login" class="font-medium anchor" tabindex="10">Login</a>
 			</div>
 		</form>
 	</section>

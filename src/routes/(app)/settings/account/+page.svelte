@@ -208,14 +208,14 @@
 									id="avatarInput"
 									accept="image/png, image/jpeg"
 									bind:files={$avatarFile}
-									class="input w-full"
+									class="input preset-outlined w-full"
 									onchange={() => onFileSelected()}
 								/>
 							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>
 						{#if $avatarFile.length > 0}
-							<button type="submit" class="btn preset-soft-primary w-full mt-4">
+							<button type="submit" class="btn preset-outlined-primary-500 w-full mt-4">
 								{#if $avatarFormDelayed}
 									<Loader2 class="size-6 animate-spin" />
 								{:else}
@@ -227,8 +227,10 @@
 
 					{#if $avatarFile.length === 0}
 						<form action="/settings/account/?/removeAvatar" method="post">
-							<button type="submit" class="btn preset-soft-error w-full" disabled={!customAvatarSet}
-								>Remove avatar</button
+							<button
+								type="submit"
+								class="btn preset-outlined-error-500 w-full"
+								disabled={!customAvatarSet}>Remove avatar</button
 							>
 						</form>
 					{/if}
@@ -253,7 +255,7 @@
 											<div class="space-y-1">
 												<Label asChild={true}>
 													<label class="label" for="first_name">
-														<span>First name</span>
+														<span class="label-text">First name</span>
 													</label>
 												</Label>
 												<input
@@ -261,7 +263,7 @@
 													bind:value={$accountDetailsFormData.first_name}
 													id="first_name"
 													placeholder={user.firstName}
-													class="input"
+													class="input preset-outlined"
 												/>
 											</div>
 										{/snippet}
@@ -275,7 +277,7 @@
 										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="last_name">
-													<span>Last name</span>
+													<span class="label-text">Last name</span>
 												</label>
 											</Label>
 											<input
@@ -283,7 +285,7 @@
 												bind:value={$accountDetailsFormData.last_name}
 												id="last_name"
 												placeholder={user.lastName}
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									</Control>
@@ -298,7 +300,7 @@
 										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="address_line_one">
-													<span>Address Line 1</span>
+													<span class="label-text">Address Line 1</span>
 												</label>
 											</Label>
 											<input
@@ -308,7 +310,7 @@
 												placeholder={user.addressLineOne !== ''
 													? user.addressLineOne
 													: 'e.g. Example Street 5'}
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									{/snippet}
@@ -323,7 +325,7 @@
 										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="address_line_two">
-													<span>Address Line 2</span>
+													<span class="label-text">Address Line 2</span>
 												</label>
 											</Label>
 											<input
@@ -333,7 +335,7 @@
 												placeholder={user.addressLineTwo !== ''
 													? user.addressLineTwo
 													: 'e.g. Apt. 123'}
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									{/snippet}
@@ -348,7 +350,7 @@
 										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="address_postal_code">
-													<span>Postal code</span>
+													<span class="label-text">Postal code</span>
 												</label>
 											</Label>
 											<input
@@ -358,7 +360,7 @@
 												placeholder={user.addressPostalCode !== ''
 													? user.addressPostalCode
 													: 'e.g. 52066'}
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									</Control>
@@ -371,7 +373,7 @@
 										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="address_city">
-													<span>City</span>
+													<span class="label-text">City</span>
 												</label>
 											</Label>
 											<input
@@ -379,7 +381,7 @@
 												bind:value={$accountDetailsFormData.address_city}
 												id="address_city"
 												placeholder={user.addressCity !== '' ? user.addressCity : 'e.g. Aachen'}
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									</Control>
@@ -395,7 +397,7 @@
 											<div class="space-y-1">
 												<Label asChild={true}>
 													<label class="label" for="address_state_province">
-														<span>Province/State</span>
+														<span class="label-text">Province/State</span>
 													</label>
 												</Label>
 												<input
@@ -405,7 +407,7 @@
 													placeholder={user.addressStateProvince !== ''
 														? user.addressStateProvince
 														: 'e.g. North Rhine-Westphalia'}
-													class="input"
+													class="input preset-outlined"
 												/>
 											</div>
 										{/snippet}
@@ -420,13 +422,13 @@
 											<div class="space-y-1">
 												<Label asChild={true}>
 													<label class="label" for="address_country">
-														<span>Country</span>
+														<span class="label-text">Country</span>
 													</label>
 												</Label>
 												<select
 													{...attrs}
 													id="address_country"
-													class="select"
+													class="select preset-outlined"
 													bind:value={$accountDetailsFormData.address_country}
 												>
 													{#each supportedCountries as country}
@@ -451,7 +453,7 @@
 										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="vat_id">
-													<span>VAT ID</span>
+													<span class="label-text">VAT ID</span>
 												</label>
 											</Label>
 											<input
@@ -459,7 +461,7 @@
 												bind:value={$accountDetailsFormData.vat_id}
 												id="vat_id"
 												placeholder={user.vatId !== '' ? user.vatId : 'optional'}
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									</Control>
@@ -472,7 +474,7 @@
 										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="phone_number">
-													<span>Phone number</span>
+													<span class="label-text">Phone number</span>
 												</label>
 											</Label>
 											<input
@@ -480,7 +482,7 @@
 												bind:value={$accountDetailsFormData.phone_number}
 												id="phone_number"
 												placeholder={user.phoneNumber !== '' ? user.phoneNumber : 'optional'}
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									</Control>
@@ -488,7 +490,7 @@
 								</Field>
 							</div>
 						</div>
-						<button type="submit" class="btn preset-soft-primary">
+						<button type="submit" class="btn preset-filled-primary-300-700">
 							{#if $accountDetailsFormDelayed}
 								<Loader2 class="size-6 animate-spin" />
 							{:else}
@@ -511,14 +513,14 @@
 									<div class="space-y-1">
 										<Label asChild={true}>
 											<label class="label" for="email">
-												<span>New email</span>
+												<span class="label-text">New email</span>
 											</label>
 										</Label>
 										<input
 											{...attrs}
 											bind:value={$changeEmailFormData.email}
 											id="email"
-											class="input"
+											class="input preset-outlined"
 										/>
 									</div>
 								</Control>
@@ -527,7 +529,7 @@
 						</div>
 					</div>
 
-					<button type="submit" class="btn preset-soft-primary mt-4">
+					<button type="submit" class="btn preset-filled-primary-300-700 mt-4">
 						{#if $changeEmailFormDelayed}
 							<Loader2 class="size-6 animate-spin" />
 						{:else}

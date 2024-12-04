@@ -4,6 +4,7 @@
 	import { getUserState } from '$lib/stores/UserStore.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton-svelte';
 	import { Popover } from '@skeletonlabs/skeleton-svelte';
+	import LightSwitch from './LightSwitch.svelte';
 
 	const user = getUserState();
 
@@ -41,12 +42,12 @@
 		<h1 class="h6">llama hosting - Control Panel</h1>
 	</div>
 	<div class="flex gap-x-4 items-center ml-auto">
+		<LightSwitch />
+
 		<Popover
 			bind:open={popoverState}
-			positioning={{ placement: 'bottom' }}
+			positioning={{ placement: 'bottom', offset: { mainAxis: 15, crossAxis: 0 } }}
 			contentBase="card preset-glass-surface shadow-xl bg-surface-200-800 p-4 space-y-4 max-w-[320px]"
-			arrow
-			arrowBackground="!bg-surface-200 dark:!bg-surface-800"
 		>
 			{#snippet trigger()}
 				<Avatar
