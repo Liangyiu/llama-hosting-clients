@@ -3,33 +3,55 @@
 @tailwind utilities;
 @tailwind variants;
 
-/* modern theme */
-@font-face {
-	font-family: 'Quicksand';
-	src: url('/fonts/Quicksand.ttf');
-	font-display: swap;
+[data-theme='catppuccin'],
+[data-theme='cerberus'],
+[data-theme='crimson'],
+[data-theme='hamlindigo'],
+[data-theme='mint'],
+[data-theme='modern'],
+[data-theme='nouveau'],
+[data-theme='mona'],
+[data-theme='nosh'],
+[data-theme='pine'],
+[data-theme='rose'],
+[data-theme='sahara'],
+[data-theme='seafoam'],
+[data-theme='vintage'],
+[data-theme='wintry'] {
+	background-image: radial-gradient(
+			at 20% 10%,
+			rgba(var(--color-secondary-500) / 0.075) 0px,
+			transparent 40%
+		),
+		radial-gradient(at 75% 10%, rgba(var(--color-primary-500) / 0.075) 0px, transparent 50%);
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
-/* rocket theme */
-@font-face {
-	font-family: 'Space Grotesk';
-	src: url('/fonts/SpaceGrotesk.ttf');
-	font-display: swap;
+[data-theme='legacy'] {
+	background-image: radial-gradient(
+			at 0% 0%,
+			rgba(var(--color-secondary-500) / 0.33) 0px,
+			transparent 50%
+		),
+		radial-gradient(at 98% 1%, rgba(var(--color-error-500) / 0.33) 0px, transparent 50%);
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
-/* gold-nouveau theme */
-@font-face {
-	font-family: 'Quicksand';
-	src: url('/fonts/Quicksand.ttf');
-	font-display: swap;
+
+:is(.dark .preset-glass-surface) {
+	background-color: rgb(var(--color-surface-500) / 0.2);
 }
-/* vintage theme */
-@font-face {
-	font-family: 'Abril Fatface';
-	src: url('/fonts/AbrilFatface.ttf');
-	font-display: swap;
+.preset-glass-surface {
+	background-color: rgb(var(--color-surface-500) / 0.2);
+	--tw-backdrop-blur: blur(16px);
+	backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast)
+		var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert)
+		var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
-/* seafoam theme */
-@font-face {
-	font-family: 'Playfair Display';
-	src: url('/fonts/PlayfairDisplay-Italic.ttf');
-	font-display: swap;
+:is(.dark .preset-glass-surface) {
+	background-color: rgb(var(--color-surface-500) / 0.2);
 }

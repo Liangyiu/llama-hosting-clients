@@ -1,24 +1,19 @@
 <script lang="ts">
 	import SettingsNavItem from './SettingsNavItem.svelte';
 
-	const routes = [
-		{
-			label: 'Account',
-			href: '/settings/account'
-		},
-		{
-			label: 'Security',
-			href: '/settings/security'
-		},
-		{
-			label: 'SSH Key Vault',
-			href: '/settings/ssh-key-vault'
-		}
-	];
+	interface Props {
+		itemClicked: (item: { label: string; href: string }) => void;
+		routes: {
+			label: string;
+			href: string;
+		}[];
+	}
+
+	let { itemClicked, routes }: Props = $props();
 </script>
 
 <div class="flex w-full flex-col">
 	{#each routes as { href, label }}
-		<SettingsNavItem {href} {label} />
+		<SettingsNavItem {itemClicked} {href} {label} />
 	{/each}
 </div>

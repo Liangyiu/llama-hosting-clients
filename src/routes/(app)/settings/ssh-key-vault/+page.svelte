@@ -78,7 +78,7 @@
 										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="public_key">
-													<span>Public Key</span>
+													<span class="label-text">Public Key</span>
 												</label>
 											</Label>
 											<input
@@ -86,7 +86,7 @@
 												bind:value={$addSshKeyFormData.public_key}
 												id="public_key"
 												placeholder="e.g. ssh-ed25519 ..."
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									</Control>
@@ -99,7 +99,7 @@
 										<div class="space-y-1">
 											<Label asChild={true}>
 												<label class="label" for="key_name">
-													<span>Key Description</span>
+													<span class="label-text">Key Description</span>
 												</label>
 											</Label>
 											<input
@@ -107,7 +107,7 @@
 												bind:value={$addSshKeyFormData.key_name}
 												id="last_name"
 												placeholder="optional e.g. user (at) machine"
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									</Control>
@@ -116,7 +116,7 @@
 							</div>
 						</div>
 					</div>
-					<button type="submit" class="btn preset-soft-primary mt-4">
+					<button type="submit" class="btn preset-filled-primary-300-700 mt-4">
 						{#if $delayed}
 							<Loader2 class="size-6 animate-spin" />
 						{:else}

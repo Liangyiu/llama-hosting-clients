@@ -143,7 +143,7 @@
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				{#if user.mfaTotp}
 					<div>
-						<button onclick={showTotpTokenCheck} class="btn preset-soft-error w-full">
+						<button onclick={showTotpTokenCheck} class="btn preset-filled-error-300-700 w-full">
 							{#if $deactivateTotpFormDelayed}
 								<Loader2 class="size-6 animate-spin" />
 							{:else}
@@ -176,7 +176,7 @@
 				{:else}
 					<div>
 						<!-- onclick={showActivateTotpModal} -->
-						<button class="btn preset-soft-success w-full">Activate 2FA/TOTP</button>
+						<button class="btn preset-filled-primary-300-700 w-full">Activate 2FA/TOTP</button>
 					</div>
 				{/if}
 			</div>
@@ -202,7 +202,9 @@
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				<form action="/settings/security/?/resetPassword" method="post" use:enhance>
 					<input class="hidden" type="text" name="email" id="email" bind:value={user.email} />
-					<button type="submit" class="btn preset-soft-error w-full">Reset password</button>
+					<button type="submit" class="btn preset-outlined-error-300-700 w-full"
+						>Reset password</button
+					>
 				</form>
 			</div>
 		</section>

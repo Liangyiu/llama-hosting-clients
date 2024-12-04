@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { focusTrap } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -18,8 +17,8 @@
 	}
 
 	let { data }: Props = $props();
-	let newUser = $page.url.searchParams.get('new_user');
-	let loggedOut = $page.url.searchParams.get('logout');
+	let newUser = $state($page.url.searchParams.get('new_user'));
+	let loggedOut = $state($page.url.searchParams.get('logout'));
 
 	const form = superForm(data.form, {
 		validators: zodClient(loginSchema)
@@ -27,8 +26,6 @@
 	const { form: formData, enhance, message, delayed } = form;
 
 	let formElement: HTMLFormElement = $state();
-
-	let isFocused: boolean = true;
 
 	let totpCodeRequired: boolean = $state(false);
 
@@ -50,6 +47,8 @@
 				});
 			} else if (m.status === 400 && m.message === 'Please enter your TOTP code') {
 				totpCodeRequired = true;
+				newUser = null;
+				loggedOut = null;
 				$formData.email = capturedFormData.email;
 				$formData.password = capturedFormData.password;
 				capturedFormData = { email: '', password: '' };
@@ -91,7 +90,7 @@
 	}
 </script>
 
-<div class="card">
+<div class="card preset-filled-surface-100-900 border-[1px] border-surface-200-800 p-4">
 	<div class="card-header">
 		<div class="w-full justify-between align-middle flex">
 			<h1 class="h3">Client-Login</h1>
@@ -104,7 +103,7 @@
 	<section class="flex flex-col items-center justify-center p-4 w-full">
 		{#if newUser}
 			<div
-				class="card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-ghost w-full mb-4"
+				class="alert card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-outlined-surface-300-700 w-full mb-4"
 			>
 				<!-- Icon -->
 				<div>
@@ -112,14 +111,13 @@
 				</div>
 				<!-- Message -->
 				<div class="alert-message">
-					<p class="font-bold">Info</p>
-					<p class="type-scale-1 opacity-60">Make sure to verify your email</p>
+					<p>Make sure to verify your email</p>
 				</div>
 			</div>
 		{/if}
 		{#if loggedOut}
 			<div
-				class="card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-soft-success w-full mb-4"
+				class="alert card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-outlined-success-300-700 w-full mb-4"
 			>
 				<div>
 					<CircleAlertIcon class="size-4" />
@@ -131,25 +129,17 @@
 		{/if}
 		{#if totpCodeRequired}
 			<div
-				class="card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-soft-warning w-full mb-4"
+				class="alert card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-outlined-warning-300-700 w-full mb-4"
 			>
 				<div>
 					<CircleAlertIcon class="size-4" />
 				</div>
 				<div class="alert-message">
-					<p class="font-bold">Info</p>
-					<p class="type-scale-1 opacity-60">Additional authorization required</p>
+					<p>Additional authorization required</p>
 				</div>
 			</div>
 		{/if}
-		<form
-			bind:this={formElement}
-			method="post"
-			use:enhance
-			action="/login"
-			class="w-full"
-			use:focusTrap={isFocused}
-		>
+		<form bind:this={formElement} method="post" use:enhance action="/login" class="w-full">
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div>
 					<Field {form} name="email">
@@ -157,7 +147,7 @@
 							<div class="space-y-1">
 								<Label asChild={true}>
 									<label class="label" for="email">
-										<span>Email</span>
+										<span class="label-text">Email</span>
 									</label>
 								</Label>
 								<input
@@ -167,6 +157,7 @@
 									id="email"
 									placeholder="name@example.com"
 									class="input"
+									tabindex="1"
 								/>
 							</div>
 						</Control>
@@ -180,11 +171,12 @@
 							<div class="space-y-1">
 								<Label asChild={true}>
 									<div class="flex items-center justify-between">
-										<label for="password" class="label">
-											<span>Password</span>
+										<label for="password" class="label max-w-8">
+											<span class="label-text">Password</span>
 										</label>
 
-										<a href="/reset-password" class="text-sm font-medium anchor">Forgot password?</a
+										<a href="/reset-password" class="text-sm font-medium anchor" tabindex="5"
+											>Forgot password?</a
 										>
 									</div>
 								</Label>
@@ -195,6 +187,7 @@
 									id="password"
 									class="input"
 									placeholder="•••••••••••••"
+									tabindex="2"
 								/>
 							</div>
 						</Control>
@@ -209,7 +202,7 @@
 								<div class="space-y-1">
 									<Label asChild={true}>
 										<label class="label" for="totp_code">
-											<span>TOTP Code</span>
+											<span class="label-text">TOTP Code</span>
 										</label>
 									</Label>
 									<input
@@ -229,7 +222,7 @@
 			</div>
 		</form>
 
-		<button class="w-full btn preset-filled" onclick={handleSubmit}>
+		<button class="w-full btn preset-filled" onclick={handleSubmit} tabindex="3">
 			{#if $delayed}
 				<Loader2 class="size-6 animate-spin" />
 			{:else if totpCodeRequired}
@@ -239,7 +232,9 @@
 			{/if}
 		</button>
 		<div class="text-sm w-full text-center pt-2">
-			Don't have an account yet? <a href="/register" class="font-medium anchor">Sign up</a>
+			Don't have an account yet? <a href="/register" class="font-medium anchor" tabindex="4"
+				>Sign up</a
+			>
 		</div>
 	</section>
 </div>

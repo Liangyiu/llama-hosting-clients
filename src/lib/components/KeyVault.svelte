@@ -196,7 +196,7 @@
 			<Accordion
 				collapsible
 				rounded="rounded-[var(--theme-rounded-container)]"
-				base="preset-ghost-surface"
+				base="preset-tonal-surface rounded-container"
 			>
 				<Accordion.Item value={keyData.id}>
 					{#snippet control()}
@@ -204,7 +204,7 @@
 							{keyData.key_name || 'undefined'}
 						</span>
 						{#if keyData.is_default}
-							<span class="ml-2 badge preset-filled-surface">default</span>
+							<span class="ml-2 badge preset-filled-surface-500">default</span>
 						{/if}
 					{/snippet}
 					{#snippet panel()}
