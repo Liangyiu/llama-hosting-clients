@@ -185,16 +185,14 @@
 			<h5 class="h5">Password</h5>
 			{#if pwReset}
 				<div
-					class="card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-soft-success w-full mb-4"
+					class="card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-outlined-success-500 mb-4 max-w-xl"
 				>
-					<div>
-						<IconCheck class="size-4" />
-					</div>
+					<IconCheck class="size-4" />
+
 					<div class="alert-message">
 						<p class="font-bold">Success!</p>
 						<p class="type-scale-1 opacity-60">
-							Success! <br class="md:hidden" />Password reset instructions have been sent to your
-							email.
+							Password reset instructions have been sent to your email.
 						</p>
 					</div>
 				</div>

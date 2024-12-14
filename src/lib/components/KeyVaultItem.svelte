@@ -23,7 +23,7 @@
 		<div class="flex justify-end space-x-2">
 			<div>
 				{#if keyData.is_default}
-					<button class="btn preset-filled-warning-500" onclick={() => removeDefaultKey(keyData.id)}
+					<button class="btn preset-filled-surface-500" onclick={() => removeDefaultKey(keyData.id)}
 						>Remove Default</button
 					>
 				{:else}
@@ -33,7 +33,7 @@
 				{/if}
 			</div>
 			<div>
-				<button class="btn preset-filled-error-500" onclick={() => deleteKey(keyData.id)}
+				<button class="btn preset-outlined-error-500" onclick={() => deleteKey(keyData.id)}
 					>Delete</button
 				>
 			</div>

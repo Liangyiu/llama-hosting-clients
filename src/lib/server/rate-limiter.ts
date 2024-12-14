@@ -1,8 +1,8 @@
-import { REDIS_URI } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import Redis from 'ioredis';
 
-const redis = new Redis(REDIS_URI);
+const redis = new Redis(env.REDIS_URI);
 
 redis.on('error', (err) => {
 	console.log('Redis Client Error:\n', err);
