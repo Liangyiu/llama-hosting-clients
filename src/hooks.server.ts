@@ -1,11 +1,7 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import * as Sentry from '@sentry/sveltekit';
 import { browser, dev } from '$app/environment';
-import {
-	PUBLIC_GLITCHTOP_DSN,
-	PUBLIC_POCKETBASE_URL,
-	PUBLIC_DEV_POCKETBASE_URL
-} from '$env/static/public';
+import { env as envPublic } from '$env/dynamic/public';
 import { TypedPocketBase } from 'typed-pocketbase';
 import { redirect, type HandleServerError } from '@sveltejs/kit';
 import type { Schema } from '$lib/pocketbase/PB-Schema';
@@ -13,19 +9,16 @@ import crypto from 'crypto';
 
 Sentry.init({
 	environment: dev ? 'development' : 'production',
-	dsn: PUBLIC_GLITCHTOP_DSN,
+	dsn: envPublic.PUBLIC_GLITCHTOP_DSN,
 	tracesSampleRate: 1
 });
 
-export const handleError: HandleServerError = ({ error, event }) => {
+export const handleError: HandleServerError = ({ error }) => {
 	const errorId = crypto.randomUUID();
 
 	Sentry.captureException(error, {
-		contexts: {
-			sveltekit: {
-				errorId,
-				event
-			}
+		tags: {
+			custom_error_id: errorId
 		}
 	});
 
@@ -52,7 +45,9 @@ export const handle = sequence(Sentry.sentryHandle(), async function _handle({ e
 	// pb logic
 	const { locals, request, url } = event;
 
-	locals.pb = new TypedPocketBase<Schema>(dev ? PUBLIC_DEV_POCKETBASE_URL : PUBLIC_POCKETBASE_URL);
+	locals.pb = new TypedPocketBase<Schema>(
+		dev ? envPublic.PUBLIC_DEV_POCKETBASE_URL : envPublic.PUBLIC_POCKETBASE_URL
+	);
 
 	// load the store data from the request cookie string
 	locals.pb.authStore.loadFromCookie(request.headers.get('cookie') || '');

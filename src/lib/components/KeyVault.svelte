@@ -196,7 +196,7 @@
 			<Accordion
 				collapsible
 				rounded="rounded-[var(--theme-rounded-container)]"
-				base="preset-tonal-surface rounded-container"
+				base="preset-filled-surface-300-700 rounded-container"
 			>
 				<Accordion.Item value={keyData.id}>
 					{#snippet control()}
