@@ -8,10 +8,8 @@
 	import { fileProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Avatar } from '@skeletonlabs/skeleton-svelte';
-	import { getContext } from 'svelte';
-	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
 
-	const toast: ToastContext = getContext('toast');
+	import { toast as sonner } from 'svelte-sonner';
 
 	let { data } = $props();
 
@@ -29,26 +27,11 @@
 	changeEmailFormMessage.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				toast.create({
-					title: 'Success',
-					description: m.message,
-					type: 'success',
-					duration: 5000
-				});
+				sonner.success(m.message);
 			} else if (m.status === 429) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			}
 		}
 	});
@@ -69,26 +52,11 @@
 	accountDetailsFormMessage.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				toast.create({
-					title: 'Success',
-					description: m.message,
-					type: 'success',
-					duration: 5000
-				});
+				sonner.success(m.message);
 			} else if (m.status === 429) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 15000
-				});
+				sonner.error(m.message);
 			}
 		}
 	});
@@ -107,26 +75,11 @@
 	avatarFormMessage.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				toast.create({
-					title: 'Success',
-					description: m.message,
-					type: 'success',
-					duration: 5000
-				});
+				sonner.success(m.message);
 			} else if (m.status === 429) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 15000
-				});
+				sonner.error(m.message);
 			}
 		}
 	});

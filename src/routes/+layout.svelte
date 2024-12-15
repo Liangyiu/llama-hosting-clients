@@ -1,12 +1,12 @@
 <script lang="ts">
 	import '../app.postcss';
 
-	import { ModeWatcher } from 'mode-watcher';
+	import { ModeWatcher, mode } from 'mode-watcher';
 	// import { type ModalComponent } from '@skeletonlabs/skeleton';
-	// import { initializeStores, Drawer, Toast, Modal } from '@skeletonlabs/skeleton';
-	import { ToastProvider } from '@skeletonlabs/skeleton-svelte';
+	// import { initializeStores, Drawer, Modal } from '@skeletonlabs/skeleton';
 	import TotpCodeEntryModal from '$lib/components/Modals/TotpCodeEntryModal.svelte';
 	import type { Snippet } from 'svelte';
+	import { Toaster } from 'svelte-sonner';
 
 	// initializeStores();
 
@@ -27,8 +27,8 @@
 
 <!-- <Modal components={modalRegistry} /> -->
 
-<ToastProvider>
-	<div class="h-screen">
-		{@render children?.()}
-	</div>
-</ToastProvider>
+<Toaster theme={$mode} position="bottom-center" />
+
+<div class="h-screen">
+	{@render children?.()}
+</div>

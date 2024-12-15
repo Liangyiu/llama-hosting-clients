@@ -7,9 +7,11 @@
 	import IconFirst from 'lucide-svelte/icons/chevrons-left';
 	import IconLast from 'lucide-svelte/icons/chevron-right';
 
-	import { Accordion, Modal, Pagination, type ToastContext } from '@skeletonlabs/skeleton-svelte';
+	import { Accordion, Modal, Pagination } from '@skeletonlabs/skeleton-svelte';
 	import type { ListResult } from 'pocketbase';
 	import KeyVaultItem from './KeyVaultItem.svelte';
+
+	import { toast as sonner } from 'svelte-sonner';
 
 	// const modalStore = getModalStore();
 
@@ -25,9 +27,6 @@
 	function closeModal() {
 		modalOpenState = false;
 	}
-
-	import { getContext } from 'svelte';
-	const toast: ToastContext = getContext('toast');
 
 	interface Props {
 		sshKeysPage: ListResult<{
@@ -92,11 +91,7 @@
 				message = 'Error: Failed to add default SSH key. Try again later';
 			}
 
-			toast.create({
-				title: 'Error',
-				description: message,
-				type: 'error'
-			});
+			sonner.error(message);
 		}
 	}
 
@@ -122,13 +117,7 @@
 		if (response.ok) {
 			sshKeys[index].is_default = false;
 		} else {
-			toast.create({
-				title: 'Error',
-				description: 'Error: Failed to remove default SSH key. Try again later',
-				type: 'error',
-
-				duration: 8000
-			});
+			sonner.error('Error: Failed to remove default SSH key. Try again later');
 		}
 	}
 
@@ -154,12 +143,7 @@
 		if (response.ok) {
 			window.location.reload();
 		} else {
-			toast.create({
-				title: 'Error',
-				description: 'Error: Failed to remove SSH key. Try again later',
-				type: 'error',
-				duration: 8000
-			});
+			sonner.error('Error: Failed to remove SSH key. Try again later');
 		}
 	}
 </script>

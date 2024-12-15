@@ -1,3 +1,7 @@
+<script>
+	import { error } from 'console';
+</script>
+
 <!-- <script lang="ts">
 	import { getContext, type SvelteComponent } from 'svelte';
 	import QRCode from '@castlenine/svelte-qrcode';
@@ -8,7 +12,8 @@
 	import { activateTotpSchema } from '$lib/form-schemas';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import { Secret, TOTP } from 'otpauth';
-	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
+
+	import { toast as sonner } from 'svelte-sonner';
 
 	interface Props {
 		// expose parent props to comp
@@ -17,7 +22,6 @@
 
 	let { parent }: Props = $props();
 
-	const toast: ToastContext = getContext('toast');
 
 	// const modalStore = getModalStore();
 
@@ -43,12 +47,8 @@
 	message.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				toast.create({
-					title: 'Success',
-					description: m.message,
-					type: 'success',
-					duration: 5000
-				});
+				sonner.success(m.message)
+
 
 				// if ($modalStore[0].response) {
 				// 	$modalStore[0].response(true);
@@ -56,21 +56,15 @@
 
 				// modalStore.close();
 			} else if (m.status === 400) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 5000
-				});
+
+
+				sonner.error(m.message)
 			} else if (m.status === 429) {
 				//TODO: handle rate limit
 			} else {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 5000
-				});
+
+
+				sonner.error(m.message)
 			}
 		}
 	});

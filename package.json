@@ -56,6 +56,7 @@
 		"otpauth": "^9.3.5",
 		"pocketbase": "^0.21.5",
 		"rate-limiter-flexible": "^5.0.4",
+		"svelte-sonner": "^0.3.28",
 		"tailwind-merge": "^2.5.5",
 		"typed-pocketbase": "^0.1.1",
 		"zod": "^3.23.8"

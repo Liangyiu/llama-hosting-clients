@@ -7,10 +7,7 @@
 	import { CircleAlertIcon, Loader2, MailWarning } from 'lucide-svelte';
 	import { page } from '$app/stores';
 	import LightSwitch from '$lib/components/LightSwitch.svelte';
-	import { getContext } from 'svelte';
-	import type { ToastContext } from '@skeletonlabs/skeleton-svelte';
-
-	const toast: ToastContext = getContext('toast');
+	import { toast as sonner } from 'svelte-sonner';
 
 	interface Props {
 		data: PageData;
@@ -32,20 +29,12 @@
 	message.subscribe((m) => {
 		if (m) {
 			if (m.status === 403 && m.message === 'Please verify your email') {
-				toast.create({
-					title: 'Info',
-					description: 'Please verify your email',
-					type: 'info',
-					duration: 15000
-				});
+				sonner.info('Please verify your email');
 			} else if (m.status === 400 && m.message === 'Invalid credentials') {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else if (m.status === 400 && m.message === 'Please enter your TOTP code') {
+				sonner.info(m.message);
+
 				totpCodeRequired = true;
 				newUser = null;
 				loggedOut = null;
@@ -53,26 +42,11 @@
 				$formData.password = capturedFormData.password;
 				capturedFormData = { email: '', password: '' };
 			} else if (m.status === 400 && m.message === 'Invalid TOTP code') {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else if (m.status === 429) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			}
 		}
 	});
