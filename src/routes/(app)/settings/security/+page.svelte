@@ -11,10 +11,7 @@
 	import { Control, Field, FieldErrors } from 'formsnap';
 	import { Loader2 } from 'lucide-svelte';
 
-	import { getContext } from 'svelte';
-	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
-
-	const toast: ToastContext = getContext('toast');
+	import { toast as sonner } from 'svelte-sonner';
 
 	// const modalStore = getModalStore();
 
@@ -42,33 +39,13 @@
 				user.mfaTotp = false;
 				user.mfaTotpSecretId = undefined;
 
-				toast.create({
-					title: 'Success',
-					description: m.message,
-					type: 'success',
-					duration: 5000
-				});
+				sonner.success(m.message);
 			} else if (m.status === 429) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else if (m.status === 498) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 15000
-				});
+				sonner.error(m.message);
 			}
 		}
 	});

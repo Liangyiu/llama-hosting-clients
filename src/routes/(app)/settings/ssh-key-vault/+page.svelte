@@ -5,12 +5,10 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import KeyVault from '$lib/components/KeyVault.svelte';
-	import { getContext } from 'svelte';
-	import type { ToastContext } from '@skeletonlabs/skeleton-svelte';
+
+	import { toast as sonner } from 'svelte-sonner';
 
 	let { data } = $props();
-
-	const toast: ToastContext = getContext('toast');
 
 	const addSshKeyForm = superForm(data.sshKeyForm, {
 		validators: zodClient(addSshKeySchema)
@@ -21,40 +19,15 @@
 	message.subscribe((m) => {
 		if (m) {
 			if (m.message === 'SSH key added successfully' && m.status === 200) {
-				toast.create({
-					title: 'Success',
-					description: m.message,
-					type: 'success',
-					duration: 3000
-				});
+				sonner.success(m.message);
 			} else if (m.message === 'SSH key already exists' && m.status === 400) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else if (m.message === 'Error: Failed to add SSH key' && m.status === 400) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else if (m.status === 429) {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			} else {
-				toast.create({
-					title: 'Error',
-					description: 'Something went wrong',
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			}
 		}
 	});

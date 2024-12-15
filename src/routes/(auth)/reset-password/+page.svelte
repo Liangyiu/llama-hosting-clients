@@ -5,12 +5,9 @@
 	import { CircleAlertIcon, Loader2 } from 'lucide-svelte';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import LightSwitch from '$lib/components/LightSwitch.svelte';
-	import { getContext } from 'svelte';
-	import type { ToastContext } from '@skeletonlabs/skeleton-svelte';
+	import { toast as sonner } from 'svelte-sonner';
 
 	let { data } = $props();
-
-	const toast: ToastContext = getContext('toast');
 
 	const form = superForm(data.form, {
 		validators: zodClient(resetPasswordSchema)
@@ -21,19 +18,9 @@
 	message.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				toast.create({
-					title: 'Success',
-					description: m.message,
-					type: 'success',
-					duration: 15000
-				});
+				sonner.success(m.message);
 			} else if (m.message === 'An error occurred during the password reset process') {
-				toast.create({
-					title: 'Error',
-					description: m.message,
-					type: 'error',
-					duration: 8000
-				});
+				sonner.error(m.message);
 			}
 		}
 	});
