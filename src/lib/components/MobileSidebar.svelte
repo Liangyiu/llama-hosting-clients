@@ -8,6 +8,7 @@
 	const drawerStore = createSidebarStore();
 </script>
 
+<!-- Mobile Drawer -->
 <Modal
 	bind:open={drawerStore.visible}
 	triggerBase="btn-icon lg:hidden "
