@@ -4,12 +4,31 @@
 	import IconEllipsis from 'lucide-svelte/icons/ellipsis';
 	import IconFirst from 'lucide-svelte/icons/chevrons-left';
 	import IconLast from 'lucide-svelte/icons/chevron-right';
-
 	import { Accordion, Modal, Pagination } from '@skeletonlabs/skeleton-svelte';
-	import type { ListResult } from 'pocketbase';
 	import KeyVaultItem from './KeyVaultItem.svelte';
 
 	import { toast as sonner } from 'svelte-sonner';
+	import autoAnimate from '@formkit/auto-animate';
+
+	interface SshKeyData {
+		collectionName: 'ssh_keys';
+		user: string;
+		public_key: string;
+		key_name: string;
+		is_default: boolean;
+		id: string;
+		created: string;
+		updated: string;
+		collectionId: string;
+	}
+
+	interface Props {
+		sshKeys: SshKeyData[];
+		page: number;
+		pageSize: number;
+	}
+
+	let { sshKeys, page: urlPage, pageSize: urlPageSize }: Props = $props();
 
 	let modalSettings = {
 		title: '',
@@ -32,25 +51,10 @@
 		}
 	});
 
-	interface Props {
-		sshKeysPage: ListResult<{
-			collectionName: 'ssh_keys';
-			user: string;
-			public_key: string;
-			key_name: string;
-			is_default: boolean;
-			id: string;
-			created: string;
-			updated: string;
-			collectionId: string;
-		}>;
-		page: number;
-		pageSize: number;
-	}
+	let page = $state(urlPage || 1);
+	let pageSize = $state(urlPageSize || 5);
 
-	let { sshKeysPage, page, pageSize }: Props = $props();
-
-	let sshKeys = $state(sshKeysPage.items);
+	const slicedData = $derived((s: SshKeyData[]) => s.slice((page - 1) * pageSize, page * pageSize));
 
 	// let paginationSettings = {
 	// 	page: page - 1,
@@ -135,7 +139,7 @@
 	}
 </script>
 
-{#if sshKeysPage.items.length === 0}
+{#if sshKeys.length === 0}
 	<div>No SSH Keys</div>
 {:else}
 	<Modal
@@ -163,13 +167,9 @@
 		{/snippet}
 	</Modal>
 
-	<div class="space-y-4">
-		{#each sshKeys as keyData, index}
-			<Accordion
-				collapsible
-				rounded="rounded-[var(--theme-rounded-container)]"
-				base="preset-filled-surface-300-700 rounded-container"
-			>
+	<div class="space-y-4" use:autoAnimate>
+		{#each slicedData(sshKeys) as keyData, index}
+			<Accordion collapsible>
 				<Accordion.Item value={keyData.id}>
 					{#snippet control()}
 						<span class="text-lg">
@@ -212,40 +212,37 @@
 					{/snippet}
 				</Accordion.Item>
 			</Accordion>
+			{#if !(slicedData(sshKeys).length - 1 === index)}
+				<hr class="hr" />
+			{/if}
 		{/each}
 
-		<Pagination
-			data={[]}
-			bind:page
-			bind:pageSize
-			onPageChange={(details) => {
-				console.log(details);
-			}}
-			onPageSizeChange={(details) => {
-				console.log(details);
-			}}
-		>
-			{#snippet labelEllipsis()}<IconEllipsis class="size-4" />{/snippet}
-			{#snippet labelNext()}<IconArrowRight class="size-4" />{/snippet}
-			{#snippet labelPrevious()}<IconArrowLeft class="size-4" />{/snippet}
-			{#snippet labelFirst()}<IconFirst class="size-4" />{/snippet}
-			{#snippet labelLast()}<IconLast class="size-4" />{/snippet}
-		</Pagination>
+		<footer class="sm:flex sm:justify-between">
+			<select name="size" id="size" class="select max-w-[150px] sm:mb-0 mb-4" bind:value={pageSize}>
+				{#each [5, 10, 15] as v}
+					<option value={v}>Items {v}</option>
+				{/each}
+				<option value={sshKeys.length}>Show All</option>
+			</select>
+			<!-- Pagination -->
 
-		<!-- <Paginator
-			settings={paginationSettings}
-			showFirstLastButtons={false}
-			showPreviousNextButtons={true}
-			on:amount={(e) => {
-				if (e.detail !== pageSize) {
-					goto(`?page=${1}&pageSize=${e.detail}`);
-				}
-			}}
-			on:page={(e) => {
-				if (e.detail !== page - 1) {
-					goto(`?page=${e.detail + 1}&pageSize=${pageSize}`);
-				}
-			}}
-		/> -->
+			<Pagination
+				data={sshKeys}
+				bind:page
+				bind:pageSize
+				onPageChange={(details) => {
+					page = details.page;
+				}}
+				onPageSizeChange={(details) => {
+					pageSize = details.pageSize;
+				}}
+			>
+				{#snippet labelEllipsis()}<IconEllipsis class="size-4" />{/snippet}
+				{#snippet labelNext()}<IconArrowRight class="size-4" />{/snippet}
+				{#snippet labelPrevious()}<IconArrowLeft class="size-4" />{/snippet}
+				{#snippet labelFirst()}<IconFirst class="size-4" />{/snippet}
+				{#snippet labelLast()}<IconLast class="size-4" />{/snippet}
+			</Pagination>
+		</footer>
 	</div>
 {/if}

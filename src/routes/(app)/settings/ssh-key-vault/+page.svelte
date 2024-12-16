@@ -102,12 +102,12 @@
 		<section class="space-y-4">
 			<h5 class="h5">Key Vault</h5>
 			<div class="p-2 flex flex-col w-full">
-				{#await data.sshKeysPagePromise}
+				{#await data.sshKeysPromise}
 					<div class="w-full justify-center">
 						<Loader2 class="animate-spin size-12" />
 					</div>
-				{:then sshKeysPage}
-					<KeyVault {sshKeysPage} page={data.page} pageSize={data.pageSize} />
+				{:then sshKeys}
+					<KeyVault {sshKeys} page={data.page} pageSize={data.pageSize} />
 				{:catch error}
 					<p>an error occurred</p>
 				{/await}
