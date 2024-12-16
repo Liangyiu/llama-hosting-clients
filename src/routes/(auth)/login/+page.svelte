@@ -8,6 +8,7 @@
 	import { page } from '$app/stores';
 	import LightSwitch from '$lib/components/LightSwitch.svelte';
 	import { toast as sonner } from 'svelte-sonner';
+	import autoAnimate from '@formkit/auto-animate';
 
 	interface Props {
 		data: PageData;
@@ -74,7 +75,7 @@
 			</div>
 		</div>
 	</div>
-	<section class="flex flex-col items-center justify-center p-4 w-full">
+	<section class="flex flex-col items-center justify-center p-4 w-full" use:autoAnimate>
 		{#if newUser}
 			<div
 				class="alert card grid grid-cols-1 items-center gap-4 p-4 lg:grid-cols-[auto_1fr_auto] preset-outlined-surface-300-700 w-full mb-4"

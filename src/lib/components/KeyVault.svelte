@@ -1,6 +1,4 @@
 <script lang="ts">
-	// import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
-
 	import IconArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import IconArrowRight from 'lucide-svelte/icons/arrow-right';
 	import IconEllipsis from 'lucide-svelte/icons/ellipsis';
@@ -13,20 +11,26 @@
 
 	import { toast as sonner } from 'svelte-sonner';
 
-	// const modalStore = getModalStore();
-
 	let modalSettings = {
 		title: '',
 		description: ''
 	};
 
-	let modalConfirmed = $state(false);
-
 	let modalOpenState = $state(false);
 
-	function closeModal() {
-		modalOpenState = false;
-	}
+	let modalContext = $state<{
+		action: 'addDefaultKey' | 'removeDefaultKey' | 'deleteKey' | undefined;
+		keyData: {
+			id: string;
+			index: number;
+		};
+	}>({
+		action: undefined,
+		keyData: {
+			id: '',
+			index: 0
+		}
+	});
 
 	interface Props {
 		sshKeysPage: ListResult<{
@@ -55,25 +59,36 @@
 	// 	amounts: [5, 10, 15, 20]
 	// };
 
+	function showConfirmModal() {
+		modalOpenState = true;
+	}
+
+	async function handleModalConfirm() {
+		modalOpenState = false;
+
+		switch (modalContext.action) {
+			case 'addDefaultKey':
+				await addDefaultKey(modalContext.keyData.id, modalContext.keyData.index);
+
+				break;
+			case 'removeDefaultKey':
+				await removeDefaultKey(modalContext.keyData.id, modalContext.keyData.index);
+
+				break;
+			case 'deleteKey':
+				await deleteKey(modalContext.keyData.id);
+				break;
+			default:
+				break;
+		}
+	}
+
+	function handleModalCancellation() {
+		modalOpenState = false;
+		modalContext.action = undefined;
+	}
+
 	async function addDefaultKey(id: string, index: number) {
-		modalSettings.title = 'Please Confirm';
-		modalSettings.description =
-			'Are you sure you wish to proceed? Having a default key will deactivate password login for the root user on new KVM servers.';
-
-		// const confirmed = new Promise<boolean>((resolve) => {
-		// 	const modal: ModalSettings = {
-		// 		type: 'confirm',
-		// 		title: 'Please Confirm',
-		// 		body: 'Are you sure you wish to proceed? Having a default key will deactivate password login for the root user on new KVM servers.',
-		// 		response: (r: boolean) => {
-		// 			resolve(r);
-		// 		}
-		// 	};
-		// 	modalStore.trigger(modal);
-		// });
-
-		// if (!(await confirmed)) return;
-
 		const response = await fetch(`/api/account/key-vault/add-default/${id}`, {
 			method: 'PUT'
 		});
@@ -96,20 +111,6 @@
 	}
 
 	async function removeDefaultKey(id: string, index: number) {
-		// const confirmed = new Promise<boolean>((resolve) => {
-		// 	const modal: ModalSettings = {
-		// 		type: 'confirm',
-		// 		title: 'Please Confirm',
-		// 		body: 'Are you sure you wish to proceed?',
-		// 		response: (r: boolean) => {
-		// 			resolve(r);
-		// 		}
-		// 	};
-		// 	modalStore.trigger(modal);
-		// });
-
-		// if (!(await confirmed)) return;
-
 		const response = await fetch(`/api/account/key-vault/remove-default/${id}`, {
 			method: 'DELETE'
 		});
@@ -122,20 +123,6 @@
 	}
 
 	async function deleteKey(id: string) {
-		// const confirmed = new Promise<boolean>((resolve) => {
-		// 	const modal: ModalSettings = {
-		// 		type: 'confirm',
-		// 		title: 'Please Confirm',
-		// 		body: 'Are you sure you wish to proceed? You will have to manually remove the SSH keys from your servers.',
-		// 		response: (r: boolean) => {
-		// 			resolve(r);
-		// 		}
-		// 	};
-		// 	modalStore.trigger(modal);
-		// });
-
-		// if (!(await confirmed)) return;
-
 		const response = await fetch(`/api/account/key-vault/remove-key/${id}`, {
 			method: 'DELETE'
 		});
@@ -151,29 +138,30 @@
 {#if sshKeysPage.items.length === 0}
 	<div>No SSH Keys</div>
 {:else}
-	<!-- <Modal
+	<Modal
 		bind:open={modalOpenState}
 		triggerBase="btn preset-tonal"
-		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm md:min-w-96"
 		backdropClasses="backdrop-blur-sm"
 	>
 		{#snippet content()}
 			<header class="flex justify-between">
-				<h2 class="h2">Modal Example</h2>
+				<h3 class="h3">{modalSettings.title}</h3>
 			</header>
 			<article>
 				<p class="opacity-60">
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, ab adipisci. Libero cumque
-					sunt quis error veritatis amet, expedita voluptatem. Quos repudiandae consequuntur
-					voluptatem et dicta quas, reprehenderit velit excepturi?
+					{modalSettings.description}
 				</p>
 			</article>
 			<footer class="flex justify-end gap-4">
-				<button type="button" class="btn preset-tonal" onclick={closeModal}>Cancel</button>
-				<button type="button" class="btn preset-filled" onclick={closeModal}>Confirm</button>
+				<button type="button" class="btn preset-tonal" onclick={handleModalCancellation}
+					>Cancel</button
+				>
+				<button type="button" class="btn preset-filled" onclick={handleModalConfirm}>Confirm</button
+				>
 			</footer>
 		{/snippet}
-	</Modal> -->
+	</Modal>
 
 	<div class="space-y-4">
 		{#each sshKeys as keyData, index}
@@ -195,13 +183,30 @@
 						<KeyVaultItem
 							bind:keyData={sshKeys[index]}
 							addDefaultKey={async (id: string) => {
-								await addDefaultKey(id, index);
+								modalContext.action = 'addDefaultKey';
+								modalContext.keyData = { id, index };
+								modalSettings.title = 'Please Confirm';
+								modalSettings.description =
+									'Are you sure you wish to proceed? Having a default key will deactivate password login for the root user on new KVM servers.';
+
+								showConfirmModal();
 							}}
 							removeDefaultKey={async (id: string) => {
-								await removeDefaultKey(id, index);
+								modalContext.action = 'removeDefaultKey';
+								modalContext.keyData = { id, index };
+								modalSettings.title = 'Please Confirm';
+								modalSettings.description = 'Are you sure you wish to proceed?';
+
+								showConfirmModal();
 							}}
 							deleteKey={async (id: string) => {
-								await deleteKey(id);
+								modalContext.action = 'deleteKey';
+								modalContext.keyData = { id, index };
+								modalSettings.title = 'Please Confirm';
+								modalSettings.description =
+									'Are you sure you wish to proceed? You will have to manually remove the SSH keys from your servers.';
+
+								showConfirmModal();
 							}}
 						/>
 					{/snippet}
