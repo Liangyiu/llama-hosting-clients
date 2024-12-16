@@ -28,7 +28,9 @@
 		pageSize: number;
 	}
 
-	let { sshKeys, page: urlPage, pageSize: urlPageSize }: Props = $props();
+	let { sshKeys: fetchedSshKeys, page: urlPage, pageSize: urlPageSize }: Props = $props();
+
+	let sshKeys = $state(fetchedSshKeys);
 
 	let modalSettings = {
 		title: '',
@@ -55,13 +57,6 @@
 	let pageSize = $state(urlPageSize || 5);
 
 	const slicedData = $derived((s: SshKeyData[]) => s.slice((page - 1) * pageSize, page * pageSize));
-
-	// let paginationSettings = {
-	// 	page: page - 1,
-	// 	limit: pageSize,
-	// 	size: sshKeysPage.totalItems,
-	// 	amounts: [5, 10, 15, 20]
-	// };
 
 	function showConfirmModal() {
 		modalOpenState = true;
