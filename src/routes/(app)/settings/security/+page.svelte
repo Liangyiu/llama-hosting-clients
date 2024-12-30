@@ -158,8 +158,14 @@
 						<div class="flex justify-center">
 							<QRCode data={totp.toString()} />
 						</div>
-						<div class="text-center overflow-scroll">
-							<p>Secret: {totpSecret.base32}</p>
+						<div class="text-center">
+							Secret
+							<textarea
+								class="textarea preset-outlined-surface-400-600 text-sm text-center"
+								readonly
+								rows="1"
+								bind:value={totpSecret.base32}
+							></textarea>
 						</div>
 					</div>
 					<hr class="hr" />
@@ -182,21 +188,25 @@
 							</Control>
 						</Field>
 						<Field form={activateTotpForm} name="totp_code">
-							<Control let:attrs>
-								<Label asChild={true}>
-									<label class="label sr-only" for="totp_code">
-										<span>Code</span>
-									</label>
-								</Label>
-								<input
-									{...attrs}
-									class="input"
-									type="text"
-									name="totp_code"
-									id="totp_code"
-									bind:value={$activateTotpFormData.totp_code}
-									placeholder="Enter TOTP Code"
-								/>
+							<Control>
+								{#snippet children({ props })}
+									<Label>
+										{#snippet child({ props })}
+											<label {...props} class="label sr-only" for="totp_code">
+												<span>Code</span>
+											</label>
+										{/snippet}
+									</Label>
+									<input
+										{...props}
+										class="input"
+										type="text"
+										name="totp_code"
+										id="totp_code"
+										bind:value={$activateTotpFormData.totp_code}
+										placeholder="Enter TOTP Code"
+									/>
+								{/snippet}
 							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>
@@ -213,18 +223,23 @@
 					>
 						<Field form={deactivateTotpForm} name="totp_code">
 							<Control>
-								<Label asChild={true}>
-									<label class="label" for="totp_code">
-										<span>Code</span>
-									</label>
-								</Label>
-								<input
-									type="text"
-									name="totp_code"
-									class="input"
-									placeholder="••••••"
-									bind:value={$deactivateTotpFormData.totp_code}
-								/>
+								{#snippet children({ props })}
+									<Label>
+										{#snippet child({ props })}
+											<label {...props} class="label" for="totp_code">
+												<span>Code</span>
+											</label>
+										{/snippet}
+									</Label>
+									<input
+										{...props}
+										type="text"
+										name="totp_code"
+										class="input"
+										placeholder="••••••"
+										bind:value={$deactivateTotpFormData.totp_code}
+									/>
+								{/snippet}
 							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>

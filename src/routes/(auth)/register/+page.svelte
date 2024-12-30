@@ -42,44 +42,52 @@
 				<div class="grid grid-cols-2 gap-4">
 					<div>
 						<Field {form} name="first_name">
-							<Control let:attrs>
-								<div class="space-y-1">
-									<Label asChild={true}>
-										<label class="label" for="first_name">
-											<span>First name</span>
-										</label>
-									</Label>
-									<input
-										{...attrs}
-										bind:value={$formData.first_name}
-										id="first_name"
-										placeholder="John"
-										class="input"
-										tabindex="1"
-									/>
-								</div>
+							<Control>
+								{#snippet children({ props })}
+									<div class="space-y-1">
+										<Label>
+											{#snippet child({ props })}
+												<label {...props} class="label" for="first_name">
+													<span>First name</span>
+												</label>
+											{/snippet}
+										</Label>
+										<input
+											{...props}
+											bind:value={$formData.first_name}
+											id="first_name"
+											placeholder="John"
+											class="input"
+											tabindex="1"
+										/>
+									</div>
+								{/snippet}
 							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>
 					</div>
 					<div>
 						<Field {form} name="last_name">
-							<Control let:attrs>
-								<div class="space-y-1">
-									<Label asChild={true}>
-										<label class="label" for="last_name">
-											<span>Last name</span>
-										</label>
-									</Label>
-									<input
-										{...attrs}
-										bind:value={$formData.last_name}
-										id="last_name"
-										placeholder="Doe"
-										class="input"
-										tabindex="2"
-									/>
-								</div>
+							<Control>
+								{#snippet children({ props })}
+									<div class="space-y-1">
+										<Label>
+											{#snippet child({ props })}
+												<label {...props} class="label" for="last_name">
+													<span>Last name</span>
+												</label>
+											{/snippet}
+										</Label>
+										<input
+											{...props}
+											bind:value={$formData.last_name}
+											id="last_name"
+											placeholder="Doe"
+											class="input"
+											tabindex="2"
+										/>
+									</div>
+								{/snippet}
 							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>
@@ -87,23 +95,27 @@
 				</div>
 				<div>
 					<Field {form} name="email">
-						<Control let:attrs>
-							<div class="space-y-1">
-								<Label asChild={true}>
-									<label class="label" for="email">
-										<span>Email</span>
-									</label>
-								</Label>
-								<input
-									{...attrs}
-									bind:value={$formData.email}
-									type="email"
-									id="email"
-									placeholder="name@example.com"
-									class="input"
-									tabindex="3"
-								/>
-							</div>
+						<Control>
+							{#snippet children({ props })}
+								<div class="space-y-1">
+									<Label>
+										{#snippet child({ props })}
+											<label {...props} class="label" for="email">
+												<span>Email</span>
+											</label>
+										{/snippet}
+									</Label>
+									<input
+										{...props}
+										bind:value={$formData.email}
+										type="email"
+										id="email"
+										placeholder="name@example.com"
+										class="input"
+										tabindex="3"
+									/>
+								</div>
+							{/snippet}
 						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>
@@ -111,23 +123,27 @@
 
 				<div>
 					<Field {form} name="password">
-						<Control let:attrs>
-							<div class="space-y-1">
-								<Label asChild={true}>
-									<label for="password" class="label">
-										<span>Password</span>
-									</label>
-								</Label>
-								<input
-									{...attrs}
-									type="password"
-									bind:value={$formData.password}
-									id="password"
-									class="input"
-									placeholder="•••••••••••••"
-									tabindex="4"
-								/>
-							</div>
+						<Control>
+							{#snippet children({ props })}
+								<div class="space-y-1">
+									<Label>
+										{#snippet child({ props })}
+											<label {...props} for="password" class="label">
+												<span>Password</span>
+											</label>
+										{/snippet}
+									</Label>
+									<input
+										{...props}
+										type="password"
+										bind:value={$formData.password}
+										id="password"
+										class="input"
+										placeholder="•••••••••••••"
+										tabindex="4"
+									/>
+								</div>
+							{/snippet}
 						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>
@@ -135,23 +151,27 @@
 
 				<div>
 					<Field {form} name="passwordConfirm">
-						<Control let:attrs>
-							<div class="space-y-1">
-								<Label asChild={true}>
-									<label for="password_confirm" class="label">
-										<span>Confirm Password</span>
-									</label>
-								</Label>
-								<input
-									{...attrs}
-									type="password"
-									bind:value={$formData.passwordConfirm}
-									id="password_confirm"
-									class="input"
-									placeholder="•••••••••••••"
-									tabindex="5"
-								/>
-							</div>
+						<Control>
+							{#snippet children({ props })}
+								<div class="space-y-1">
+									<Label>
+										{#snippet child({ props })}
+											<label {...props} for="password_confirm" class="label">
+												<span>Confirm Password</span>
+											</label>
+										{/snippet}
+									</Label>
+									<input
+										{...props}
+										type="password"
+										bind:value={$formData.passwordConfirm}
+										id="password_confirm"
+										class="input"
+										placeholder="•••••••••••••"
+										tabindex="5"
+									/>
+								</div>
+							{/snippet}
 						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>
@@ -159,33 +179,37 @@
 
 				<div>
 					<Field {form} name="accept_terms">
-						<Control let:attrs>
-							<div class=" flex items-start space-x-2">
-								<input
-									{...attrs}
-									type="checkbox"
-									bind:checked={$formData.accept_terms}
-									id="accept_terms"
-									class="checkbox"
-									tabindex="6"
-								/>
-								<Label asChild={true}>
-									<label for="accept_terms" class="label">
-										<p>
-											I accept the <a
-												href="/terms-of-service"
-												class="anchor"
-												tabindex="7"
-												target="_blank">terms of service</a
-											>
-											&
-											<a href="/privacy-policy" class="anchor" tabindex="8" target="_blank"
-												>privacy policy</a
-											>
-										</p>
-									</label>
-								</Label>
-							</div>
+						<Control>
+							{#snippet children({ props })}
+								<div class=" flex items-start space-x-2">
+									<input
+										{...props}
+										type="checkbox"
+										bind:checked={$formData.accept_terms}
+										id="accept_terms"
+										class="checkbox"
+										tabindex="6"
+									/>
+									<Label>
+										{#snippet child({ props })}
+											<label {...props} for="accept_terms" class="label">
+												<p>
+													I accept the <a
+														href="/terms-of-service"
+														class="anchor"
+														tabindex="7"
+														target="_blank">terms of service</a
+													>
+													&
+													<a href="/privacy-policy" class="anchor" tabindex="8" target="_blank"
+														>privacy policy</a
+													>
+												</p>
+											</label>
+										{/snippet}
+									</Label>
+								</div>
+							{/snippet}
 						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>

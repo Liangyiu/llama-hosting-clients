@@ -41,23 +41,27 @@
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div>
 					<Field {form} name="email">
-						<Control let:attrs>
-							<div class="space-y-1">
-								<Label asChild={true}>
-									<label class="label" for="email">
-										<span>Email</span>
-									</label>
-								</Label>
-								<input
-									{...attrs}
-									bind:value={$formData.email}
-									type="email"
-									id="email"
-									placeholder="name@example.com"
-									class="input"
-									tabindex="1"
-								/>
-							</div>
+						<Control>
+							{#snippet children({ props })}
+								<div class="space-y-1">
+									<Label>
+										{#snippet child({ props })}
+											<label {...props} class="label" for="email">
+												<span>Email</span>
+											</label>
+										{/snippet}
+									</Label>
+									<input
+										{...props}
+										bind:value={$formData.email}
+										type="email"
+										id="email"
+										placeholder="name@example.com"
+										class="input"
+										tabindex="1"
+									/>
+								</div>
+							{/snippet}
 						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>

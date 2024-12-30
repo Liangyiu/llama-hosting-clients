@@ -51,7 +51,7 @@
 		"@formkit/auto-animate": "^0.8.2",
 		"@sentry/sveltekit": "^8.41.0",
 		"clsx": "^2.1.1",
-		"formsnap": "^1.0.1",
+		"formsnap": "^2.0.0",
 		"ioredis": "^5.4.1",
 		"mode-watcher": "^0.5.0",
 		"otpauth": "^9.3.5",
