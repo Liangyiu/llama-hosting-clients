@@ -120,23 +120,27 @@
 			<div class="space-y-4 md:space-y-6 mb-4">
 				<div>
 					<Field {form} name="email">
-						<Control let:attrs>
-							<div class="space-y-1">
-								<Label asChild={true}>
-									<label class="label" for="email">
-										<span class="label-text">Email</span>
-									</label>
-								</Label>
-								<input
-									{...attrs}
-									bind:value={$formData.email}
-									type="email"
-									id="email"
-									placeholder="name@example.com"
-									class="input"
-									tabindex="1"
-								/>
-							</div>
+						<Control>
+							{#snippet children({ props })}
+								<div class="space-y-1">
+									<Label>
+										{#snippet child({ props })}
+											<label {...props} class="label" for="email">
+												<span class="label-text">Email</span>
+											</label>
+										{/snippet}
+									</Label>
+									<input
+										{...props}
+										bind:value={$formData.email}
+										type="email"
+										id="email"
+										placeholder="name@example.com"
+										class="input"
+										tabindex="1"
+									/>
+								</div>
+							{/snippet}
 						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>
@@ -144,29 +148,33 @@
 
 				<div>
 					<Field {form} name="password">
-						<Control let:attrs>
-							<div class="space-y-1">
-								<Label asChild={true}>
-									<div class="flex items-center justify-between">
-										<label for="password" class="label max-w-8">
-											<span class="label-text">Password</span>
-										</label>
+						<Control>
+							{#snippet children({ props })}
+								<div class="space-y-1">
+									<Label>
+										{#snippet child({ props })}
+											<div class="flex items-center justify-between">
+												<label {...props} for="password" class="label max-w-8">
+													<span class="label-text">Password</span>
+												</label>
 
-										<a href="/reset-password" class="text-sm font-medium anchor" tabindex="5"
-											>Forgot password?</a
-										>
-									</div>
-								</Label>
-								<input
-									{...attrs}
-									type="password"
-									bind:value={$formData.password}
-									id="password"
-									class="input"
-									placeholder="•••••••••••••"
-									tabindex="2"
-								/>
-							</div>
+												<a href="/reset-password" class="text-sm font-medium anchor" tabindex="5"
+													>Forgot password?</a
+												>
+											</div>
+										{/snippet}
+									</Label>
+									<input
+										{...props}
+										type="password"
+										bind:value={$formData.password}
+										id="password"
+										class="input"
+										placeholder="•••••••••••••"
+										tabindex="2"
+									/>
+								</div>
+							{/snippet}
 						</Control>
 						<FieldErrors class="text-error-500" />
 					</Field>
@@ -175,22 +183,26 @@
 				{#if totpCodeRequired}
 					<div>
 						<Field {form} name="totp_code">
-							<Control let:attrs>
-								<div class="space-y-1">
-									<Label asChild={true}>
-										<label class="label" for="totp_code">
-											<span class="label-text">TOTP Code</span>
-										</label>
-									</Label>
-									<input
-										{...attrs}
-										bind:value={$formData.totp_code}
-										type="text"
-										id="totp_code"
-										placeholder="123456"
-										class="input"
-									/>
-								</div>
+							<Control>
+								{#snippet children({ props })}
+									<div class="space-y-1">
+										<Label>
+											{#snippet child({ props })}
+												<label {...props} class="label" for="totp_code">
+													<span class="label-text">TOTP Code</span>
+												</label>
+											{/snippet}
+										</Label>
+										<input
+											{...props}
+											bind:value={$formData.totp_code}
+											type="text"
+											id="totp_code"
+											placeholder="123456"
+											class="input"
+										/>
+									</div>
+								{/snippet}
 							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>

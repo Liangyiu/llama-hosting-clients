@@ -47,42 +47,50 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={addSshKeyForm} name="public_key">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="public_key">
-													<span class="label-text">Public Key</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$addSshKeyFormData.public_key}
-												id="public_key"
-												placeholder="e.g. ssh-ed25519 ..."
-												class="input preset-outlined"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="public_key">
+															<span class="label-text">Public Key</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$addSshKeyFormData.public_key}
+													id="public_key"
+													placeholder="e.g. ssh-ed25519 ..."
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={addSshKeyForm} name="key_name">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="key_name">
-													<span class="label-text">Key Description</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$addSshKeyFormData.key_name}
-												id="last_name"
-												placeholder="optional e.g. user (at) machine"
-												class="input preset-outlined"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="key_name">
+															<span class="label-text">Key Description</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$addSshKeyFormData.key_name}
+													id="last_name"
+													placeholder="optional e.g. user (at) machine"
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>

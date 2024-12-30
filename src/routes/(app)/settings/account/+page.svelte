@@ -152,17 +152,19 @@
 						use:avatarFormEnhance
 					>
 						<Field form={avatarForm} name="avatar">
-							<Control let:attrs>
-								<input
-									{...attrs}
-									type="file"
-									name="avatar"
-									id="avatarInput"
-									accept="image/png, image/jpeg"
-									bind:files={$avatarFile}
-									class="input preset-outlined w-full"
-									onchange={() => onFileSelected()}
-								/>
+							<Control>
+								{#snippet children({ props })}
+									<input
+										{...props}
+										type="file"
+										name="avatar"
+										id="avatarInput"
+										accept="image/png, image/jpeg"
+										bind:files={$avatarFile}
+										class="input preset-outlined w-full"
+										onchange={() => onFileSelected()}
+									/>
+								{/snippet}
 							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>
@@ -203,15 +205,17 @@
 							<div>
 								<Field form={accountDetailsForm} name="first_name">
 									<Control>
-										{#snippet children({ attrs })}
+										{#snippet children({ props })}
 											<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="first_name">
-														<span class="label-text">First name</span>
-													</label>
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="first_name">
+															<span class="label-text">First name</span>
+														</label>
+													{/snippet}
 												</Label>
 												<input
-													{...attrs}
+													{...props}
 													bind:value={$accountDetailsFormData.first_name}
 													id="first_name"
 													placeholder={user.firstName}
@@ -225,21 +229,25 @@
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="last_name">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="last_name">
-													<span class="label-text">Last name</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.last_name}
-												id="last_name"
-												placeholder={user.lastName}
-												class="input preset-outlined"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="last_name">
+															<span class="label-text">Last name</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.last_name}
+													id="last_name"
+													placeholder={user.lastName}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
@@ -248,15 +256,17 @@
 						<div>
 							<Field form={accountDetailsForm} name="address_line_one">
 								<Control>
-									{#snippet children({ attrs })}
+									{#snippet children({ props })}
 										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_line_one">
-													<span class="label-text">Address Line 1</span>
-												</label>
+											<Label>
+												{#snippet child({ props })}
+													<label {...props} class="label" for="address_line_one">
+														<span class="label-text">Address Line 1</span>
+													</label>
+												{/snippet}
 											</Label>
 											<input
-												{...attrs}
+												{...props}
 												bind:value={$accountDetailsFormData.address_line_one}
 												id="address_line_one"
 												placeholder={user.addressLineOne !== ''
@@ -273,15 +283,17 @@
 						<div>
 							<Field form={accountDetailsForm} name="address_line_two">
 								<Control>
-									{#snippet children({ attrs })}
+									{#snippet children({ props })}
 										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_line_two">
-													<span class="label-text">Address Line 2</span>
-												</label>
+											<Label>
+												{#snippet child({ props })}
+													<label {...props} class="label" for="address_line_two">
+														<span class="label-text">Address Line 2</span>
+													</label>
+												{/snippet}
 											</Label>
 											<input
-												{...attrs}
+												{...props}
 												bind:value={$accountDetailsFormData.address_line_two}
 												id="address_line_two"
 												placeholder={user.addressLineTwo !== ''
@@ -298,44 +310,53 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="address_postal_code">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_postal_code">
-													<span class="label-text">Postal code</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.address_postal_code}
-												id="address_postal_code"
-												placeholder={user.addressPostalCode !== ''
-													? user.addressPostalCode
-													: 'e.g. 52066'}
-												class="input preset-outlined"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="address_postal_code">
+															<span class="label-text">Postal code</span>
+														</label>
+														pporpos
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.address_postal_code}
+													id="address_postal_code"
+													placeholder={user.addressPostalCode !== ''
+														? user.addressPostalCode
+														: 'e.g. 52066'}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="address_city">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_city">
-													<span class="label-text">City</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.address_city}
-												id="address_city"
-												placeholder={user.addressCity !== '' ? user.addressCity : 'e.g. Aachen'}
-												class="input preset-outlined"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="address_city">
+															<span class="label-text">City</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.address_city}
+													id="address_city"
+													placeholder={user.addressCity !== '' ? user.addressCity : 'e.g. Aachen'}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
@@ -345,15 +366,17 @@
 							<div>
 								<Field form={accountDetailsForm} name="address_state_province">
 									<Control>
-										{#snippet children({ attrs })}
+										{#snippet children({ props })}
 											<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="address_state_province">
-														<span class="label-text">Province/State</span>
-													</label>
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="address_state_province">
+															<span class="label-text">Province/State</span>
+														</label>
+													{/snippet}
 												</Label>
 												<input
-													{...attrs}
+													{...props}
 													bind:value={$accountDetailsFormData.address_state_province}
 													id="address_state_province"
 													placeholder={user.addressStateProvince !== ''
@@ -370,15 +393,17 @@
 							<div>
 								<Field form={accountDetailsForm} name="address_country">
 									<Control>
-										{#snippet children({ attrs })}
+										{#snippet children({ props })}
 											<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="address_country">
-														<span class="label-text">Country</span>
-													</label>
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="address_country">
+															<span class="label-text">Country</span>
+														</label>
+													{/snippet}
 												</Label>
 												<select
-													{...attrs}
+													{...props}
 													id="address_country"
 													class="select preset-outlined"
 													bind:value={$accountDetailsFormData.address_country}
@@ -401,42 +426,50 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="vat_id">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="vat_id">
-													<span class="label-text">VAT ID</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.vat_id}
-												id="vat_id"
-												placeholder={user.vatId !== '' ? user.vatId : 'optional'}
-												class="input preset-outlined"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="vat_id">
+															<span class="label-text">VAT ID</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.vat_id}
+													id="vat_id"
+													placeholder={user.vatId !== '' ? user.vatId : 'optional'}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="phone_number">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="phone_number">
-													<span class="label-text">Phone number</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.phone_number}
-												id="phone_number"
-												placeholder={user.phoneNumber !== '' ? user.phoneNumber : 'optional'}
-												class="input preset-outlined"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="phone_number">
+															<span class="label-text">Phone number</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.phone_number}
+													id="phone_number"
+													placeholder={user.phoneNumber !== '' ? user.phoneNumber : 'optional'}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
@@ -461,20 +494,24 @@
 					<div class="space-y-4 md:space-y-6">
 						<div>
 							<Field form={changeEmailForm} name="email">
-								<Control let:attrs>
-									<div class="space-y-1">
-										<Label asChild={true}>
-											<label class="label" for="email">
-												<span class="label-text">New email</span>
-											</label>
-										</Label>
-										<input
-											{...attrs}
-											bind:value={$changeEmailFormData.email}
-											id="email"
-											class="input preset-outlined"
-										/>
-									</div>
+								<Control>
+									{#snippet children({ props })}
+										<div class="space-y-1">
+											<Label>
+												{#snippet child({ props })}
+													<label {...props} class="label" for="email">
+														<span class="label-text">New email</span>
+													</label>
+												{/snippet}
+											</Label>
+											<input
+												{...props}
+												bind:value={$changeEmailFormData.email}
+												id="email"
+												class="input preset-outlined"
+											/>
+										</div>
+									{/snippet}
 								</Control>
 								<FieldErrors class="text-error-500" />
 							</Field>
