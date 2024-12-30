@@ -3,7 +3,7 @@
 </script>
 
 <div
-	class="flex h-full flex-col overflow-y-auto border-r-2 border-surface-300-600-token variant-glass-surface shadow-sm"
+	class="flex h-full flex-col overflow-y-auto lg:border-r-2 border-surface-300-700 preset-glass-surface shadow-sm"
 >
 	<div class="p-3">
 		<a href="/">

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { UsersRecord } from '$lib/types/pbTypes';
 	import MobileSidebar from './MobileSidebar.svelte';
 	import NavbarRoutes from './NavbarRoutes.svelte';
 </script>

@@ -1,15 +1,29 @@
 <script lang="ts">
-	import { getDrawerStore, type DrawerSettings } from '@skeletonlabs/skeleton';
-	import MenuIcon from 'lucide-svelte/icons/menu';
+	import MenuIcon from '~icons/lucide/menu';
 
-	const drawerStore = getDrawerStore();
-	const settings: DrawerSettings = { id: 'example-1' };
+	import { Modal } from '@skeletonlabs/skeleton-svelte';
+	import Sidebar from './Sidebar.svelte';
+	import { createSidebarStore } from '$lib/stores/SideBarStore.svelte';
 
-	const openSidebar = () => {
-		drawerStore.open(settings);
-	};
+	const drawerStore = createSidebarStore();
 </script>
 
-<button class="btn-icon pr-4 transition hover:opacity-75 lg:hidden" onclick={openSidebar}>
-	<MenuIcon />
-</button>
+<!-- Mobile Drawer -->
+<Modal
+	bind:open={drawerStore.visible}
+	triggerBase="btn-icon lg:hidden "
+	contentBase="bg-surface-100-900 p-4 space-y-4 shadow-xl w-[300px] h-screen"
+	positionerJustify="justify-start"
+	positionerAlign=""
+	positionerPadding=""
+	transitionsPositionerIn={{ x: -480, duration: 200 }}
+	transitionsPositionerOut={{ x: -480, duration: 200 }}
+>
+	{#snippet trigger()}
+		<MenuIcon />
+	{/snippet}
+
+	{#snippet content()}
+		<Sidebar />
+	{/snippet}
+</Modal>

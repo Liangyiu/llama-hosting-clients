@@ -1,16 +1,14 @@
 <script lang="ts">
 	import { accountDetailsSchema, avatarSchema, changeEmailSchema } from '$lib/form-schemas';
-	import { getUserState } from '$lib/stores/userStore';
+	import { getUserState } from '$lib/stores/UserStore.svelte.js';
 	import { supportedCountriesList } from '$lib/utils';
-	import { Avatar, type ToastSettings } from '@skeletonlabs/skeleton';
-	import { IconBug, IconCheck } from '@tabler/icons-svelte';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
-	import { Loader2 } from 'lucide-svelte';
+	import Loader2 from '~icons/lucide/loader2';
 	import { fileProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { Avatar } from '@skeletonlabs/skeleton-svelte';
 
-	const toastStore = getToastStore();
+	import { toast as sonner } from 'svelte-sonner';
 
 	let { data } = $props();
 
@@ -28,29 +26,11 @@
 	changeEmailFormMessage.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-success',
-					timeout: 5000
-				};
-
-				toastStore.trigger(toastConfig);
+				sonner.success(m.message);
 			} else if (m.status === 429) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				sonner.error(m.message);
 			} else {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					autohide: false
-				};
-
-				toastStore.trigger(toastConfig);
+				sonner.error(m.message);
 			}
 		}
 	});
@@ -71,29 +51,11 @@
 	accountDetailsFormMessage.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-success',
-					timeout: 5000
-				};
-
-				toastStore.trigger(toastConfig);
+				sonner.success(m.message);
 			} else if (m.status === 429) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				sonner.error(m.message);
 			} else {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					autohide: false
-				};
-
-				toastStore.trigger(toastConfig);
+				sonner.error(m.message);
 			}
 		}
 	});
@@ -112,29 +74,11 @@
 	avatarFormMessage.subscribe((m) => {
 		if (m) {
 			if (m.status === 200) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-success',
-					timeout: 5000
-				};
-
-				toastStore.trigger(toastConfig);
+				sonner.success(m.message);
 			} else if (m.status === 429) {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					timeout: 8000
-				};
-
-				toastStore.trigger(toastConfig);
+				sonner.error(m.message);
 			} else {
-				const toastConfig: ToastSettings = {
-					message: m.message,
-					background: 'variant-soft-error',
-					autohide: false
-				};
-
-				toastStore.trigger(toastConfig);
+				sonner.error(m.message);
 			}
 		}
 	});
@@ -155,31 +99,32 @@
 
 	const user = getUserState();
 
+	let fullName = $derived(user.firstName + ' ' + user.lastName);
+
 	let initials = $derived(
-		($user.firstName.charAt(0).toUpperCase() || 'L') +
-			($user.lastName.charAt(0).toUpperCase() || 'L')
+		(user.firstName.charAt(0).toUpperCase() || 'L') + (user.lastName.charAt(0).toUpperCase() || 'L')
 	);
 
 	let avatarUrl = $derived(
-		$user.avatarUrl === ''
+		user.avatarUrl === ''
 			? `https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
 					initials
-			: `${$user.avatarUrl}?thumb=800x800`
+			: `${user.avatarUrl}?thumb=800x800`
 	);
 
-	let customAvatarSet = $derived($user.avatarUrl !== '');
+	let customAvatarSet = $derived(user.avatarUrl !== '');
 
 	accountDetailsFormData.set({
-		first_name: $user.firstName,
-		last_name: $user.lastName,
-		address_line_one: $user.addressLineOne,
-		address_line_two: $user.addressLineTwo,
-		address_city: $user.addressCity,
-		address_state_province: $user.addressStateProvince,
-		address_country: $user.addressCountry,
-		address_postal_code: $user.addressPostalCode,
-		phone_number: $user.phoneNumber,
-		vat_id: $user.vatId
+		first_name: user.firstName,
+		last_name: user.lastName,
+		address_line_one: user.addressLineOne,
+		address_line_two: user.addressLineTwo,
+		address_city: user.addressCity,
+		address_state_province: user.addressStateProvince,
+		address_country: user.addressCountry,
+		address_postal_code: user.addressPostalCode,
+		phone_number: user.phoneNumber,
+		vat_id: user.vatId
 	});
 </script>
 
@@ -193,7 +138,12 @@
 			<h5 class="h5">Avatar</h5>
 
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
-				<Avatar src={avatar ? avatar : avatarUrl} width="w-28 md:w-32" rounded="rounded-full" />
+				<Avatar
+					name={fullName}
+					src={avatar ? avatar : avatarUrl}
+					size="w-28 h-28 md:h-32 md:w-32"
+					rounded="rounded-full"
+				/>
 				<div class="md:ml-6 space-y-4 mt-4 md:mt-0 max-w-60 sm:max-w-96">
 					<form
 						action="/settings/account/?/uploadAvatar"
@@ -202,22 +152,24 @@
 						use:avatarFormEnhance
 					>
 						<Field form={avatarForm} name="avatar">
-							<Control let:attrs>
-								<input
-									{...attrs}
-									type="file"
-									name="avatar"
-									id="avatarInput"
-									accept="image/png, image/jpeg"
-									bind:files={$avatarFile}
-									class="input w-full"
-									onchange={() => onFileSelected()}
-								/>
+							<Control>
+								{#snippet children({ props })}
+									<input
+										{...props}
+										type="file"
+										name="avatar"
+										id="avatarInput"
+										accept="image/png, image/jpeg"
+										bind:files={$avatarFile}
+										class="input preset-outlined w-full"
+										onchange={() => onFileSelected()}
+									/>
+								{/snippet}
 							</Control>
 							<FieldErrors class="text-error-500" />
 						</Field>
 						{#if $avatarFile.length > 0}
-							<button type="submit" class="btn variant-soft-primary w-full mt-4">
+							<button type="submit" class="btn preset-outlined-primary-500 w-full mt-4">
 								{#if $avatarFormDelayed}
 									<Loader2 class="size-6 animate-spin" />
 								{:else}
@@ -231,7 +183,7 @@
 						<form action="/settings/account/?/removeAvatar" method="post">
 							<button
 								type="submit"
-								class="btn variant-soft-error w-full"
+								class="btn preset-outlined-error-500 w-full"
 								disabled={!customAvatarSet}>Remove avatar</button
 							>
 						</form>
@@ -253,19 +205,21 @@
 							<div>
 								<Field form={accountDetailsForm} name="first_name">
 									<Control>
-										{#snippet children({ attrs })}
+										{#snippet children({ props })}
 											<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="first_name">
-														<span>First name</span>
-													</label>
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="first_name">
+															<span class="label-text">First name</span>
+														</label>
+													{/snippet}
 												</Label>
 												<input
-													{...attrs}
+													{...props}
 													bind:value={$accountDetailsFormData.first_name}
 													id="first_name"
-													placeholder={$user.firstName}
-													class="input"
+													placeholder={user.firstName}
+													class="input preset-outlined"
 												/>
 											</div>
 										{/snippet}
@@ -275,21 +229,25 @@
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="last_name">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="last_name">
-													<span>Last name</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.last_name}
-												id="last_name"
-												placeholder={$user.lastName}
-												class="input"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="last_name">
+															<span class="label-text">Last name</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.last_name}
+													id="last_name"
+													placeholder={user.lastName}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
@@ -298,21 +256,23 @@
 						<div>
 							<Field form={accountDetailsForm} name="address_line_one">
 								<Control>
-									{#snippet children({ attrs })}
+									{#snippet children({ props })}
 										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_line_one">
-													<span>Address Line 1</span>
-												</label>
+											<Label>
+												{#snippet child({ props })}
+													<label {...props} class="label" for="address_line_one">
+														<span class="label-text">Address Line 1</span>
+													</label>
+												{/snippet}
 											</Label>
 											<input
-												{...attrs}
+												{...props}
 												bind:value={$accountDetailsFormData.address_line_one}
 												id="address_line_one"
-												placeholder={$user.addressLineOne !== ''
-													? $user.addressLineOne
+												placeholder={user.addressLineOne !== ''
+													? user.addressLineOne
 													: 'e.g. Example Street 5'}
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									{/snippet}
@@ -323,21 +283,23 @@
 						<div>
 							<Field form={accountDetailsForm} name="address_line_two">
 								<Control>
-									{#snippet children({ attrs })}
+									{#snippet children({ props })}
 										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_line_two">
-													<span>Address Line 2</span>
-												</label>
+											<Label>
+												{#snippet child({ props })}
+													<label {...props} class="label" for="address_line_two">
+														<span class="label-text">Address Line 2</span>
+													</label>
+												{/snippet}
 											</Label>
 											<input
-												{...attrs}
+												{...props}
 												bind:value={$accountDetailsFormData.address_line_two}
 												id="address_line_two"
-												placeholder={$user.addressLineTwo !== ''
-													? $user.addressLineTwo
+												placeholder={user.addressLineTwo !== ''
+													? user.addressLineTwo
 													: 'e.g. Apt. 123'}
-												class="input"
+												class="input preset-outlined"
 											/>
 										</div>
 									{/snippet}
@@ -348,44 +310,53 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="address_postal_code">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_postal_code">
-													<span>Postal code</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.address_postal_code}
-												id="address_postal_code"
-												placeholder={$user.addressPostalCode !== ''
-													? $user.addressPostalCode
-													: 'e.g. 52066'}
-												class="input"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="address_postal_code">
+															<span class="label-text">Postal code</span>
+														</label>
+														pporpos
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.address_postal_code}
+													id="address_postal_code"
+													placeholder={user.addressPostalCode !== ''
+														? user.addressPostalCode
+														: 'e.g. 52066'}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="address_city">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="address_city">
-													<span>City</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.address_city}
-												id="address_city"
-												placeholder={$user.addressCity !== '' ? $user.addressCity : 'e.g. Aachen'}
-												class="input"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="address_city">
+															<span class="label-text">City</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.address_city}
+													id="address_city"
+													placeholder={user.addressCity !== '' ? user.addressCity : 'e.g. Aachen'}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
@@ -395,21 +366,23 @@
 							<div>
 								<Field form={accountDetailsForm} name="address_state_province">
 									<Control>
-										{#snippet children({ attrs })}
+										{#snippet children({ props })}
 											<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="address_state_province">
-														<span>Province/State</span>
-													</label>
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="address_state_province">
+															<span class="label-text">Province/State</span>
+														</label>
+													{/snippet}
 												</Label>
 												<input
-													{...attrs}
+													{...props}
 													bind:value={$accountDetailsFormData.address_state_province}
 													id="address_state_province"
-													placeholder={$user.addressStateProvince !== ''
-														? $user.addressStateProvince
+													placeholder={user.addressStateProvince !== ''
+														? user.addressStateProvince
 														: 'e.g. North Rhine-Westphalia'}
-													class="input"
+													class="input preset-outlined"
 												/>
 											</div>
 										{/snippet}
@@ -420,21 +393,23 @@
 							<div>
 								<Field form={accountDetailsForm} name="address_country">
 									<Control>
-										{#snippet children({ attrs })}
+										{#snippet children({ props })}
 											<div class="space-y-1">
-												<Label asChild={true}>
-													<label class="label" for="address_country">
-														<span>Country</span>
-													</label>
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="address_country">
+															<span class="label-text">Country</span>
+														</label>
+													{/snippet}
 												</Label>
 												<select
-													{...attrs}
+													{...props}
 													id="address_country"
-													class="select"
+													class="select preset-outlined"
 													bind:value={$accountDetailsFormData.address_country}
 												>
 													{#each supportedCountries as country}
-														{#if $user.addressCountry === country}
+														{#if user.addressCountry === country}
 															<option selected value={country}>{country}</option>
 														{:else}
 															<option value={country}>{country}</option>
@@ -451,48 +426,56 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<Field form={accountDetailsForm} name="vat_id">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="vat_id">
-													<span>VAT ID</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.vat_id}
-												id="vat_id"
-												placeholder={$user.vatId !== '' ? $user.vatId : 'optional'}
-												class="input"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="vat_id">
+															<span class="label-text">VAT ID</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.vat_id}
+													id="vat_id"
+													placeholder={user.vatId !== '' ? user.vatId : 'optional'}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 							<div>
 								<Field form={accountDetailsForm} name="phone_number">
-									<Control let:attrs>
-										<div class="space-y-1">
-											<Label asChild={true}>
-												<label class="label" for="phone_number">
-													<span>Phone number</span>
-												</label>
-											</Label>
-											<input
-												{...attrs}
-												bind:value={$accountDetailsFormData.phone_number}
-												id="phone_number"
-												placeholder={$user.phoneNumber !== '' ? $user.phoneNumber : 'optional'}
-												class="input"
-											/>
-										</div>
+									<Control>
+										{#snippet children({ props })}
+											<div class="space-y-1">
+												<Label>
+													{#snippet child({ props })}
+														<label {...props} class="label" for="phone_number">
+															<span class="label-text">Phone number</span>
+														</label>
+													{/snippet}
+												</Label>
+												<input
+													{...props}
+													bind:value={$accountDetailsFormData.phone_number}
+													id="phone_number"
+													placeholder={user.phoneNumber !== '' ? user.phoneNumber : 'optional'}
+													class="input preset-outlined"
+												/>
+											</div>
+										{/snippet}
 									</Control>
 									<FieldErrors class="text-error-500" />
 								</Field>
 							</div>
 						</div>
-						<button type="submit" class="btn variant-soft-primary">
+						<button type="submit" class="btn preset-filled-primary-300-700">
 							{#if $accountDetailsFormDelayed}
 								<Loader2 class="size-6 animate-spin" />
 							{:else}
@@ -511,27 +494,31 @@
 					<div class="space-y-4 md:space-y-6">
 						<div>
 							<Field form={changeEmailForm} name="email">
-								<Control let:attrs>
-									<div class="space-y-1">
-										<Label asChild={true}>
-											<label class="label" for="email">
-												<span>New email</span>
-											</label>
-										</Label>
-										<input
-											{...attrs}
-											bind:value={$changeEmailFormData.email}
-											id="email"
-											class="input"
-										/>
-									</div>
+								<Control>
+									{#snippet children({ props })}
+										<div class="space-y-1">
+											<Label>
+												{#snippet child({ props })}
+													<label {...props} class="label" for="email">
+														<span class="label-text">New email</span>
+													</label>
+												{/snippet}
+											</Label>
+											<input
+												{...props}
+												bind:value={$changeEmailFormData.email}
+												id="email"
+												class="input preset-outlined"
+											/>
+										</div>
+									{/snippet}
 								</Control>
 								<FieldErrors class="text-error-500" />
 							</Field>
 						</div>
 					</div>
 
-					<button type="submit" class="btn variant-soft-primary mt-4">
+					<button type="submit" class="btn preset-filled-primary-300-700 mt-4">
 						{#if $changeEmailFormDelayed}
 							<Loader2 class="size-6 animate-spin" />
 						{:else}
