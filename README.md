@@ -4,6 +4,12 @@
 
 Control panel for ordering VPSs & Webhosting, support tickets & account settings
 
+#### Stack
+
+- Pocketbase - Backend
+- Glitchtip - Error logging
+- Skeleton - UI
+
 ### Developing
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
