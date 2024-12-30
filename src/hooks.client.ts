@@ -1,12 +1,12 @@
 import { dev } from '$app/environment';
-import { PUBLIC_GLITCHTOP_DSN } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import { handleErrorWithSentry, replayIntegration } from '@sentry/sveltekit';
 import * as Sentry from '@sentry/sveltekit';
 import type { HandleClientError } from '@sveltejs/kit';
 
 Sentry.init({
 	environment: dev ? 'development' : 'production',
-	dsn: PUBLIC_GLITCHTOP_DSN,
+	dsn: env.PUBLIC_GLITCHTOP_DSN,
 	tracesSampleRate: 1.0,
 
 	// This sets the sample rate to be 10%. You may want this to be 100% while
@@ -22,9 +22,7 @@ Sentry.init({
 });
 
 const errorId = crypto.randomUUID();
-Sentry.setContext('sveltekit', {
-	errorId
-});
+Sentry.setTag('custom_error_id', errorId);
 
 // If you have a custom error handler, pass it to `handleErrorWithSentry`
 export const handleError: HandleClientError = handleErrorWithSentry(() => {

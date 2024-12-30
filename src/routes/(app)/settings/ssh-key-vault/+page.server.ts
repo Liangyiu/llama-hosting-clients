@@ -15,7 +15,7 @@ export const load = (async ({ locals, url }) => {
 		page,
 		pageSize,
 		sshKeyForm: await superValidate(zod(addSshKeySchema)),
-		sshKeysPagePromise: pb.from('ssh_keys').getList(page, pageSize, {
+		sshKeysPromise: pb.from('ssh_keys').getFullList({
 			filter: eq('user', user.id),
 			sort: '-created'
 		})
