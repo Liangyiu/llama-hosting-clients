@@ -4,7 +4,9 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { loginSchema } from '$lib/form-schemas';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
-	import { CircleAlertIcon, Loader2, MailWarning } from 'lucide-svelte';
+	import CircleAlertIcon from '~icons/lucide/circle-alert';
+	import MailWarning from '~icons/lucide/mail-warning';
+	import Loader2 from '~icons/lucide/loader2';
 	import { page } from '$app/stores';
 	import LightSwitch from '$lib/components/LightSwitch.svelte';
 	import { toast as sonner } from 'svelte-sonner';

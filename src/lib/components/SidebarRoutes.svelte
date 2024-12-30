@@ -1,14 +1,12 @@
 <script lang="ts">
 	import SidebarItem from './SidebarItem.svelte';
-	import {
-		IconCloudComputing,
-		IconFileInvoice,
-		IconHelp,
-		IconHome,
-		IconSettings,
-		IconShoppingCartCheck,
-		IconWorldWww
-	} from '@tabler/icons-svelte';
+	import IconCloudComputing from '~icons/tabler/cloud-computing';
+	import IconFileInvoice from '~icons/tabler/file-invoice';
+	import IconHelp from '~icons/tabler/help';
+	import IconHome from '~icons/tabler/home';
+	import IconSettings from '~icons/tabler/settings';
+	import IconShoppingCartCheck from '~icons/tabler/shopping-cart-check';
+	import IconWorldWww from '~icons/tabler/world-www';
 
 	const routes = [
 		{

@@ -2,9 +2,8 @@
 	import { accountDetailsSchema, avatarSchema, changeEmailSchema } from '$lib/form-schemas';
 	import { getUserState } from '$lib/stores/UserStore.svelte.js';
 	import { supportedCountriesList } from '$lib/utils';
-	import { IconBug, IconCheck } from '@tabler/icons-svelte';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
-	import { Loader2 } from 'lucide-svelte';
+	import Loader2 from '~icons/lucide/loader2';
 	import { fileProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Avatar } from '@skeletonlabs/skeleton-svelte';

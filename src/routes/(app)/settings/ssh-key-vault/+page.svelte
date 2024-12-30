@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { addSshKeySchema } from '$lib/form-schemas.js';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
-	import { Loader2 } from 'lucide-svelte';
+	import Loader2 from '~icons/lucide/loader2';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import KeyVault from '$lib/components/KeyVault.svelte';

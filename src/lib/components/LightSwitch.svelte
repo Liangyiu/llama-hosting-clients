@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	// Icons
-	import IconMoon from 'lucide-svelte/icons/moon';
-	import IconSun from 'lucide-svelte/icons/sun';
+	import IconMoon from '~icons/lucide/moon';
+	import IconSun from '~icons/lucide/sun';
 
 	import { setMode, systemPrefersMode, userPrefersMode } from 'mode-watcher';
 
@@ -30,7 +30,7 @@
 	controlActive="bg-surface-200"
 	onCheckedChange={handleModeChange}
 >
-	{#snippet inactiveChild()}<IconMoon size="14" />{/snippet}
-	{#snippet activeChild()}<IconSun size="14" />{/snippet}
+	{#snippet inactiveChild()}<IconMoon class="size-3.5" />{/snippet}
+	{#snippet activeChild()}<IconSun class="size-3.5" />{/snippet}
 	<span class="sr-only">Toggle theme</span>
 </Switch>
