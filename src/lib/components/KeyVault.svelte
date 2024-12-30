@@ -1,9 +1,9 @@
 <script lang="ts">
-	import IconArrowLeft from 'lucide-svelte/icons/arrow-left';
-	import IconArrowRight from 'lucide-svelte/icons/arrow-right';
-	import IconEllipsis from 'lucide-svelte/icons/ellipsis';
-	import IconFirst from 'lucide-svelte/icons/chevrons-left';
-	import IconLast from 'lucide-svelte/icons/chevron-right';
+	import IconArrowLeft from '~icons/lucide/arrow-left';
+	import IconArrowRight from '~icons/lucide/arrow-right';
+	import IconEllipsis from '~icons/lucide/ellipsis';
+	import IconFirst from '~icons/lucide/chevrons-left';
+	import IconLast from '~icons/lucide/chevron-right';
 	import { Accordion, Modal, Pagination } from '@skeletonlabs/skeleton-svelte';
 	import KeyVaultItem from './KeyVaultItem.svelte';
 

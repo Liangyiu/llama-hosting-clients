@@ -2,7 +2,7 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { resetPasswordSchema } from '$lib/form-schemas';
-	import { CircleAlertIcon, Loader2 } from 'lucide-svelte';
+	import Loader2 from '~icons/lucide/loader2';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
 	import LightSwitch from '$lib/components/LightSwitch.svelte';
 	import { toast as sonner } from 'svelte-sonner';

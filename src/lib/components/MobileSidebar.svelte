@@ -1,5 +1,5 @@
 <script lang="ts">
-	import MenuIcon from 'lucide-svelte/icons/menu';
+	import MenuIcon from '~icons/lucide/menu';
 
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import Sidebar from './Sidebar.svelte';

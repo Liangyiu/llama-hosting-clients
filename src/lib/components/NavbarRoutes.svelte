@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import Wallet from '@tabler/icons-svelte/icons/wallet';
+	import Wallet from '~icons/tabler/wallet';
 	import { getUserState } from '$lib/stores/UserStore.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton-svelte';
 	import { Popover } from '@skeletonlabs/skeleton-svelte';

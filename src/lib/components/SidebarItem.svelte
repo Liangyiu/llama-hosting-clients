@@ -2,12 +2,11 @@
 	import { page } from '$app/stores';
 	import { createSidebarStore } from '$lib/stores/SideBarStore.svelte';
 	import { cn } from '$lib/utils';
-	import { type Icon } from '@tabler/icons-svelte';
-	import type { ComponentType } from 'svelte';
+	import type { Component } from 'svelte';
 
 	interface Props {
 		label: string;
-		icon: ComponentType<Icon>;
+		icon: Component;
 		href: string;
 		href2: string;
 	}

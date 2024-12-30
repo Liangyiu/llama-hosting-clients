@@ -1,13 +1,13 @@
 <script lang="ts">
+	import IconCheck from '~icons/tabler/check';
 	import { getUserState } from '$lib/stores/UserStore.svelte.js';
 	import { page } from '$app/stores';
-	import { IconCheck } from '@tabler/icons-svelte';
 	import { enhance } from '$app/forms';
 	import { superForm } from 'sveltekit-superforms';
 	import { activateTotpSchema, deactivateTotpSchema } from '$lib/form-schemas.js';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Control, Field, FieldErrors, Label } from 'formsnap';
-	import { Loader2 } from 'lucide-svelte';
+	import Loader2 from '~icons/lucide/loader2';
 
 	import { toast as sonner } from 'svelte-sonner';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
