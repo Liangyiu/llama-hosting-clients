@@ -139,7 +139,6 @@
 {:else}
 	<Modal
 		bind:open={modalOpenState}
-		triggerBase="btn preset-tonal"
 		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm md:min-w-96"
 		backdropClasses="backdrop-blur-sm"
 	>
