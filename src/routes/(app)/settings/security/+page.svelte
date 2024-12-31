@@ -123,9 +123,11 @@
 					secretInputElement.value = totpSecret.base32;
 				}
 				activateTotpFormElement?.requestSubmit();
+				openState = false;
 				break;
 			case 'deactivateTotp':
 				deactivateTotpFormElement?.requestSubmit();
+				openState = false;
 				break;
 		}
 	}
