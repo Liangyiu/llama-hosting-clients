@@ -318,7 +318,6 @@
 														<label {...props} class="label" for="address_postal_code">
 															<span class="label-text">Postal code</span>
 														</label>
-														pporpos
 													{/snippet}
 												</Label>
 												<input
