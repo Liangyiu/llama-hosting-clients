@@ -82,8 +82,6 @@ export const actions: Actions = {
 			});
 		}
 
-		console.log(form.data);
-
 		const { success, timeRemaining } = await rateLimiters.activateTotp.limit(user.id);
 
 		if (!success) {
