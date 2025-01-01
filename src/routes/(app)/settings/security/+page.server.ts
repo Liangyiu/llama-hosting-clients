@@ -8,6 +8,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { TOTP } from 'otpauth';
 import { pbAdmin } from '$lib/server/pb-admin';
 import { validateTotpCode } from '$lib/server/totp';
+import { Collections, type UserMfaTotpSecretsResponse } from '$lib/types/pocketbase-types';
 
 export const load = (async () => {
 	return {
@@ -111,12 +112,14 @@ export const actions: Actions = {
 		}
 
 		try {
-			const { id } = await pbAdmin.from('user_mfa_totp_secrets').create({
-				user: user.id,
-				secret: form.data.totp_secret
-			});
+			const { id } = await pbAdmin
+				.collection(Collections.UserMfaTotpSecrets)
+				.create<UserMfaTotpSecretsResponse>({
+					user: user.id,
+					secret: form.data.totp_secret
+				});
 
-			await pb.from('users').update(user.id, {
+			await pb.collection(Collections.Users).update(user.id, {
 				mfa_totp: true,
 				mfa_totp_secret_id: id
 			});
@@ -174,12 +177,12 @@ export const actions: Actions = {
 
 		if (successValidate) {
 			try {
-				await pb.from('users').update(user.id, {
+				await pb.collection(Collections.Users).update(user.id, {
 					mfa_totp: false,
 					mfa_totp_secret_id: undefined
 				});
 
-				await pbAdmin.from('user_mfa_totp_secrets').delete(user.mfa_totp_secret_id);
+				await pbAdmin.collection(Collections.UserMfaTotpSecrets).delete(user.mfa_totp_secret_id);
 
 				user.mfa_totp = false;
 				user.mfa_totp_secret_id = '';

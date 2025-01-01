@@ -10,7 +10,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"typegen": "pocketbase-typegen --json ./pocketbase/schema.json --out ./src/lib/types/pbTypes.ts"
+		"typegen": "pocketbase-typegen --json ./pocketbase/schema.json --out ./src/lib/types/pocketbase-types.ts"
 	},
 	"devDependencies": {
 		"@iconify-json/lucide": "^1.2.20",
@@ -56,7 +56,7 @@
 		"ioredis": "^5.4.1",
 		"mode-watcher": "^0.5.0",
 		"otpauth": "^9.3.5",
-		"pocketbase": "^0.21.5",
+		"pocketbase": "^0.25.0",
 		"rate-limiter-flexible": "^5.0.4",
 		"svelte-sonner": "^0.3.28",
 		"tailwind-merge": "^2.5.5",

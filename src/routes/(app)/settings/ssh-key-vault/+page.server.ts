@@ -5,6 +5,7 @@ import { addSshKeySchema } from '$lib/form-schemas';
 import { fail } from '@sveltejs/kit';
 import { and, eq } from 'typed-pocketbase';
 import { rateLimiters } from '$lib/server/rate-limiter';
+import { Collections, type SshKeysResponse } from '$lib/types/pocketbase-types';
 
 export const load = (async ({ locals, url }) => {
 	const { pb, user } = locals;
@@ -15,7 +16,7 @@ export const load = (async ({ locals, url }) => {
 		page,
 		pageSize,
 		sshKeyForm: await superValidate(zod(addSshKeySchema)),
-		sshKeysPromise: pb.from('ssh_keys').getFullList({
+		sshKeysPromise: pb.collection(Collections.SshKeys).getFullList<SshKeysResponse>({
 			filter: eq('user', user.id),
 			sort: '-created'
 		})
@@ -43,7 +44,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			const key = await pb.from('ssh_keys').getFullList({
+			const key = await pb.collection(Collections.SshKeys).getFullList<SshKeysResponse>({
 				filter: and(eq('public_key', form.data.public_key), eq('user', user.id))
 			});
 
@@ -51,7 +52,7 @@ export const actions: Actions = {
 				return message(form, { status: 400, message: 'SSH key already exists' });
 			}
 
-			await pb.from('ssh_keys').create({
+			await pb.collection(Collections.SshKeys).create({
 				user: user.id,
 				public_key: form.data.public_key,
 				key_name: form.data.key_name
