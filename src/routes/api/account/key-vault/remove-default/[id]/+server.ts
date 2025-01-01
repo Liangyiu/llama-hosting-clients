@@ -1,4 +1,5 @@
 import { rateLimiters } from '$lib/server/rate-limiter';
+import { Collections } from '$lib/types/pocketbase-types';
 import type { RequestHandler } from './$types';
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
@@ -27,7 +28,7 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 	}
 
 	try {
-		await locals.pb.from('ssh_keys').update(params.id, {
+		await locals.pb.collection(Collections.SshKeys).update(params.id, {
 			is_default: false
 		});
 

@@ -2,10 +2,10 @@ import { sequence } from '@sveltejs/kit/hooks';
 import * as Sentry from '@sentry/sveltekit';
 import { browser, dev } from '$app/environment';
 import { env as envPublic } from '$env/dynamic/public';
-import { TypedPocketBase } from 'typed-pocketbase';
 import { redirect, type HandleServerError } from '@sveltejs/kit';
-import type { Schema } from '$lib/pocketbase/PB-Schema';
+import Pocketbase from 'pocketbase';
 import crypto from 'crypto';
+import type { TypedPocketBase } from '$lib/types/pocketbase-types';
 
 Sentry.init({
 	environment: dev ? 'development' : 'production',
@@ -45,9 +45,9 @@ export const handle = sequence(Sentry.sentryHandle(), async function _handle({ e
 	// pb logic
 	const { locals, request, url } = event;
 
-	locals.pb = new TypedPocketBase<Schema>(
+	locals.pb = new Pocketbase(
 		dev ? envPublic.PUBLIC_DEV_POCKETBASE_URL : envPublic.PUBLIC_POCKETBASE_URL
-	);
+	) as TypedPocketBase;
 
 	// load the store data from the request cookie string
 	locals.pb.authStore.loadFromCookie(request.headers.get('cookie') || '');
@@ -57,7 +57,8 @@ export const handle = sequence(Sentry.sentryHandle(), async function _handle({ e
 		if (locals.pb.authStore.isValid) {
 			await locals.pb.collection('users').authRefresh();
 		}
-		locals.user = locals.pb.authStore.model;
+
+		locals.user = locals.pb.authStore.record;
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (_) {
 		// clear the auth store on failed refresh

@@ -5,6 +5,7 @@ import { accountDetailsSchema, avatarSchema, changeEmailSchema } from '$lib/form
 import { fail, redirect } from '@sveltejs/kit';
 import type { ClientResponseError } from 'pocketbase';
 import { rateLimiters } from '$lib/server/rate-limiter';
+import { Collections } from '$lib/types/pocketbase-types';
 
 export const load = (async () => {
 	return {
@@ -36,7 +37,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			await pb.from('user_details').update(user.user_details, form.data);
+			await pb.collection(Collections.UserDetails).update(user.user_details, form.data);
 
 			return message(form, {
 				status: 200,
