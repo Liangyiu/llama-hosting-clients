@@ -1,3 +1,4 @@
+import { Collections, type UserMfaTotpSecretsResponse } from '$lib/types/pocketbase-types';
 import { pbAdmin } from './pb-admin';
 import { TOTP } from 'otpauth';
 
@@ -11,7 +12,9 @@ export async function validateTotpCode(secretId: string, code: string) {
 	}
 
 	try {
-		const totpSecret = await pbAdmin.from('user_mfa_totp_secrets').getOne(secretId);
+		const totpSecret = await pbAdmin
+			.collection(Collections.UserMfaTotpSecrets)
+			.getOne<UserMfaTotpSecretsResponse>(secretId);
 
 		if (!totpSecret) {
 			return {
