@@ -1,6 +1,7 @@
 import { and, eq } from 'typed-pocketbase';
 import type { RequestHandler } from './$types';
 import { rateLimiters } from '$lib/server/rate-limiter';
+import { Collections, type SshKeysResponse } from '$lib/types/pocketbase-types';
 
 export const PUT: RequestHandler = async ({ locals, params }) => {
 	if (!locals.user) {
@@ -28,9 +29,11 @@ export const PUT: RequestHandler = async ({ locals, params }) => {
 	}
 
 	try {
-		const defaultKeys = await locals.pb.from('ssh_keys').getFullList({
-			filter: and(eq('is_default', true), eq('user', locals.user.id))
-		});
+		const defaultKeys = await locals.pb
+			.collection(Collections.SshKeys)
+			.getFullList<SshKeysResponse>({
+				filter: and(eq('is_default', true), eq('user', locals.user.id))
+			});
 
 		if (defaultKeys.length >= 5) {
 			return new Response(
@@ -43,7 +46,7 @@ export const PUT: RequestHandler = async ({ locals, params }) => {
 			);
 		}
 
-		await locals.pb.from('ssh_keys').update(params.id, {
+		await locals.pb.collection(Collections.SshKeys).update(params.id, {
 			is_default: true
 		});
 

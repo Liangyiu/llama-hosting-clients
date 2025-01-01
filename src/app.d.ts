@@ -1,7 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-import type { Schema, UsersResponse } from '$lib/pocketbase/PB-Schema';
-import type { TypedPocketBase } from 'typed-pocketbase';
+import type { TypedPocketBase, UsersRecord } from '$lib/types/pocketbase-types';
+import type { AuthRecord } from 'pocketbase';
 
 declare global {
 	namespace App {
@@ -9,8 +9,8 @@ declare global {
 			errorId: string;
 		}
 		interface Locals {
-			pb: TypedPocketBase<Schema>;
-			user: UsersResponse | null;
+			pb: TypedPocketBase;
+			user: AuthRecord<UsersRecord>;
 		}
 		// interface PageData {}
 		// interface PageState {}

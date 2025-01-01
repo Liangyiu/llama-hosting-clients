@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
 import { rateLimiters } from '$lib/server/rate-limiter';
+import { Collections } from '$lib/types/pocketbase-types';
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
 	if (!locals.user) {
@@ -27,7 +28,7 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 	}
 
 	try {
-		await locals.pb.from('ssh_keys').delete(params.id);
+		await locals.pb.collection(Collections.SshKeys).delete(params.id);
 
 		return new Response(
 			JSON.stringify({

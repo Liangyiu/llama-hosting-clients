@@ -2,6 +2,7 @@ import { rateLimiters } from '$lib/server/rate-limiter';
 import type { RequestHandler } from './$types';
 import { validateTotpCode } from '$lib/server/totp';
 import { pbAdmin } from '$lib/server/pb-admin';
+import { Collections } from '$lib/types/pocketbase-types';
 
 interface ValidateTotpCodeI {
 	totp_code: string;
@@ -66,12 +67,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	if (successValidate) {
 		try {
-			await pb.from('users').update(user.id, {
+			await pb.collection(Collections.Users).update(user.id, {
 				mfa_totp: false,
 				mfa_totp_secret_id: undefined
 			});
 
-			await pbAdmin.from('user_mfa_totp_secrets').delete(user.mfa_totp_secret_id);
+			await pbAdmin.collection(Collections.UserMfaTotpSecrets).delete(user.mfa_totp_secret_id);
 
 			return new Response(
 				JSON.stringify({

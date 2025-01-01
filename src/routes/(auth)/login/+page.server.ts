@@ -8,6 +8,7 @@ import { pbAdmin } from '$lib/server/pb-admin';
 import { eq } from 'typed-pocketbase';
 import { rateLimiters } from '$lib/server/rate-limiter';
 import { validateTotpCode } from '$lib/server/totp';
+import { Collections, type UsersResponse } from '$lib/types/pocketbase-types';
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -40,8 +41,8 @@ export const actions: Actions = {
 
 		try {
 			const user = await pbAdmin
-				.from('users')
-				.getFirstListItem(eq('email', form.data.email.toLowerCase()));
+				.collection(Collections.Users)
+				.getFirstListItem<UsersResponse>(eq('email', form.data.email.toLowerCase()));
 
 			if (user.mfa_totp) {
 				secretId = user.mfa_totp_secret_id;
