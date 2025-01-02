@@ -2,7 +2,6 @@
 	import IconCheck from '~icons/tabler/check';
 	import { getUserState } from '$lib/stores/UserStore.svelte.js';
 	import { page } from '$app/stores';
-	import { enhance } from '$app/forms';
 	import { superForm } from 'sveltekit-superforms';
 	import { activateTotpSchema, deactivateTotpSchema } from '$lib/form-schemas.js';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -14,6 +13,7 @@
 	import { Secret, TOTP } from 'otpauth';
 	import QRCode from '@castlenine/svelte-qrcode';
 	import autoAnimate from '@formkit/auto-animate';
+	import TotpInputModal from '$lib/components/Modals/TotpInputModal.svelte';
 
 	let { data } = $props();
 
@@ -129,6 +129,41 @@
 				deactivateTotpFormElement?.requestSubmit();
 				openState = false;
 				break;
+		}
+	}
+
+	let showTotpEntryModal = $state(false);
+	let totpCode = $state('');
+	let pwResetLoading = $state(false);
+
+	async function handlePwResetBtnPress() {
+		if (user.mfaTotp) {
+			showTotpEntryModal = true;
+		} else {
+			await handlePwReset();
+		}
+	}
+
+	async function handlePwReset() {
+		if (user.mfaTotp) {
+			pwResetLoading = true;
+			const response = await fetch('/api/account/password-reset', {
+				method: 'POST',
+				body: JSON.stringify({
+					totpCode
+				})
+			});
+
+			if (response.ok) {
+				pwResetLoading = false;
+				showTotpEntryModal = false;
+				totpCode = '';
+			} else {
+				const { message } = await response.json();
+				pwResetLoading = false;
+
+				sonner.error(message);
+			}
 		}
 	}
 </script>
@@ -264,6 +299,13 @@
 	{/snippet}
 </Modal>
 
+<TotpInputModal
+	bind:open={showTotpEntryModal}
+	bind:totpCode
+	bind:loading={pwResetLoading}
+	confirmPressed={handlePwReset}
+/>
+
 <div class="w-full">
 	<div>
 		<h4 class="h4 hidden md:block">Security</h4>
@@ -320,13 +362,10 @@
 					</div>
 				</div>
 			{/if}
-			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
-				<form action="/settings/security/?/resetPassword" method="post" use:enhance>
-					<input class="hidden" type="text" name="email" id="email" bind:value={user.email} />
-					<button type="submit" class="btn preset-outlined-error-300-700 w-full"
-						>Reset password</button
-					>
-				</form>
+			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-fit">
+				<button class="btn preset-outlined-error-300-700 w-full" onclick={handlePwResetBtnPress}
+					>Reset password</button
+				>
 			</div>
 		</section>
 	</div>
