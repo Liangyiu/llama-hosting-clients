@@ -19,19 +19,6 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		);
 	}
 
-	const { success, timeRemaining } = await rateLimiters.passwordReset.limit(user.id);
-
-	if (!success) {
-		return new Response(
-			JSON.stringify({
-				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
-			}),
-			{
-				status: 429
-			}
-		);
-	}
-
 	const { totpCode } = await request.json();
 
 	if (user.mfa_totp) {
@@ -62,6 +49,19 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				}
 			);
 		}
+	}
+
+	const { success, timeRemaining } = await rateLimiters.passwordReset.limit(user.id);
+
+	if (!success) {
+		return new Response(
+			JSON.stringify({
+				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
+			}),
+			{
+				status: 429
+			}
+		);
 	}
 
 	try {
