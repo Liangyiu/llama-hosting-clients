@@ -99,7 +99,11 @@ export const actions: Actions = {
 		}
 
 		try {
-			await pb.collection('user_details').update(user.user_details, form.data);
+			await pb.collection(Collections.Users).update(user.id, {
+				first_name: form.data.first_name,
+				last_name: form.data.last_name
+			});
+			await pb.collection(Collections.UserDetails).update(user.user_details, form.data);
 			return message(form, {
 				status: 200,
 				message: 'Account details updated successfully'
