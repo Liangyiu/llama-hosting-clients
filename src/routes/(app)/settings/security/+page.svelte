@@ -14,6 +14,7 @@
 	import QRCode from '@castlenine/svelte-qrcode';
 	import autoAnimate from '@formkit/auto-animate';
 	import TotpInputModal from '$lib/components/Modals/TotpInputModal.svelte';
+	import { goto } from '$app/navigation';
 
 	let { data } = $props();
 
@@ -145,25 +146,25 @@
 	}
 
 	async function handlePwReset() {
-		if (user.mfaTotp) {
-			pwResetLoading = true;
-			const response = await fetch('/api/account/password-reset', {
-				method: 'POST',
-				body: JSON.stringify({
-					totpCode
-				})
-			});
+		pwResetLoading = true;
+		const response = await fetch('/api/account/password-reset', {
+			method: 'POST',
+			body: JSON.stringify({
+				totpCode
+			})
+		});
 
-			if (response.ok) {
-				pwResetLoading = false;
-				showTotpEntryModal = false;
-				totpCode = '';
-			} else {
-				const { message } = await response.json();
-				pwResetLoading = false;
+		if (response.ok) {
+			pwResetLoading = false;
+			showTotpEntryModal = false;
+			totpCode = '';
 
-				sonner.error(message);
-			}
+			goto('/settings/security?passwordReset=true');
+		} else {
+			const { message } = await response.json();
+			pwResetLoading = false;
+
+			sonner.error(message);
 		}
 	}
 </script>
