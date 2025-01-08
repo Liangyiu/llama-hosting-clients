@@ -4,6 +4,8 @@ import { resetPasswordSchema } from '$lib/form-schemas';
 import { fail, type Actions } from '@sveltejs/kit';
 import type { ClientResponseError } from 'pocketbase';
 import type { PageServerLoad } from './$types';
+import { getClientTrueIp } from '$lib/utils/ip';
+import { rateLimiters } from '$lib/server/rate-limiter';
 
 export const load = (async () => {
 	return {
@@ -17,6 +19,16 @@ export const actions: Actions = {
 		const form = await superValidate(event, zod(resetPasswordSchema));
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		const clientIp = getClientTrueIp(event.request, event.getClientAddress());
+
+		const { success, timeRemaining } = await rateLimiters.passwordReset.limit(clientIp);
+		if (!success) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit. Try again in ${timeRemaining} second(s)`
+			});
 		}
 
 		try {

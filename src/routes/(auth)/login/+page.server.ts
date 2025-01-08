@@ -9,6 +9,7 @@ import { eq } from 'typed-pocketbase';
 import { rateLimiters } from '$lib/server/rate-limiter';
 import { validateTotpCode } from '$lib/server/totp';
 import { Collections, type UsersResponse } from '$lib/types/pocketbase-types';
+import { getClientTrueIp } from '$lib/utils/ip';
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -25,6 +26,27 @@ export const actions: Actions = {
 
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		const clientIp = getClientTrueIp(event.request, event.getClientAddress());
+
+		const { success: ipSuccess } = await rateLimiters.loginIp.limit(clientIp);
+		if (!ipSuccess) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit.`
+			});
+		}
+
+		const { success: emailIpSuccess } = await rateLimiters.loginEmailIp.limit(
+			form.data.email + clientIp
+		);
+
+		if (!emailIpSuccess) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit.`
+			});
 		}
 
 		const { success, timeRemaining } = await rateLimiters.loginEmail.limit(form.data.email);
