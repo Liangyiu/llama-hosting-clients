@@ -36,74 +36,80 @@ export const rateLimiters = {
 	}),
 	sshKeyDelete: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 3, // Number of points
-		duration: 10, // Per second(s)
-		keyPrefix: 'rl:sshkey:delete' // must be unique for limiters with different purpose
+		points: 3,
+		duration: 10,
+		keyPrefix: 'rl:sshkey:delete'
 	}),
 	sshKeyDefaultAdd: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 3, // Number of points
-		duration: 10, // Per second(s)
-		keyPrefix: 'rl:sshkey:default:add' // must be unique for limiters with different purpose
+		points: 3,
+		duration: 10,
+		keyPrefix: 'rl:sshkey:default:add'
 	}),
 	sshKeyDefaultRemove: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 3, // Number of points
-		duration: 10, // Per second(s)
-		keyPrefix: 'rl:sshkey:default:remove' // must be unique for limiters with different purpose
+		points: 3,
+		duration: 10,
+		keyPrefix: 'rl:sshkey:default:remove'
 	}),
 	avatarUpload: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1, // Number of points
-		duration: 30, // Per second(s)
-		keyPrefix: 'rl:avatar:upload' // must be unique for limiters with different purpose
+		points: 1,
+		duration: 30,
+		keyPrefix: 'rl:avatar:upload'
 	}),
 	avatarDelete: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1, // Number of points
-		duration: 30, // Per second(s)
-		keyPrefix: 'rl:avatar:delete' // must be unique for limiters with different purpose
+		points: 1,
+		duration: 30,
+		keyPrefix: 'rl:avatar:delete'
 	}),
 	accountDetailsUpdate: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1, // Number of points
-		duration: 15, // Per second(s)
-		keyPrefix: 'rl:accountdetails:update' // must be unique for limiters with different purpose
+		points: 1,
+		duration: 15,
+		keyPrefix: 'rl:accountdetails:update'
 	}),
 	emailChange: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1, // Number of points
-		duration: 60, // Per second(s)
-		keyPrefix: 'rl:email:change' // must be unique for limiters with different purpose
+		points: 1,
+		duration: 60,
+		keyPrefix: 'rl:email:change'
 	}),
 	passwordReset: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1, // Number of points
-		duration: 60, // Per second(s)
-		keyPrefix: 'rl:password:reset' // must be unique for limiters with different purpose
+		points: 1,
+		duration: 60,
+		keyPrefix: 'rl:password:reset'
 	}),
 	activateTotp: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1, // Number of points
-		duration: 10, // Per second(s)
-		keyPrefix: 'rl:totp:activate' // must be unique for limiters with different purpose
+		points: 1,
+		duration: 10,
+		keyPrefix: 'rl:totp:activate'
 	}),
 	deactivateTotp: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1, // Number of points
-		duration: 10, // Per second(s)
-		keyPrefix: 'rl:totp:deactivate' // must be unique for limiters with different purpose
+		points: 1,
+		duration: 10,
+		keyPrefix: 'rl:totp:deactivate'
 	}),
 	validateTotpCode: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1, // Number of points
-		duration: 5, // Per second(s)
-		keyPrefix: 'rl:totp:validate' // must be unique for limiters with different purpose
+		points: 1,
+		duration: 5,
+		keyPrefix: 'rl:totp:validate'
 	}),
 	loginEmail: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 3, // Number of points
-		duration: 10, // Per second(s)
-		keyPrefix: 'rl:login:email' // must be unique for limiters with different purpose
+		points: 3,
+		duration: 10,
+		keyPrefix: 'rl:login:email'
+	}),
+	healthCheck: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 2,
+		duration: 1,
+		keyPrefix: 'rl:healthcheck'
 	})
 };
