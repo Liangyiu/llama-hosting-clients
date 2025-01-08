@@ -19,7 +19,7 @@
 		if (m) {
 			if (m.message === 'Email already in use or not yet verified') {
 				sonner.error(m.message);
-			} else if (m.message === 'An error occurred during the registration process') {
+			} else {
 				sonner.error(m.message);
 			}
 		}

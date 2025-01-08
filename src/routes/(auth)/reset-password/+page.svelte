@@ -19,7 +19,7 @@
 		if (m) {
 			if (m.status === 200) {
 				sonner.success(m.message);
-			} else if (m.message === 'An error occurred during the password reset process') {
+			} else {
 				sonner.error(m.message);
 			}
 		}
