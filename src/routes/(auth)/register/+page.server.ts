@@ -10,6 +10,8 @@ import {
 	type UserDetailsResponse,
 	type UsersResponse
 } from '$lib/types/pocketbase-types';
+import { getClientTrueIp } from '$lib/utils/ip';
+import { rateLimiters } from '$lib/server/rate-limiter';
 
 export const load = (async () => {
 	return {
@@ -22,6 +24,16 @@ export const actions: Actions = {
 		const form = await superValidate(event, zod(registerSchema));
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		const clientIp = getClientTrueIp(event.request, event.getClientAddress());
+
+		const { success: ipSuccess } = await rateLimiters.registerIp.limit(clientIp);
+		if (!ipSuccess) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit.`
+			});
 		}
 
 		try {

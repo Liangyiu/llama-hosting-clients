@@ -106,10 +106,28 @@ export const rateLimiters = {
 		duration: 10,
 		keyPrefix: 'rl:login:email'
 	}),
+	loginIp: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 3,
+		duration: 10,
+		keyPrefix: 'rl:login:ip'
+	}),
+	loginEmailIp: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 3,
+		duration: 10,
+		keyPrefix: 'rl:login:emailip'
+	}),
 	healthCheck: new extendedRateLimiterRedis({
 		storeClient: redis,
 		points: 2,
 		duration: 1,
 		keyPrefix: 'rl:healthcheck'
+	}),
+	registerIp: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1,
+		duration: 5,
+		keyPrefix: 'rl:register:ip'
 	})
 };
