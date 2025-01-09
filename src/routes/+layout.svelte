@@ -14,7 +14,7 @@
 
 <ModeWatcher />
 
-<Toaster theme={$mode} position="bottom-center" />
+<Toaster theme={$mode} position="bottom-center" richColors />
 
 <div class="h-screen">
 	{@render children?.()}
