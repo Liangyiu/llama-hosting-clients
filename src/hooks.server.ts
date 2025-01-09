@@ -29,19 +29,6 @@ export const handleError: HandleServerError = ({ error }) => {
 };
 
 export const handle = sequence(Sentry.sentryHandle(), async function _handle({ event, resolve }) {
-	// theme logic
-	let theme = '';
-
-	const cookieTheme = event.cookies.get('theme');
-
-	if (cookieTheme) {
-		theme = cookieTheme;
-	} else {
-		// set default theme, cookie expiry in 1 year
-		event.cookies.set('theme', 'skeleton', { path: '/', maxAge: 60 * 60 * 24 * 30 * 12 });
-		theme = 'skeleton';
-	}
-
 	// pb logic
 	const { locals, request, url } = event;
 
@@ -96,9 +83,7 @@ export const handle = sequence(Sentry.sentryHandle(), async function _handle({ e
 		return redirect(303, '/dashboard');
 	}
 
-	const response = await resolve(event, {
-		transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
-	});
+	const response = await resolve(event);
 
 	// send back the default 'pb_auth' cookie to the client with the latest store state
 	response.headers.append('set-cookie', locals.pb.authStore.exportToCookie());
