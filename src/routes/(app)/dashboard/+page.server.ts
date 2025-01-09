@@ -10,12 +10,5 @@ export const actions: Actions = {
 		pb.authStore.clear();
 
 		return redirect(303, '/login?logout=true');
-	},
-	setTheme: async ({ cookies, request }) => {
-		const formData = await request.formData();
-		const theme = formData.get('theme')?.toString() ?? 'skeleton';
-		// Sets the selected theme to the cookie
-		cookies.set('theme', theme, { path: '/', maxAge: 60 * 60 * 24 * 30 * 12 });
-		return { theme };
 	}
 };
