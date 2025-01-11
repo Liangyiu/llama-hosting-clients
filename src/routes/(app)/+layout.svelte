@@ -31,8 +31,10 @@
 	<Navigation />
 
 	<main class="h-full min-h-screen pt-[80px] lg:pl-56">
-		<div class="p-4 mx-auto max-w-[1450px] border h-full min-h-full md:h-full">
-			{@render children?.()}
+		<div class="p-4 mx-auto max-w-[1450px] h-full min-h-full md:h-full">
+			<div class="preset-glass-surface rounded-lg">
+				{@render children?.()}
+			</div>
 		</div>
 	</main>
 </div>

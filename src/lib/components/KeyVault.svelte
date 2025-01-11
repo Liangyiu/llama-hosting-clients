@@ -9,21 +9,10 @@
 
 	import { toast as sonner } from 'svelte-sonner';
 	import autoAnimate from '@formkit/auto-animate';
-
-	interface SshKeyData {
-		collectionName: 'ssh_keys';
-		user: string;
-		public_key: string;
-		key_name: string;
-		is_default: boolean;
-		id: string;
-		created: string;
-		updated: string;
-		collectionId: string;
-	}
+	import type { SshKeysResponse } from '$lib/types/pocketbase-types';
 
 	interface Props {
-		sshKeys: SshKeyData[];
+		sshKeys: SshKeysResponse[];
 		page: number;
 		pageSize: number;
 	}
