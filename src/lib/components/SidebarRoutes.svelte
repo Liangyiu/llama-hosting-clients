@@ -2,7 +2,7 @@
 	import SidebarItem from './SidebarItem.svelte';
 	import IconCloudComputing from '~icons/tabler/cloud-computing';
 	import IconFileInvoice from '~icons/tabler/file-invoice';
-	import IconHelp from '~icons/tabler/help';
+	import IconTicket from '~icons/tabler/ticket';
 	import IconHome from '~icons/tabler/home';
 	import IconSettings from '~icons/tabler/settings';
 	import IconShoppingCartCheck from '~icons/tabler/shopping-cart-check';
@@ -40,9 +40,9 @@
 			href2: 'filler'
 		},
 		{
-			icon: IconHelp,
-			label: 'Help',
-			href: '/help',
+			icon: IconTicket,
+			label: 'Tickets',
+			href: '/tickets',
 			href2: 'filler'
 		},
 		{

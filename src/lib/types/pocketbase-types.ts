@@ -19,6 +19,8 @@ export enum Collections {
 	Products = "products",
 	Services = "services",
 	SshKeys = "ssh_keys",
+	TicketMessages = "ticket_messages",
+	Tickets = "tickets",
 	UserDetails = "user_details",
 	UserDetailsAdmin = "user_details_admin",
 	UserMfaTotpSecrets = "user_mfa_totp_secrets",
@@ -234,6 +236,48 @@ export type SshKeysRecord = {
 	user: RecordIdString
 }
 
+export type TicketMessagesRecord = {
+	created?: IsoDateString
+	id: string
+	message: HTMLString
+	ticket: RecordIdString
+	updated?: IsoDateString
+	user: RecordIdString
+}
+
+export enum TicketsCategoryOptions {
+	"product-information" = "product-information",
+	"technical" = "technical",
+	"outage" = "outage",
+	"billing" = "billing",
+	"other" = "other",
+}
+
+export enum TicketsPriorityOptions {
+	"1-high" = "1-high",
+	"2-medium" = "2-medium",
+	"3-low" = "3-low",
+}
+
+export enum TicketsStatusOptions {
+	"closed" = "closed",
+	"open" = "open",
+	"answered" = "answered",
+	"customer-reply" = "customer-reply",
+}
+export type TicketsRecord = {
+	category: TicketsCategoryOptions
+	created?: IsoDateString
+	id: string
+	priority: TicketsPriorityOptions
+	readable_id: string
+	service?: RecordIdString
+	status: TicketsStatusOptions
+	subject: string
+	updated?: IsoDateString
+	user: RecordIdString
+}
+
 export type UserDetailsRecord = {
 	address_city?: string
 	address_country?: string
@@ -255,8 +299,8 @@ export type UserDetailsAdminRecord = {
 	balance?: number
 	created?: IsoDateString
 	id: string
-	in_cp_url: string
-	in_id: string
+	is_admin?: boolean
+	is_support?: boolean
 	updated?: IsoDateString
 	user?: RecordIdString
 }
@@ -300,6 +344,8 @@ export type ProductConfigVpsResponse<Texpand = unknown> = Required<ProductConfig
 export type ProductsResponse<Texpand = unknown> = Required<ProductsRecord> & BaseSystemFields<Texpand>
 export type ServicesResponse<Texpand = unknown> = Required<ServicesRecord> & BaseSystemFields<Texpand>
 export type SshKeysResponse<Texpand = unknown> = Required<SshKeysRecord> & BaseSystemFields<Texpand>
+export type TicketMessagesResponse<Texpand = unknown> = Required<TicketMessagesRecord> & BaseSystemFields<Texpand>
+export type TicketsResponse<Texpand = unknown> = Required<TicketsRecord> & BaseSystemFields<Texpand>
 export type UserDetailsResponse<Texpand = unknown> = Required<UserDetailsRecord> & BaseSystemFields<Texpand>
 export type UserDetailsAdminResponse<Texpand = unknown> = Required<UserDetailsAdminRecord> & BaseSystemFields<Texpand>
 export type UserMfaTotpSecretsResponse<Texpand = unknown> = Required<UserMfaTotpSecretsRecord> & BaseSystemFields<Texpand>
@@ -321,6 +367,8 @@ export type CollectionRecords = {
 	products: ProductsRecord
 	services: ServicesRecord
 	ssh_keys: SshKeysRecord
+	ticket_messages: TicketMessagesRecord
+	tickets: TicketsRecord
 	user_details: UserDetailsRecord
 	user_details_admin: UserDetailsAdminRecord
 	user_mfa_totp_secrets: UserMfaTotpSecretsRecord
@@ -341,6 +389,8 @@ export type CollectionResponses = {
 	products: ProductsResponse
 	services: ServicesResponse
 	ssh_keys: SshKeysResponse
+	ticket_messages: TicketMessagesResponse
+	tickets: TicketsResponse
 	user_details: UserDetailsResponse
 	user_details_admin: UserDetailsAdminResponse
 	user_mfa_totp_secrets: UserMfaTotpSecretsResponse
@@ -364,6 +414,8 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: 'products'): RecordService<ProductsResponse>
 	collection(idOrName: 'services'): RecordService<ServicesResponse>
 	collection(idOrName: 'ssh_keys'): RecordService<SshKeysResponse>
+	collection(idOrName: 'ticket_messages'): RecordService<TicketMessagesResponse>
+	collection(idOrName: 'tickets'): RecordService<TicketsResponse>
 	collection(idOrName: 'user_details'): RecordService<UserDetailsResponse>
 	collection(idOrName: 'user_details_admin'): RecordService<UserDetailsAdminResponse>
 	collection(idOrName: 'user_mfa_totp_secrets'): RecordService<UserMfaTotpSecretsResponse>

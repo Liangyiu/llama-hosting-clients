@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { createSidebarStore } from '$lib/stores/SideBarStore.svelte';
 	import { cn } from '$lib/utils';
 	import type { Component } from 'svelte';
@@ -12,7 +12,7 @@
 	}
 
 	let { label, icon, href, href2 }: Props = $props();
-	let isActive = $derived($page.url.pathname.includes(href) || $page.url.pathname.includes(href2));
+	let isActive = $derived(page.url.pathname.includes(href) || page.url.pathname.includes(href2));
 
 	const SvelteComponent = $derived(icon);
 </script>
