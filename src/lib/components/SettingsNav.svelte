@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import SettingsNavRoutes from './SettingsNavRoutes.svelte';
 	import { Accordion } from '@skeletonlabs/skeleton-svelte';
 
@@ -19,7 +19,7 @@
 	];
 
 	let opened = $state(['']);
-	let activeSection = $state(routes.find((r) => r.href === $page.url.pathname));
+	let activeSection = $state(routes.find((r) => r.href === page.url.pathname));
 
 	function itemClicked(item: { label: string; href: string }) {
 		activeSection = item;
