@@ -101,19 +101,6 @@
 
 	let fullName = $derived(user.firstName + ' ' + user.lastName);
 
-	let initials = $derived(
-		(user.firstName.charAt(0).toUpperCase() || 'L') + (user.lastName.charAt(0).toUpperCase() || 'L')
-	);
-
-	let avatarUrl = $derived(
-		user.avatarUrl === ''
-			? `https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
-					initials
-			: `${user.avatarUrl}?thumb=800x800`
-	);
-
-	let customAvatarSet = $derived(user.avatarUrl !== '');
-
 	accountDetailsFormData.set({
 		first_name: user.firstName,
 		last_name: user.lastName,
@@ -135,64 +122,7 @@
 
 	<div class="md:py-6 py-4 space-y-8 md:space-y-14">
 		<section class="space-y-4">
-			<h5 class="h5">Avatar</h5>
-
-			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
-				<Avatar
-					name={fullName}
-					src={avatar ? avatar : avatarUrl}
-					size="w-28 h-28 md:h-32 md:w-32"
-					rounded="rounded-full"
-				/>
-				<div class="md:ml-6 space-y-4 mt-4 md:mt-0 max-w-60 sm:max-w-96">
-					<form
-						action="/settings/account/?/uploadAvatar"
-						method="post"
-						enctype="multipart/form-data"
-						use:avatarFormEnhance
-					>
-						<Field form={avatarForm} name="avatar">
-							<Control>
-								{#snippet children({ props })}
-									<input
-										{...props}
-										type="file"
-										name="avatar"
-										id="avatarInput"
-										accept="image/png, image/jpeg"
-										bind:files={$avatarFile}
-										class="input preset-outlined w-full"
-										onchange={() => onFileSelected()}
-									/>
-								{/snippet}
-							</Control>
-							<FieldErrors class="text-error-500" />
-						</Field>
-						{#if $avatarFile.length > 0}
-							<button type="submit" class="btn preset-outlined-primary-500 w-full mt-4">
-								{#if $avatarFormDelayed}
-									<Loader2 class="size-6 animate-spin" />
-								{:else}
-									Upload avatar
-								{/if}
-							</button>
-						{/if}
-					</form>
-
-					{#if $avatarFile.length === 0}
-						<form action="/settings/account/?/removeAvatar" method="post">
-							<button
-								type="submit"
-								class="btn preset-outlined-error-500 w-full"
-								disabled={!customAvatarSet}>Remove avatar</button
-							>
-						</form>
-					{/if}
-				</div>
-			</div>
-		</section>
-		<section class="space-y-4">
-			<h5 class="h5">Account Details</h5>
+			<h5 class="h5">Details</h5>
 
 			<div class="p-2 flex place-items-start md:items-center flex-col md:flex-row w-full">
 				<form

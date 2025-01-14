@@ -10,12 +10,11 @@ type UserData = {
 	addressLineTwo?: string;
 	addressStateProvince?: string;
 	addressPostalCode?: string;
-	avatar?: string;
 	defaultSshKeys?: string[];
 	phoneNumber?: string;
 	user: string;
 	vatId?: string;
-	avatarUrl?: string;
+	avatar: string;
 	balance?: number;
 	mfaTotp: boolean;
 	mfaTotpSecretId?: string;

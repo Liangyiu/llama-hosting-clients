@@ -3,6 +3,7 @@ import type { ClientResponseError } from 'pocketbase';
 import type { LayoutServerLoad } from './$types';
 import { eq } from 'typed-pocketbase';
 import { Collections, type UserDetailsResponse } from '$lib/types/pocketbase-types';
+import {getAvatarUri} from '$lib/utils/avatar';
 
 export const load = (async ({ locals }) => {
 	const { user, pb } = locals;
@@ -13,15 +14,12 @@ export const load = (async ({ locals }) => {
 				.collection(Collections.UserDetails)
 				.getOne<UserDetailsResponse>(user.user_details);
 
-			if (userDetails.avatar === '') {
-				return { user: locals.user, avatarUrl: '', userDetails };
-			}
+			return { user: locals.user, avatar: await getAvatarUri(user), userDetails };
 
-			const avatarUrl = await pb.files.getURL(userDetails, userDetails.avatar);
-			return { user: locals.user, avatarUrl, userDetails };
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+			
 		} catch (_) {
-			return { user: locals.user, avatarUrl: '' };
+			return { user: locals.user, avatar: await getAvatarUri(user) };
 		}
 	}
 	try {
@@ -35,9 +33,8 @@ export const load = (async ({ locals }) => {
 			user_details: userDetails.id
 		});
 
-		const avatarUrl = await pb.files.getURL(userDetails, userDetails.avatar);
 
-		return { user: locals.user, avatarUrl, userDetails };
+		return { user: locals.user, avatar: await getAvatarUri(user), userDetails };
 	} catch (e) {
 		const { status } = e as ClientResponseError;
 		if (status === 404) {
@@ -54,12 +51,12 @@ export const load = (async ({ locals }) => {
 					user_details: newUserDetails.id
 				});
 
-				return { user: locals.user, userDetails: newUserDetails, avatarUrl: '' };
+				return { user: locals.user, userDetails: newUserDetails, avatar: await getAvatarUri(user) };
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (_) {
-				return { user: locals.user, avatarUrl: '' };
+				return { user: locals.user, avatar: await getAvatarUri(user) };
 			}
 		}
-		return { user: locals.user, avatarUrl: '' };
+		return { user: locals.user, avatar: await getAvatarUri(user) };
 	}
 }) satisfies LayoutServerLoad;
