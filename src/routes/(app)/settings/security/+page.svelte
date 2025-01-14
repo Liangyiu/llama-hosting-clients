@@ -1,7 +1,7 @@
 <script lang="ts">
 	import IconCheck from '~icons/tabler/check';
 	import { getUserState } from '$lib/stores/UserStore.svelte.js';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { superForm } from 'sveltekit-superforms';
 	import { activateTotpSchema, deactivateTotpSchema } from '$lib/form-schemas.js';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -79,7 +79,7 @@
 		}
 	});
 
-	let pwReset = $derived($page.url.searchParams.get('passwordReset') === 'true');
+	let pwReset = $derived(page.url.searchParams.get('passwordReset') === 'true');
 
 	const user = getUserState();
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { cn } from '$lib/utils';
 
 	interface Props {
@@ -9,7 +9,7 @@
 	}
 
 	let { label, href, itemClicked }: Props = $props();
-	let pathname = $derived($page.url.pathname);
+	let pathname = $derived(page.url.pathname);
 	let isActive = $derived(pathname.includes(href));
 </script>
 

@@ -45,7 +45,7 @@
 	let page = $state(urlPage || 1);
 	let pageSize = $state(urlPageSize || 5);
 
-	const slicedData = $derived((s: SshKeyData[]) => s.slice((page - 1) * pageSize, page * pageSize));
+	const slicedData = $derived((s: SshKeysResponse[]) => s.slice((page - 1) * pageSize, page * pageSize));
 
 	function showConfirmModal() {
 		modalOpenState = true;
@@ -207,7 +207,6 @@
 				{/each}
 				<option value={sshKeys.length}>Show All</option>
 			</select>
-			<!-- Pagination -->
 
 			<Pagination
 				data={sshKeys}

@@ -7,7 +7,7 @@
 	import CircleAlertIcon from '~icons/lucide/circle-alert';
 	import MailWarning from '~icons/lucide/mail-warning';
 	import Loader2 from '~icons/lucide/loader2';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import LightSwitch from '$lib/components/LightSwitch.svelte';
 	import { toast as sonner } from 'svelte-sonner';
 	import autoAnimate from '@formkit/auto-animate';
@@ -17,8 +17,8 @@
 	}
 
 	let { data }: Props = $props();
-	let newUser = $state($page.url.searchParams.get('new_user'));
-	let loggedOut = $state($page.url.searchParams.get('logout'));
+	let newUser = $state(page.url.searchParams.get('new_user'));
+	let loggedOut = $state(page.url.searchParams.get('logout'));
 
 	const form = superForm(data.form, {
 		validators: zodClient(loginSchema)
