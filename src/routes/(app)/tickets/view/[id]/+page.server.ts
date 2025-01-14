@@ -1,10 +1,10 @@
-import { Collections, TicketMessagesResponse, type TicketsResponse, type UsersResponse } from '$lib/types/pocketbase-types';
+import { Collections,type TicketMessagesResponse , type TicketsResponse, type UsersResponse } from '$lib/types/pocketbase-types';
 import { eq } from 'typed-pocketbase';
 import type { PageServerLoad } from './$types';
 import { pbAdmin } from '$lib/server/pb-admin';
 
 export const load = (async ({locals, params}) => {
-    const {pb} = locals
+    const {user} = locals
     const {id: ticketId} = params
 
     interface messagesWithUsers extends TicketMessagesResponse{
@@ -13,16 +13,29 @@ export const load = (async ({locals, params}) => {
         }
     }
 
-    const ticket = await pb.collection(Collections.Tickets).getOne<TicketsResponse>(ticketId)
-    const messagesResponse = pbAdmin.collection(Collections.TicketMessages).getFullList<messagesWithUsers>({
+    interface ticketWithCreator extends TicketsResponse{
+        expand:{
+            created_by: UsersResponse
+        }
+    }
+
+    const ticket = await pbAdmin.collection(Collections.Tickets).getOne<ticketWithCreator>(ticketId, {
+        expand: 'created_by'
+    })
+
+    if(ticket.user !== user.id){
+        throw new Error('unauthorized')
+    }
+
+    const messages = await pbAdmin.collection(Collections.TicketMessages).getFullList<messagesWithUsers>({
         filter: eq('ticket', ticketId),
-        sort: '-created',
+        sort: '+created',
         expand: 'user'
     })
 
 
     return {
         ticket,
-        messagesResponse
+        messages
     };
 }) satisfies PageServerLoad;

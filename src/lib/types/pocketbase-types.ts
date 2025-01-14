@@ -268,6 +268,7 @@ export enum TicketsStatusOptions {
 export type TicketsRecord = {
 	category: TicketsCategoryOptions
 	created?: IsoDateString
+	created_by: RecordIdString
 	id: string
 	priority: TicketsPriorityOptions
 	readable_id: string
@@ -285,7 +286,6 @@ export type UserDetailsRecord = {
 	address_line_two?: string
 	address_postal_code?: string
 	address_state_province?: string
-	avatar?: string
 	created?: IsoDateString
 	default_ssh_keys?: RecordIdString[]
 	id: string
