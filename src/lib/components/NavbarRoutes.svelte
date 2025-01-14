@@ -12,15 +12,12 @@
 
 	let fullName = $derived(user.firstName + ' ' + user.lastName);
 
-	let initials = $derived(
-		(user.firstName.charAt(0).toUpperCase() || 'L') + (user.lastName.charAt(0).toUpperCase() || 'L')
-	);
-
 	async function logout() {
 		await fetch('/dashboard/?/logout', {
 			method: 'post',
 			body: new FormData()
 		});
+
 		return await goto('/login?logout=1');
 	}
 
@@ -52,10 +49,7 @@
 			{#snippet trigger()}
 				<Avatar
 					name={fullName}
-					src={user.avatarUrl === ''
-						? `https://api.dicebear.com/9.x/initials/svg?backgroundType=gradientLinear&backgroundColor=b347fd,6553a8&backgroundRotation=240,360&textColor=ededed&seed=` +
-							initials
-						: `${user.avatarUrl}?thumb=200x200`}
+					src={user.avatar}
 					rounded="rounded-full"
 					size="w-12 h-12"
 					border="border-2 border-surface-300-700 hover:!border-surface-600-400 transition-colors"
@@ -69,7 +63,7 @@
 					<div class="w-full px-3 text-left transition-colors py-2">
 						<span class="block text font-semibold">{user.firstName} {user.lastName}</span>
 						<span class="block text-sm align-middle"
-							><Wallet size="16" class="inline mr-0.5" /> {user.balance || 0} €</span
+							><Wallet class="inline mr-0.5 size-[16px]" /> {user.balance || 0} €</span
 						>
 					</div>
 					<hr class="my-2" />

@@ -16,68 +16,6 @@ export const load = (async () => {
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-	uploadAvatar: async (event) => {
-		const {
-			locals: { pb, user }
-		} = event;
-
-		const form = await superValidate(event, zod(avatarSchema));
-
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-
-		const { success, timeRemaining } = await rateLimiters.avatarUpload.limit(user.id);
-
-		if (!success) {
-			return message(form, {
-				status: 429,
-				message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
-			});
-		}
-
-		try {
-			await pb.collection(Collections.UserDetails).update(user.user_details, form.data);
-
-			return message(form, {
-				status: 200,
-				message: 'Avatar uploaded successfully. Refresh to see changes.'
-			});
-		} catch (e) {
-			const { status } = e as ClientResponseError;
-			return message(form, {
-				status: status,
-				message: 'An error occurred during avatar upload'
-			});
-		}
-	},
-	removeAvatar: async (event) => {
-		const {
-			locals: { pb, user }
-		} = event;
-
-		const { success, timeRemaining } = await rateLimiters.avatarDelete.limit(user.id);
-
-		if (!success) {
-			return new Response(
-				JSON.stringify({
-					message: `Rate limit hit. Please try again in ${timeRemaining} ${timeRemaining === 1 ? 'second' : 'seconds'}`
-				}),
-				{
-					status: 429
-				}
-			);
-		}
-
-		try {
-			return await pb.collection('user_details').update(user.user_details, {
-				avatar: null
-			});
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (_) {
-			return redirect(303, '/settings/account?error=An+error+occurred+during+avatar+removal');
-		}
-	},
 	updateAccountDetails: async (event) => {
 		const {
 			locals: { pb, user }

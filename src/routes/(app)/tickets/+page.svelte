@@ -83,7 +83,12 @@
 							</td>
 							<td>
 								<span class="badge preset-filled-surface-500">
-									<Time timestamp={ticket.updated} relative live />
+									<Time
+										timestamp={ticket.updated}
+										relative
+										live
+										format="dddd @ h:mm A · MMMM D, YYYY"
+									/>
 								</span>
 							</td>
 						</tr>
