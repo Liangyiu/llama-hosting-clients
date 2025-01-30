@@ -1,6 +1,6 @@
 # work in progress 🚧
 
-## llama.hosting Customer Control Panel
+## llama hosting Customer Control Panel
 
 Control panel for ordering VPSs & Webhosting, support tickets & account settings
 
