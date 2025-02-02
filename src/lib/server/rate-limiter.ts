@@ -1,12 +1,6 @@
-import { env } from '$env/dynamic/private';
 import { RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
-import Redis from 'ioredis';
+import { redis } from '$lib/server/redis';
 
-const redis = new Redis(env.REDIS_URI);
-
-redis.on('error', (err) => {
-	console.log('Redis Client Error:\n', err);
-});
 
 class extendedRateLimiterRedis extends RateLimiterRedis {
 	async limit(key: string | number) {
@@ -129,5 +123,11 @@ export const rateLimiters = {
 		points: 1,
 		duration: 5,
 		keyPrefix: 'rl:register:ip'
+	}),
+	createTicketMessage: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1,
+		duration: 10,
+		keyPrefix: 'rl:create:ticket'
 	})
 };

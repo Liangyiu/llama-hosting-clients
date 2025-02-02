@@ -5,7 +5,7 @@ import { env as envPublic } from '$env/dynamic/public';
 import { redirect, type HandleServerError } from '@sveltejs/kit';
 import Pocketbase from 'pocketbase';
 import crypto from 'crypto';
-import type { TypedPocketBase } from '$lib/types/pocketbase-types';
+import type { TypedPocketBase, UsersRecord } from '$lib/types/pocketbase-types';
 
 Sentry.init({
 	environment: dev ? 'development' : 'production',
@@ -86,7 +86,9 @@ export const handle = sequence(Sentry.sentryHandle(), async function _handle({ e
 	const response = await resolve(event);
 
 	// send back the default 'pb_auth' cookie to the client with the latest store state
-	response.headers.append('set-cookie', locals.pb.authStore.exportToCookie());
+	response.headers.append('set-cookie', locals.pb.authStore.exportToCookie({
+		httpOnly: true
+	}));
 
 	return response;
 });

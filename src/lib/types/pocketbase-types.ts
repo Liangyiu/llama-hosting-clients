@@ -239,7 +239,7 @@ export type SshKeysRecord = {
 export type TicketMessagesRecord = {
 	created?: IsoDateString
 	id: string
-	message: HTMLString
+	message: string
 	ticket: RecordIdString
 	updated?: IsoDateString
 	user: RecordIdString

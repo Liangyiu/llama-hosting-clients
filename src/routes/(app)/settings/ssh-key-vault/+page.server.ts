@@ -3,7 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
 import { addSshKeySchema } from '$lib/form-schemas';
 import { fail } from '@sveltejs/kit';
-import { and, eq } from 'typed-pocketbase';
+import { and, eq } from '@tigawanna/typed-pocketbase';
 import { rateLimiters } from '$lib/server/rate-limiter';
 import { Collections, type SshKeysResponse } from '$lib/types/pocketbase-types';
 

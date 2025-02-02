@@ -1,4 +1,4 @@
-import { and, eq } from 'typed-pocketbase';
+import { and, eq } from '@tigawanna/typed-pocketbase';
 import type { RequestHandler } from './$types';
 import { rateLimiters } from '$lib/server/rate-limiter';
 import { Collections, type SshKeysResponse } from '$lib/types/pocketbase-types';

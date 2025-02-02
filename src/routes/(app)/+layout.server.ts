@@ -1,9 +1,9 @@
 import { pbAdmin } from '$lib/server/pb-admin';
 import type { ClientResponseError } from 'pocketbase';
 import type { LayoutServerLoad } from './$types';
-import { eq } from 'typed-pocketbase';
+import { eq } from '@tigawanna/typed-pocketbase';
 import { Collections, type UserDetailsResponse } from '$lib/types/pocketbase-types';
-import {getAvatarUri} from '$lib/utils/avatar';
+import { getAvatarUri } from '$lib/utils/avatar';
 
 export const load = (async ({ locals }) => {
 	const { user, pb } = locals;
@@ -15,9 +15,6 @@ export const load = (async ({ locals }) => {
 				.getOne<UserDetailsResponse>(user.user_details);
 
 			return { user: locals.user, avatar: await getAvatarUri(user), userDetails };
-
-
-			
 		} catch (_) {
 			return { user: locals.user, avatar: await getAvatarUri(user) };
 		}
@@ -32,7 +29,6 @@ export const load = (async ({ locals }) => {
 		await pb.collection(Collections.Users).update(user.id, {
 			user_details: userDetails.id
 		});
-
 
 		return { user: locals.user, avatar: await getAvatarUri(user), userDetails };
 	} catch (e) {

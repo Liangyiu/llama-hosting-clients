@@ -5,7 +5,7 @@ import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { ClientResponseError } from 'pocketbase';
 import { pbAdmin } from '$lib/server/pb-admin';
-import { eq } from 'typed-pocketbase';
+import { eq } from '@tigawanna/typed-pocketbase';
 import { rateLimiters } from '$lib/server/rate-limiter';
 import { validateTotpCode } from '$lib/server/totp';
 import { Collections, type UsersResponse } from '$lib/types/pocketbase-types';

@@ -7,14 +7,29 @@
 	import SendIcon from '~icons/lucide/send';
 	import autosizeAction from 'svelte-autosize';
 	import { onMount } from 'svelte';
+	import SuperDebug, { superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { ticketMessageSchema } from '$lib/form-schemas';
+	import { Control, Field, FieldErrors } from 'formsnap';
 
 	let { data }: { data: PageData } = $props();
 	const userState = getUserState();
 	const { ticket, messages } = data;
 
+	const newMessageForm = superForm(data.newMessageForm, {
+		validators: zodClient(ticketMessageSchema)
+	});
+	const { form: newMessageFormData, enhance, delayed, message } = newMessageForm;
+
 	let newMessage = $state('');
 	let chatElement: HTMLElement | undefined = $state();
 	let newMessageInput: HTMLTextAreaElement | undefined = $state();
+
+	let formElement: HTMLFormElement = $state()!;
+
+	function submitClicked() {
+		console.log(newMessage);
+	}
 
 	const status = {
 		closed: {
@@ -135,7 +150,7 @@
 								class="grid grid-cols-[1fr_auto] gap-2"
 								id={counter + 1 === messages.length ? 'latest-message' : ''}
 							>
-								<div class="card p-4 rounded-tr-none space-y-2 bg-secondary-100-900 !bg-opacity-75">
+								<div class="card p-4 space-y-2 bg-secondary-100-900 !bg-opacity-75">
 									<header class="flex justify-between items-center">
 										<p class="font-bold">
 											{bubble.expand.user.first_name + ' ' + bubble.expand.user.last_name}
@@ -149,7 +164,9 @@
 											/>
 										</small>
 									</header>
-									<p>{bubble.message}</p>
+									{#each bubble.message.split('\\n') as line}
+										<p>{line}</p>
+									{/each}
 								</div>
 								<Avatar
 									classes="sm:block hidden"
@@ -169,7 +186,7 @@
 									name={bubble.expand.user.first_name + ' ' + bubble.expand.user.last_name}
 									size="size-12"
 								/>
-								<div class="card p-4 preset-tonal rounded-tl-none space-y-2">
+								<div class="card p-4 preset-tonal space-y-2">
 									<header class="flex justify-between items-center">
 										<p class="font-bold">
 											{bubble.expand.user.first_name +
@@ -186,32 +203,53 @@
 											/>
 										</small>
 									</header>
-									<p>{bubble.message}</p>
+									{#each bubble.message.split('\\n') as line}
+										<p>{line}</p>
+									{/each}
 								</div>
 							</div>
 						{/if}
 					{/each}
 				</section>
 				<section class="border-t-[1px] border-surface-200-800 p-4">
-					<div
-						class="input-group grid-cols-[1fr_auto] divide-x divide-surface-200-800 rounded-container-token"
+					<form
+						bind:this={formElement}
+						action="/tickets/?/sendNewTicketMessage"
+						method="post"
+						use:enhance
 					>
-						<textarea
-							use:autosizeAction
-							bind:value={newMessage}
-							bind:this={newMessageInput}
-							class="bg-transparent border-0 ring-0"
-							name="new_message"
-							id="new_message"
-							placeholder="Write a message..."
-							rows="1"
-						></textarea>
-						<button
-							class="input-group-cell {newMessage ? 'preset-filled-primary-500' : 'preset-tonal'}"
+						<div
+							class="input-group grid-cols-[1fr_auto] divide-x divide-surface-200-800 rounded-container-token"
 						>
-							<SendIcon class="size-[20px] rotate-45 -translate-x-1" />
-						</button>
-					</div>
+							<Field form={newMessageForm} name="message">
+								<Control>
+									{#snippet children({ props })}
+										<textarea
+											{...props}
+											use:autosizeAction
+											bind:value={$newMessageFormData.message}
+											bind:this={newMessageInput}
+											class="bg-transparent border-0 ring-0"
+											id="message"
+											placeholder="Write a message..."
+											rows="1"
+										></textarea>
+									{/snippet}
+								</Control>
+								<FieldErrors />
+							</Field>
+
+							<button
+								disabled={!$newMessageFormData.message}
+								class="input-group-cell {newMessage ? 'preset-filled-primary-500' : 'preset-tonal'}"
+								onclick={submitClicked}
+							>
+								<SendIcon class="size-[20px] rotate-45 -translate-x-1" />
+							</button>
+						</div>
+
+						<SuperDebug data={newMessageFormData} />
+					</form>
 				</section>
 			</div>
 		</div>

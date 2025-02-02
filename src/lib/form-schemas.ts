@@ -168,3 +168,10 @@ export const totpCodeInputSchema = z.object({
 		.regex(new RegExp(/^[0-9]{6}$/), { message: 'Invalid TOTP code' })
 		.max(6, { message: 'Can not exceed 6 characters' })
 });
+
+export const ticketMessageSchema = z.object({
+	ticketId: z.string().uuid(),
+	message: z.string().max(400, {
+		message: 'Can not exceed 400 characters'
+	})
+});

@@ -25,7 +25,7 @@
 	});
 	const { form: formData, enhance, message, delayed } = form;
 
-	let formElement: HTMLFormElement = $state();
+	let formElement: HTMLFormElement = $state()!;
 
 	let totpCodeRequired: boolean = $state(false);
 

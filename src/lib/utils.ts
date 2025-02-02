@@ -144,3 +144,9 @@ export function getCountryId(country: string) {
 			return 0;
 	}
 }
+
+export async function waitFor(timeMs: number) {
+    return new Promise(resolve => {
+        setTimeout(() => { resolve('') }, timeMs);
+    })
+}
