@@ -1,4 +1,3 @@
-import { and, eq } from '@tigawanna/typed-pocketbase';
 import type { RequestHandler } from './$types';
 import { rateLimiters } from '$lib/server/rate-limiter';
 import { Collections, type SshKeysResponse } from '$lib/types/pocketbase-types';
@@ -32,7 +31,10 @@ export const PUT: RequestHandler = async ({ locals, params }) => {
 		const defaultKeys = await locals.pb
 			.collection(Collections.SshKeys)
 			.getFullList<SshKeysResponse>({
-				filter: and(eq('is_default', true), eq('user', locals.user.id))
+				filter: locals.pb.filter('is_default = {:is_default} && user = {:userId}', {
+					is_default: true,
+					userId: locals.user.id
+				})
 			});
 
 		if (defaultKeys.length >= 5) {

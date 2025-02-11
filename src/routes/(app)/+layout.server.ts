@@ -1,7 +1,6 @@
 import { pbAdmin } from '$lib/server/pb-admin';
 import type { ClientResponseError } from 'pocketbase';
 import type { LayoutServerLoad } from './$types';
-import { eq } from '@tigawanna/typed-pocketbase';
 import { Collections, type UserDetailsResponse } from '$lib/types/pocketbase-types';
 import { getAvatarUri } from '$lib/utils/avatar';
 
@@ -22,7 +21,7 @@ export const load = (async ({ locals }) => {
 	try {
 		const userDetails = await pb
 			.collection(Collections.UserDetails)
-			.getFirstListItem<UserDetailsResponse>(eq('user', user.id), {
+			.getFirstListItem<UserDetailsResponse>(pb.filter('user = {:userId}', { userId: user.id }), {
 				requestKey: 'fetchUserDetails'
 			});
 

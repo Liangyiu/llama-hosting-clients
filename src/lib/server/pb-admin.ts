@@ -12,7 +12,7 @@ pbAdmin.autoCancellation(false);
 
 await pbAdmin
 	.collection(Collections.Superusers)
-	.authWithPassword(env.SECRET_POCKETBASE_EMAIL, env.SECRET_POCKETBASE_PW, {
+	.authWithPassword(env.POCKETBASE_ADMIN_EMAIL, env.POCKETBASE_ADMIN_PW, {
 		// This will trigger auto refresh or auto reauthentication in case
 		// the token has expired or is going to expire in the next 30 minutes.
 		autoRefreshThreshold: 30 * 60

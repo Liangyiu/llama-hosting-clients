@@ -5,7 +5,6 @@ import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { ClientResponseError } from 'pocketbase';
 import { pbAdmin } from '$lib/server/pb-admin';
-import { eq } from '@tigawanna/typed-pocketbase';
 import { rateLimiters } from '$lib/server/rate-limiter';
 import { validateTotpCode } from '$lib/server/totp';
 import { Collections, type UsersResponse } from '$lib/types/pocketbase-types';
@@ -64,7 +63,9 @@ export const actions: Actions = {
 		try {
 			const user = await pbAdmin
 				.collection(Collections.Users)
-				.getFirstListItem<UsersResponse>(eq('email', form.data.email.toLowerCase()));
+				.getFirstListItem<UsersResponse>(
+					pb.filter('email = {:email}', { email: form.data.email.toLowerCase() })
+				);
 
 			if (user.mfa_totp) {
 				secretId = user.mfa_totp_secret_id;

@@ -1,5 +1,4 @@
 import { Collections, type TicketsResponse } from '$lib/types/pocketbase-types';
-import { eq } from '@tigawanna/typed-pocketbase';
 import type { Actions, PageServerLoad } from './$types';
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -13,7 +12,7 @@ export const load = (async ({ locals }) => {
 	// TODO: return promise to page and await it with loader, ratelimiting
 
 	const ticketsResponse = await pb.collection(Collections.Tickets).getFullList<TicketsResponse>({
-		filter: eq('user', user?.id),
+		filter: pb.filter('user = {:userId}', { userId: user?.id }),
 		fields: 'id,readable_id,subject,category,status,updated',
 		sort: '-updated'
 	});

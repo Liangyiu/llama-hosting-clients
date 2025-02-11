@@ -4,7 +4,6 @@ import {
 	type TicketsResponse,
 	type UsersResponse
 } from '$lib/types/pocketbase-types';
-import { eq } from '@tigawanna/typed-pocketbase';
 import type { PageServerLoad } from './$types';
 import { pbAdmin } from '$lib/server/pb-admin';
 import { error } from '@sveltejs/kit';
@@ -44,7 +43,7 @@ export const load = (async ({ locals, params }) => {
 	const messages = await pbAdmin
 		.collection(Collections.TicketMessages)
 		.getFullList<messagesWithUsers>({
-			filter: eq('ticket', ticketId),
+			filter: pbAdmin.filter('ticket = {:ticketId}', { ticketId: ticketId }),
 			sort: '+created',
 			expand: 'user'
 		});

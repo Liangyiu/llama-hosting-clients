@@ -3,7 +3,6 @@ import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
 import { addSshKeySchema } from '$lib/form-schemas';
 import { fail } from '@sveltejs/kit';
-import { and, eq } from '@tigawanna/typed-pocketbase';
 import { rateLimiters } from '$lib/server/rate-limiter';
 import { Collections, type SshKeysResponse } from '$lib/types/pocketbase-types';
 
@@ -17,7 +16,7 @@ export const load = (async ({ locals, url }) => {
 		pageSize,
 		sshKeyForm: await superValidate(zod(addSshKeySchema)),
 		sshKeysPromise: pb.collection(Collections.SshKeys).getFullList<SshKeysResponse>({
-			filter: eq('user', user.id),
+			filter: pb.filter('user = {:userId}', { userId: user?.id }),
 			sort: '-created'
 		})
 	};
@@ -45,7 +44,10 @@ export const actions: Actions = {
 
 		try {
 			const key = await pb.collection(Collections.SshKeys).getFullList<SshKeysResponse>({
-				filter: and(eq('public_key', form.data.public_key), eq('user', user.id))
+				filter: pb.filter('public_key = {:public_key} && user = {:user}', {
+					public_key: form.data.public_key,
+					user: user?.id
+				})
 			});
 
 			if (key.length > 0) {
@@ -53,7 +55,7 @@ export const actions: Actions = {
 			}
 
 			await pb.collection(Collections.SshKeys).create({
-				user: user.id,
+				user: user?.id,
 				public_key: form.data.public_key,
 				key_name: form.data.key_name
 			});
