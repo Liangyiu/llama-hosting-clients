@@ -6,10 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - PUBLIC_POCKETBASE_URL=***REMOVED***
-        - REDIS_URI=***REMOVED***
-        - POCKETBASE_ADMIN_EMAIL=***REMOVED***
-        - POCKETBASE_ADMIN_PW=***REMOVED***
+        - PUBLIC_POCKETBASE_URL=${PUBLIC_POCKETBASE_URL}
+        - REDIS_URI=${REDIS_URI}
+        - POCKETBASE_ADMIN_EMAIL=${POCKETBASE_ADMIN_EMAIL}
+        - POCKETBASE_ADMIN_PW=${POCKETBASE_ADMIN_PW}
     env_file: .env
     ports:
       - 8080:3000
