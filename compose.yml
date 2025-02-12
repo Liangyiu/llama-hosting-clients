@@ -10,6 +10,7 @@ services:
         - REDIS_URI=${REDIS_URI}
         - POCKETBASE_ADMIN_EMAIL=${POCKETBASE_ADMIN_EMAIL}
         - POCKETBASE_ADMIN_PW=${POCKETBASE_ADMIN_PW}
+        - ORIGIN=${ORIGIN}
     env_file: .env
     ports:
       - 8080:3000

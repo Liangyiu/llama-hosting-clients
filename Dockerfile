@@ -30,10 +30,11 @@ COPY --from=builder /builder/node_modules ./node_modules
 COPY --from=builder /builder/build ./build
 COPY --from=builder /builder/package.json .
 
-user bun
+USER bun
 
 EXPOSE 3000
 
+ARG ORIGIN
 ENV NODE_ENV=production
 ENV ORIGIN=${ORIGIN}
 
