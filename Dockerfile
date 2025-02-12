@@ -15,7 +15,6 @@ ARG PUBLIC_POCKETBASE_URL
 ARG REDIS_URI
 ARG POCKETBASE_ADMIN_EMAIL
 ARG POCKETBASE_ADMIN_PW
-ARG ORIGIN
 
 RUN bun run build
 
@@ -36,6 +35,6 @@ user bun
 EXPOSE 3000
 
 ENV NODE_ENV=production
-ARG ORIGIN
+ENV ORIGIN=${ORIGIN}
 
-CMD [ "bun", "./build/index.js"]
+CMD ["bun", "./build/index.js"]
