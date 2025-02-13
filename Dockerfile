@@ -16,6 +16,10 @@ ARG REDIS_URI
 ARG POCKETBASE_ADMIN_EMAIL
 ARG POCKETBASE_ADMIN_PW
 
+ARG ORIGIN
+ENV NODE_ENV=production
+ENV ORIGIN=${ORIGIN}
+
 RUN bun run build
 
 # RUN rm -rf node_modules && \
