@@ -1,6 +1,5 @@
 import { RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
-import { redis } from '$lib/server/redis';
-
+import redis from '$lib/server/redis';
 
 class extendedRateLimiterRedis extends RateLimiterRedis {
 	async limit(key: string | number) {

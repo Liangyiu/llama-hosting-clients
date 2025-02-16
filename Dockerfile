@@ -1,45 +1,66 @@
-ARG BUN_VERSION=1.2.2
 ARG NODE_VERSION=20
 
-FROM imbios/bun-node:${BUN_VERSION}-${NODE_VERSION}-alpine AS base
+FROM node:${NODE_VERSION}-slim AS build
 
-FROM base AS builder
+ARG BUN_VERSION=1.2.2
 
-WORKDIR /builder
+WORKDIR /build
 
+# Install Bun in the specified version
+RUN apt update && apt install -y bash curl unzip && \
+ curl https://bun.sh/install | bash -s -- bun-v${BUN_VERSION}
+
+ENV PATH="${PATH}:/root/.bun/bin"
+
+#
+# Copy the lock file and app manifest, then install
+# the dependencies, including the dev dependencies
+#
 COPY bun.lock package.json ./
+
 RUN bun install --frozen-lockfile
+
+# Copy the application sources into the build stage
 COPY . .
 
-ARG PUBLIC_POCKETBASE_URL
-ARG REDIS_URI
-ARG POCKETBASE_ADMIN_EMAIL
-ARG POCKETBASE_ADMIN_PW
-
-ARG ORIGIN
-ENV NODE_ENV=production
-ENV ORIGIN=${ORIGIN}
-
+# ADJUST: Build your application
 RUN bun run build
 
+#
+# After building the application, we will remove the node_modules
+# directory and install only the production dependencies.
+#
+# Note that clearing the Bun package cache is necessary because I encountered
+# extremely slow install times during building the image. This issue seems to be
+# related to: https://github.com/oven-sh/bun/issues/4066
+#
 # RUN rm -rf node_modules && \
-#  rm -rf /root/.bun/install/cache/ && \
-#  bun install --frozen-lockfile --production
+#   rm -rf /root/.bun/install/cache/ && \
+#   bun install --frozen-lockfile --production
 
-FROM base AS dist
+#
+# Optional step: Here we will prune all unnecessary files from our
+# node_modules directory, such as markdown and TypeScript source files,
+# to further reduce the container image size.
+#
+# RUN curl -sf https://gobinaries.com/tj/node-prune | sh && \
+#     node-prune
+
+FROM node:${NODE_VERSION}-slim AS distribution
+
+ENV NODE_ENV="production"
 
 WORKDIR /app
 
-COPY --from=builder /builder/node_modules ./node_modules
-COPY --from=builder /builder/build ./build
-COPY --from=builder /builder/package.json .
+# ADJUST: Copy application build artifacts.
+COPY --from=build --chown=node:node /build/node_modules ./node_modules
+COPY --from=build --chown=node:node /build/build ./build
+COPY --from=build --chown=node:node /build/package.json .
 
-USER bun
+RUN chown -R node:node /app
+
+USER node
 
 EXPOSE 3000
 
-ARG ORIGIN
-ENV NODE_ENV=production
-ENV ORIGIN=${ORIGIN}
-
-CMD ["bun", "./build/index.js"]
+CMD [ "node", "build" ]

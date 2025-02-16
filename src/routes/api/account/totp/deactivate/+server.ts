@@ -1,7 +1,7 @@
 import { rateLimiters } from '$lib/server/rate-limiter';
 import type { RequestHandler } from './$types';
 import { validateTotpCode } from '$lib/server/totp';
-import { pbAdmin } from '$lib/server/pb-admin';
+import pbAdmin from '$lib/server/pb-admin';
 import { Collections } from '$lib/types/pocketbase-types';
 
 interface ValidateTotpCodeI {

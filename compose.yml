@@ -5,12 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - PUBLIC_POCKETBASE_URL=${PUBLIC_POCKETBASE_URL}
-        - REDIS_URI=${REDIS_URI}
-        - POCKETBASE_ADMIN_EMAIL=${POCKETBASE_ADMIN_EMAIL}
-        - POCKETBASE_ADMIN_PW=${POCKETBASE_ADMIN_PW}
-        - ORIGIN=${ORIGIN}
-    #env_file: .env
+    env_file: .env
     ports:
-      - ${PORT}:3000
+      - ${BOUND_PORT}:3000

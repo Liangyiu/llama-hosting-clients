@@ -3,7 +3,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { registerSchema } from '$lib/form-schemas';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { ClientResponseError } from 'pocketbase';
-import { pbAdmin } from '$lib/server/pb-admin';
+import pbAdmin from '$lib/server/pb-admin';
 import type { PageServerLoad } from './$types';
 import {
 	Collections,

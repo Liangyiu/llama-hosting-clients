@@ -1,4 +1,4 @@
-import { pbAdmin } from '$lib/server/pb-admin';
+import pbAdmin from '$lib/server/pb-admin';
 import type { ClientResponseError } from 'pocketbase';
 import type { LayoutServerLoad } from './$types';
 import { Collections, type UserDetailsResponse } from '$lib/types/pocketbase-types';

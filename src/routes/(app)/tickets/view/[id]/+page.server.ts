@@ -5,7 +5,7 @@ import {
 	type UsersResponse
 } from '$lib/types/pocketbase-types';
 import type { PageServerLoad } from './$types';
-import { pbAdmin } from '$lib/server/pb-admin';
+import pbAdmin from '$lib/server/pb-admin';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';

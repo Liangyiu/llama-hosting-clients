@@ -6,7 +6,7 @@ import { activateTotpSchema, deactivateTotpSchema } from '$lib/form-schemas';
 import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { TOTP } from 'otpauth';
-import { pbAdmin } from '$lib/server/pb-admin';
+import pbAdmin from '$lib/server/pb-admin';
 import { validateTotpCode } from '$lib/server/totp';
 import { Collections, type UserMfaTotpSecretsResponse } from '$lib/types/pocketbase-types';
 
