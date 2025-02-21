@@ -1,5 +1,4 @@
-import type { ClassValue } from 'clsx';
-import clsx from 'clsx';
+import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -146,7 +145,9 @@ export function getCountryId(country: string) {
 }
 
 export async function waitFor(timeMs: number) {
-    return new Promise(resolve => {
-        setTimeout(() => { resolve('') }, timeMs);
-    })
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			resolve('');
+		}, timeMs);
+	});
 }

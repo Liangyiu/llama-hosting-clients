@@ -8,7 +8,7 @@ import pbAdmin from '$lib/server/pb-admin';
 import { rateLimiters } from '$lib/server/rate-limiter';
 import { validateTotpCode } from '$lib/server/totp';
 import { Collections, type UsersResponse } from '$lib/types/pocketbase-types';
-import { getClientTrueIp } from '$lib/utils/ip';
+import { getClientTrueIp } from '$lib/utility/ip';
 
 export const load: PageServerLoad = async () => {
 	return {

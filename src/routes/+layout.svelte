@@ -1,21 +1,16 @@
 <script lang="ts">
-	import '../app.postcss';
-
 	import { ModeWatcher, mode } from 'mode-watcher';
-	import type { Snippet } from 'svelte';
-	import { Toaster } from 'svelte-sonner';
 
-	interface Props {
-		children?: Snippet;
-	}
+	import '../app.css';
+	import { Toaster } from '$lib/components/ui/sonner/index.js';
 
-	let { children }: Props = $props();
+	let { children } = $props();
 </script>
 
 <ModeWatcher />
 
-<Toaster theme={$mode} position="bottom-center" richColors />
+<Toaster />
 
 <div class="h-screen">
-	{@render children?.()}
+	{@render children()}
 </div>
