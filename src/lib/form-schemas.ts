@@ -170,8 +170,10 @@ export const totpCodeInputSchema = z.object({
 });
 
 export const ticketMessageSchema = z.object({
-	ticketId: z.string().uuid(),
-	message: z.string().max(400, {
-		message: 'Can not exceed 400 characters'
-	})
+	message: z
+		.string()
+		.max(400, {
+			message: 'Can not exceed 400 characters'
+		})
+		.min(4, { message: 'Should be longer than 3 characters' })
 });
