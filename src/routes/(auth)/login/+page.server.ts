@@ -81,6 +81,8 @@ export const actions: Actions = {
 		} catch (e) {
 			const { status } = e as ClientResponseError;
 
+			console.log(e);
+
 			return message(form, { status, message: 'An error occurred during authentication' });
 		}
 

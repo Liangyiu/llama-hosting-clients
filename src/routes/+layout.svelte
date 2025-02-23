@@ -9,7 +9,7 @@
 
 <ModeWatcher />
 
-<Toaster />
+<Toaster position="bottom-center" richColors />
 
 <div class="h-screen">
 	{@render children()}

@@ -1,14 +1,21 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
+	import * as InputOTP from '$lib/components/ui/input-otp/index.js';
 	import { loginSchema } from '$lib/form-schemas';
-	import { superForm, type SuperValidated } from 'sveltekit-superforms';
+	import SuperDebug, {
+		formFieldProxy,
+		numberProxy,
+		stringProxy,
+		superForm,
+		type SuperValidated
+	} from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast as sonner } from 'svelte-sonner';
-	import { Field } from 'formsnap';
+	import Loader2 from '~icons/lucide/loader2';
 
 	interface Props {
 		formSetup: SuperValidated<
@@ -35,6 +42,21 @@
 	});
 
 	const { form: formData, enhance, message, delayed } = form;
+
+	const totpProxy = stringProxy(form, 'totp_code', {
+		empty: 'undefined',
+		taint: 'untaint-form'
+	});
+
+	const emailProxy = stringProxy(form, 'email', {
+		taint: 'untaint-form',
+		empty: 'undefined'
+	});
+
+	const passwordProxy = stringProxy(form, 'password', {
+		empty: 'undefined',
+		taint: 'untaint-form'
+	});
 
 	let totpCodeRequired = $state(false);
 	let capturedFormData = $state({
@@ -67,8 +89,8 @@
 	});
 
 	async function handleSubmit() {
-		capturedFormData.email = $formData.email;
-		capturedFormData.password = $formData.password;
+		capturedFormData.email = $emailProxy;
+		capturedFormData.password = $passwordProxy;
 
 		formElement.requestSubmit();
 	}
@@ -125,11 +147,33 @@
 				</div>
 				{#if totpCodeRequired}
 					<div class="grid gap-2">
-						<Form.Field {form} name="totp_code"></Form.Field>
+						<Form.Field {form} name="totp_code">
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>TOTP</Form.Label>
+
+									<InputOTP.Root maxlength={6} {...props} bind:value={$totpProxy}>
+										{#snippet children({ cells })}
+											<InputOTP.Group>
+												{#each cells as cell}
+													<InputOTP.Slot {cell} />
+												{/each}
+											</InputOTP.Group>
+										{/snippet}
+									</InputOTP.Root>
+								{/snippet}
+							</Form.Control>
+							<Form.FieldErrors />
+						</Form.Field>
 					</div>
 				{/if}
-
-				<Button type="submit" class="w-full" onclick={handleSubmit}>Login</Button>
+				<Form.Button class="w-full" onclick={handleSubmit}>
+					{#if $delayed}
+						<Loader2 class="size-6 animate-spin" />
+					{:else}
+						Login
+					{/if}
+				</Form.Button>
 			</div>
 		</form>
 

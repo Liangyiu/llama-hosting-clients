@@ -11,7 +11,11 @@ export const loginSchema = z.object({
 		.string()
 		.min(8, { message: 'Must be at least 8 characters long' })
 		.max(72, { message: 'Can not exceed 72 characters' }),
-	totp_code: z.string().min(6).max(6, { message: 'Can not exceed 6 characters' }).optional()
+	totp_code: z
+		.string()
+		.min(6, { message: 'TOTP must contain 6 characters' })
+		.max(6, { message: 'Can not exceed 6 characters' })
+		.optional()
 });
 
 export const registerSchema = z
