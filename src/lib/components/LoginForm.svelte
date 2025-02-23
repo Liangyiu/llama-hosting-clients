@@ -1,18 +1,9 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
-	import * as InputOTP from '$lib/components/ui/input-otp/index.js';
 	import { loginSchema } from '$lib/form-schemas';
-	import SuperDebug, {
-		formFieldProxy,
-		numberProxy,
-		stringProxy,
-		superForm,
-		type SuperValidated
-	} from 'sveltekit-superforms';
+	import { stringProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast as sonner } from 'svelte-sonner';
 	import Loader2 from '~icons/lucide/loader2';
@@ -48,16 +39,6 @@
 		taint: 'untaint-form'
 	});
 
-	const emailProxy = stringProxy(form, 'email', {
-		taint: 'untaint-form',
-		empty: 'undefined'
-	});
-
-	const passwordProxy = stringProxy(form, 'password', {
-		empty: 'undefined',
-		taint: 'untaint-form'
-	});
-
 	let totpCodeRequired = $state(false);
 	let capturedFormData = $state({
 		email: '',
@@ -89,8 +70,8 @@
 	});
 
 	async function handleSubmit() {
-		capturedFormData.email = $emailProxy;
-		capturedFormData.password = $passwordProxy;
+		capturedFormData.email = $formData.email;
+		capturedFormData.password = $formData.password;
 
 		formElement.requestSubmit();
 	}
@@ -150,17 +131,15 @@
 						<Form.Field {form} name="totp_code">
 							<Form.Control>
 								{#snippet children({ props })}
-									<Form.Label>TOTP</Form.Label>
-
-									<InputOTP.Root maxlength={6} {...props} bind:value={$totpProxy}>
-										{#snippet children({ cells })}
-											<InputOTP.Group>
-												{#each cells as cell}
-													<InputOTP.Slot {cell} />
-												{/each}
-											</InputOTP.Group>
-										{/snippet}
-									</InputOTP.Root>
+									<Form.Label>TOTP Code</Form.Label>
+									<Input
+										{...props}
+										id="totp_code"
+										type="text"
+										placeholder="******"
+										required
+										bind:value={$formData.totp_code}
+									/>
 								{/snippet}
 							</Form.Control>
 							<Form.FieldErrors />
