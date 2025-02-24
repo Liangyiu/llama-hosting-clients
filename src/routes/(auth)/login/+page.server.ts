@@ -6,9 +6,10 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { ClientResponseError } from 'pocketbase';
 import pbAdmin from '$lib/server/pb-admin';
 import { rateLimiters } from '$lib/server/rate-limiter';
-import { validateTotpCode } from '$lib/server/totp';
+import { validateTotpCode } from '$lib/server/utility/totp';
 import { Collections, type UsersResponse } from '$lib/types/pocketbase-types';
 import { getClientTrueIp } from '$lib/utility/ip';
+import { hasTotpEnabled } from '$lib/server/utility/db';
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -29,19 +30,19 @@ export const actions: Actions = {
 
 		const clientIp = getClientTrueIp(event.request, event.getClientAddress());
 
-		const { success: ipSuccess } = await rateLimiters.loginIp.limit(clientIp);
-		if (!ipSuccess) {
+		const { success: successIp } = await rateLimiters.loginIp.limit(clientIp);
+		if (!successIp) {
 			return message(form, {
 				status: 429,
 				message: `Rate limit hit.`
 			});
 		}
 
-		const { success: emailIpSuccess } = await rateLimiters.loginEmailIp.limit(
-			form.data.email + clientIp
+		const { success: successIpUa } = await rateLimiters.loginIpUa.limit(
+			clientIp + ':' + event.request.headers.get('user-agent')
 		);
 
-		if (!emailIpSuccess) {
+		if (!successIpUa) {
 			return message(form, {
 				status: 429,
 				message: `Rate limit hit.`
@@ -59,6 +60,10 @@ export const actions: Actions = {
 
 		let secretId = '';
 		let mfaEnabled = false;
+
+		const user = await hasTotpEnabled({ userEmail: form.data.email });
+
+		console.log(user);
 
 		try {
 			const user = await pbAdmin
@@ -80,8 +85,6 @@ export const actions: Actions = {
 			}
 		} catch (e) {
 			const { status } = e as ClientResponseError;
-
-			console.log(e);
 
 			return message(form, { status, message: 'An error occurred during authentication' });
 		}

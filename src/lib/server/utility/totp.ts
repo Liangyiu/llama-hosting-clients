@@ -1,5 +1,5 @@
 import { Collections, type UserMfaTotpSecretsResponse } from '$lib/types/pocketbase-types';
-import pbAdmin from './pb-admin';
+import pbAdmin from '../pb-admin';
 import { TOTP } from 'otpauth';
 
 export async function validateTotpCode(secretId: string, code: string) {

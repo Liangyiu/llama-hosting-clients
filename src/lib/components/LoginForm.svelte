@@ -3,7 +3,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { loginSchema } from '$lib/form-schemas';
-	import { stringProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
+	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast as sonner } from 'svelte-sonner';
 	import Loader2 from '~icons/lucide/loader2';
@@ -33,11 +33,6 @@
 	});
 
 	const { form: formData, enhance, message, delayed } = form;
-
-	const totpProxy = stringProxy(form, 'totp_code', {
-		empty: 'undefined',
-		taint: 'untaint-form'
-	});
 
 	let totpCodeRequired = $state(false);
 	let capturedFormData = $state({
@@ -117,7 +112,7 @@
 									{...props}
 									id="password"
 									type="password"
-									placeholder="********"
+									placeholder="•••••••••••••"
 									required
 									bind:value={$formData.password}
 								/>
@@ -136,7 +131,7 @@
 										{...props}
 										id="totp_code"
 										type="text"
-										placeholder="******"
+										placeholder="••••••"
 										required
 										bind:value={$formData.totp_code}
 									/>
