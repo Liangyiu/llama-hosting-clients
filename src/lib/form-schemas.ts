@@ -10,7 +10,7 @@ export const loginSchema = z.object({
 	password: z
 		.string()
 		.min(8, { message: 'Must be at least 8 characters long' })
-		.max(72, { message: 'Can not exceed 72 characters' }),
+		.max(71, { message: 'Can not exceed 71 characters' }),
 	totp_code: z
 		.string()
 		.min(6, { message: 'TOTP must contain 6 characters' })
@@ -32,7 +32,7 @@ export const registerSchema = z
 		password: z
 			.string()
 			.min(8, { message: 'Must be at least 8 characters long' })
-			.max(72, { message: 'Can not exceed 72 characters' }),
+			.max(71, { message: 'Can not exceed 71 characters' }),
 		passwordConfirm: z.string(),
 		accept_terms: z.boolean()
 	})

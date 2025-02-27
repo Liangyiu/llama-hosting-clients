@@ -15,8 +15,6 @@ export const load = (async () => {
 
 export const actions: Actions = {
 	default: async (event) => {
-		console.log('form submitted - server');
-
 		const { pb } = event.locals;
 		const form = await superValidate(event, zod(resetPasswordSchema));
 

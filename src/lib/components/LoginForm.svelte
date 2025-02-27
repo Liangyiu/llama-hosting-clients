@@ -7,6 +7,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast as sonner } from 'svelte-sonner';
 	import Loader2 from '~icons/lucide/loader2';
+	import PwInput from './ui/origin-svelte/PwInput.svelte';
 
 	interface Props {
 		formSetup: SuperValidated<
@@ -102,19 +103,12 @@
 					<Form.Field {form} name="password">
 						<Form.Control>
 							{#snippet children({ props })}
-								<div class="flex items-center">
-									<Form.Label>Password</Form.Label>
-									<a href="/reset-password" class="ml-auto inline-block text-sm underline">
-										Forgot your password?
-									</a>
-								</div>
-								<Input
+								<PwInput
 									{...props}
-									id="password"
-									type="password"
-									placeholder="•••••••••••••"
-									required
 									bind:value={$formData.password}
+									extraLabel
+									extraLabelHref="/reset-password"
+									extraLabelText="Forgot your password?"
 								/>
 							{/snippet}
 						</Form.Control>

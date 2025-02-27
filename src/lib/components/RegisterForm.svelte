@@ -10,6 +10,7 @@
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { toast as sonner } from 'svelte-sonner';
 	import Loader2 from '~icons/lucide/loader2';
+	import PwInput from './ui/origin-svelte/PwInput.svelte';
 
 	interface Props {
 		formSetup: SuperValidated<
@@ -113,18 +114,9 @@
 				<Form.Field {form} name="password">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Form.Label for="password">Password</Form.Label>
-							<Input
-								{...props}
-								id="password"
-								placeholder="•••••••••••••"
-								type="password"
-								required
-								bind:value={$formData.password}
-							/>
+							<PwInput {...props} bind:value={$formData.password} reqList />
 						{/snippet}
 					</Form.Control>
-					<Form.FieldErrors />
 				</Form.Field>
 
 				<Form.Field {form} name="passwordConfirm">

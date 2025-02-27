@@ -37,4 +37,6 @@ export async function hasTotpEnabled(
 			return false;
 		}
 	}
+
+	return true;
 }
