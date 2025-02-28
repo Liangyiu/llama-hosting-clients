@@ -39,7 +39,7 @@ export const registerSchema = z
 	.superRefine(({ password }, checkPasswordComplexity) => {
 		const containsUppercase = (ch: string) => /[A-Z]/.test(ch);
 		const containsLowercase = (ch: string) => /[a-z]/.test(ch);
-		const containsSpecialChar = (ch: string) => /[`!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?~ ]/.test(ch);
+		const containsSpecialChar = (ch: string) => /[!@#$%^&*]/.test(ch);
 		let countOfUpperCase = 0,
 			countOfLowerCase = 0,
 			countOfNumbers = 0,

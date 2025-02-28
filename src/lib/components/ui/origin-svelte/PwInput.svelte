@@ -41,7 +41,7 @@
 		{ regex: /[0-9]/, text: 'At least 1 number' },
 		{ regex: /[a-z]/, text: 'At least 1 lowercase letter' },
 		{ regex: /[A-Z]/, text: 'At least 1 uppercase letter' },
-		{ regex: /[!@#$%^&*]+/, text: 'At least 1 special character' }
+		{ regex: /[!@#$%^&*]+/, text: 'At least 1 special character (!@#$%^&*)' }
 	] as const;
 
 	const strength = $derived(
