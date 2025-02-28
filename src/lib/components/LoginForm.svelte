@@ -8,6 +8,7 @@
 	import { toast as sonner } from 'svelte-sonner';
 	import Loader2 from '~icons/lucide/loader2';
 	import PwInput from './ui/origin-svelte/PwInput.svelte';
+	import autoAnimate from '@formkit/auto-animate';
 
 	interface Props {
 		formSetup: SuperValidated<
@@ -80,7 +81,7 @@
 	</Card.Header>
 	<Card.Content>
 		<form bind:this={formElement} method="post" use:enhance action="/login">
-			<div class="grid gap-4">
+			<div class="grid gap-4" use:autoAnimate>
 				<div class="grid gap-2">
 					<Form.Field {form} name="email">
 						<Form.Control>

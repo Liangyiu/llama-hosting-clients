@@ -5,22 +5,18 @@ interface ITotpEnabledConfig {
 	userId?: string;
 	userEmail?: string;
 }
-export async function hasTotpEnabled(
+export async function getTotpSettings(
 	config: ITotpEnabledConfig = { userEmail: undefined, userId: undefined }
 ) {
 	const { userEmail, userId } = config;
-
-	if (!userId && !userEmail) {
-		return false;
-	}
 
 	if (userId) {
 		const user = await pbAdmin.collection(Collections.Users).getOne<UsersResponse>(userId);
 
 		if (user.mfa_totp) {
-			return true;
+			return { enabled: true, secretId: user.mfa_totp_secret_id };
 		} else {
-			return false;
+			return { enabled: false };
 		}
 	}
 
@@ -32,11 +28,11 @@ export async function hasTotpEnabled(
 			);
 
 		if (user.mfa_totp) {
-			return true;
+			return { enabled: true, secretId: user.mfa_totp_secret_id };
 		} else {
-			return false;
+			return { enabled: false };
 		}
 	}
 
-	return true;
+	return undefined;
 }
