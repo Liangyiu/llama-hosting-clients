@@ -1,26 +1,23 @@
 <script lang="ts" module>
 	import BookOpen from 'lucide-svelte/icons/book-open';
 	import Bot from 'lucide-svelte/icons/bot';
-	import ChartPie from 'lucide-svelte/icons/chart-pie';
-	import Frame from 'lucide-svelte/icons/frame';
 	import LifeBuoy from 'lucide-svelte/icons/life-buoy';
-	import Map from 'lucide-svelte/icons/map';
 	import Send from 'lucide-svelte/icons/send';
 	import Settings2 from 'lucide-svelte/icons/settings-2';
 	import SquareTerminal from 'lucide-svelte/icons/square-terminal';
 
 	const data = {
-		user: {
-			name: 'shadcn',
-			email: 'm@example.com',
-			avatar: '/assets/logos/llama-hosting-logo-simple.svg'
-		},
 		navMain: [
 			{
-				title: 'Playground',
-				url: '#',
+				title: 'Dashboard',
+				url: '/dashboard',
 				icon: SquareTerminal,
-				isActive: true,
+				type: 'single'
+			},
+			{
+				title: 'Playground',
+				icon: SquareTerminal,
+				type: 'collapsible',
 				items: [
 					{
 						title: 'History',
@@ -38,8 +35,8 @@
 			},
 			{
 				title: 'Models',
-				url: '#',
 				icon: Bot,
+				type: 'collapsible',
 				items: [
 					{
 						title: 'Genesis',
@@ -57,8 +54,8 @@
 			},
 			{
 				title: 'Documentation',
-				url: '#',
 				icon: BookOpen,
+				type: 'collapsible',
 				items: [
 					{
 						title: 'Introduction',
@@ -80,24 +77,20 @@
 			},
 			{
 				title: 'Settings',
-				url: '#',
 				icon: Settings2,
+				type: 'collapsible',
 				items: [
 					{
-						title: 'General',
-						url: '#'
+						title: 'Account',
+						url: '/settings/account'
 					},
 					{
-						title: 'Team',
-						url: '#'
+						title: 'Security',
+						url: '/settings/security'
 					},
 					{
-						title: 'Billing',
-						url: '#'
-					},
-					{
-						title: 'Limits',
-						url: '#'
+						title: 'SSH Key Vault',
+						url: '/settings/ssh-key-vault'
 					}
 				]
 			}
@@ -112,23 +105,6 @@
 				title: 'Feedback',
 				url: '#',
 				icon: Send
-			}
-		],
-		projects: [
-			{
-				name: 'Design Engineering',
-				url: '#',
-				icon: Frame
-			},
-			{
-				name: 'Sales & Marketing',
-				url: '#',
-				icon: ChartPie
-			},
-			{
-				name: 'Travel',
-				url: '#',
-				icon: Map
 			}
 		]
 	};
@@ -173,7 +149,6 @@
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<NavMain items={data.navMain} />
-		<NavProjects projects={data.projects} />
 		<NavSecondary items={data.navSecondary} class="mt-auto" />
 	</Sidebar.Content>
 	<Sidebar.Footer>

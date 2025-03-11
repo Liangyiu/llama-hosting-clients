@@ -3,6 +3,10 @@
 import type { TypedPocketBase } from '$lib/types/pocketbase-types';
 import type { AuthRecord } from 'pocketbase';
 
+interface ExtPageData {
+	crumbs?: Array<{ title: string; url?: string }>;
+}
+
 // for information about these interfaces
 declare global {
 	namespace App {
@@ -11,7 +15,9 @@ declare global {
 			pb: TypedPocketBase;
 			user: AuthRecord;
 		}
-		// interface PageData {}
+		interface PageData {
+			extra?: ExtPageData;
+		}
 		// interface PageState {}
 		// interface Platform {}
 	}
