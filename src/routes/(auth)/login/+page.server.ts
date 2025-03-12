@@ -6,9 +6,10 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { ClientResponseError } from 'pocketbase';
 import pbAdmin from '$lib/server/pb-admin';
 import { rateLimiters } from '$lib/server/rate-limiter';
-import { validateTotpCode } from '$lib/server/totp';
+import { validateTotpCode } from '$lib/server/utility/totp';
 import { Collections, type UsersResponse } from '$lib/types/pocketbase-types';
-import { getClientTrueIp } from '$lib/utils/ip';
+import { getClientTrueIp } from '$lib/utility/ip';
+import { getTotpSettings } from '$lib/server/utility/db';
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -29,19 +30,19 @@ export const actions: Actions = {
 
 		const clientIp = getClientTrueIp(event.request, event.getClientAddress());
 
-		const { success: ipSuccess } = await rateLimiters.loginIp.limit(clientIp);
-		if (!ipSuccess) {
+		const { success: successIp } = await rateLimiters.loginIp.limit(clientIp);
+		if (!successIp) {
 			return message(form, {
 				status: 429,
 				message: `Rate limit hit.`
 			});
 		}
 
-		const { success: emailIpSuccess } = await rateLimiters.loginEmailIp.limit(
-			form.data.email + clientIp
+		const { success: successIpUa } = await rateLimiters.loginIpUa.limit(
+			clientIp + ':' + event.request.headers.get('user-agent')
 		);
 
-		if (!emailIpSuccess) {
+		if (!successIpUa) {
 			return message(form, {
 				status: 429,
 				message: `Rate limit hit.`
@@ -57,41 +58,52 @@ export const actions: Actions = {
 			});
 		}
 
-		let secretId = '';
-		let mfaEnabled = false;
+		let totpSettings = undefined;
 
 		try {
-			const user = await pbAdmin
-				.collection(Collections.Users)
-				.getFirstListItem<UsersResponse>(
-					pb.filter('email = {:email}', { email: form.data.email.toLowerCase() })
-				);
+			totpSettings = await getTotpSettings({ userEmail: form.data.email });
+		} catch (e) {
+			const error = e as ClientResponseError;
 
-			if (user.mfa_totp) {
-				secretId = user.mfa_totp_secret_id;
-				mfaEnabled = true;
+			if (error.status === 404) {
+				return message(form, {
+					status: 404,
+					message: 'No account associated with ' + form.data.email
+				});
+			}
+			return message(form, {
+				status: error.status,
+				message: 'An error occurred during authentication'
+			});
+		}
 
+		if (totpSettings) {
+			if (totpSettings.enabled) {
 				if (!form.data.totp_code) {
 					return message(form, {
 						status: 400,
 						message: 'Please enter your TOTP code'
 					});
+				} else {
+					if (totpSettings.secretId) {
+						const { success: totpValid } = await validateTotpCode(
+							totpSettings.secretId,
+							form.data.totp_code || ''
+						);
+
+						if (!totpValid) {
+							return message(form, {
+								status: 400,
+								message: 'Invalid TOTP code'
+							});
+						}
+					} else {
+						return message(form, {
+							status: 500,
+							message: 'There has been an error in the TOTP setup'
+						});
+					}
 				}
-			}
-		} catch (e) {
-			const { status } = e as ClientResponseError;
-
-			return message(form, { status, message: 'An error occurred during authentication' });
-		}
-
-		if (mfaEnabled) {
-			const { success: totpValid } = await validateTotpCode(secretId, form.data.totp_code || '');
-
-			if (!totpValid) {
-				return message(form, {
-					status: 400,
-					message: 'Invalid TOTP code'
-				});
 			}
 		}
 

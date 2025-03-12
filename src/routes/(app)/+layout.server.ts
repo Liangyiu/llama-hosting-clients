@@ -2,7 +2,7 @@ import pbAdmin from '$lib/server/pb-admin';
 import type { ClientResponseError } from 'pocketbase';
 import type { LayoutServerLoad } from './$types';
 import { Collections, type UserDetailsResponse } from '$lib/types/pocketbase-types';
-import { getAvatarUri } from '$lib/utils/avatar';
+import { getAvatarUri } from '$lib/utility/avatar';
 
 export const load = (async ({ locals }) => {
 	const { user, pb } = locals;

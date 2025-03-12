@@ -69,11 +69,23 @@ export const rateLimiters = {
 		duration: 60,
 		keyPrefix: 'rl:email:change'
 	}),
-	passwordReset: new extendedRateLimiterRedis({
+	passwordResetEmail: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1,
+		points: 3,
 		duration: 60,
 		keyPrefix: 'rl:password:reset'
+	}),
+	passwordResetIp: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 10,
+		duration: 120,
+		keyPrefix: 'rl:password:reset:ip'
+	}),
+	passwordResetIpUa: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 3,
+		duration: 60,
+		keyPrefix: 'rl:password:reset:ipua'
 	}),
 	activateTotp: new extendedRateLimiterRedis({
 		storeClient: redis,
@@ -95,21 +107,21 @@ export const rateLimiters = {
 	}),
 	loginEmail: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 3,
-		duration: 10,
+		points: 5,
+		duration: 60,
 		keyPrefix: 'rl:login:email'
 	}),
 	loginIp: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 3,
-		duration: 10,
+		points: 10,
+		duration: 60,
 		keyPrefix: 'rl:login:ip'
 	}),
-	loginEmailIp: new extendedRateLimiterRedis({
+	loginIpUa: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 3,
-		duration: 10,
-		keyPrefix: 'rl:login:emailip'
+		points: 5,
+		duration: 60,
+		keyPrefix: 'rl:login:ipua'
 	}),
 	healthCheck: new extendedRateLimiterRedis({
 		storeClient: redis,
@@ -119,14 +131,32 @@ export const rateLimiters = {
 	}),
 	registerIp: new extendedRateLimiterRedis({
 		storeClient: redis,
-		points: 1,
-		duration: 5,
+		points: 2,
+		duration: 15,
 		keyPrefix: 'rl:register:ip'
+	}),
+	registerIpUa: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 1,
+		duration: 15,
+		keyPrefix: 'rl:register:ipua'
 	}),
 	createTicketMessage: new extendedRateLimiterRedis({
 		storeClient: redis,
 		points: 1,
 		duration: 10,
 		keyPrefix: 'rl:create:ticket'
+	}),
+	generalIp: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 120,
+		duration: 60,
+		keyPrefix: 'rl:general:ip'
+	}),
+	generalIpUa: new extendedRateLimiterRedis({
+		storeClient: redis,
+		points: 60,
+		duration: 60,
+		keyPrefix: 'rl:general:ipua'
 	})
 };

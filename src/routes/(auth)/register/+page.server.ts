@@ -10,7 +10,7 @@ import {
 	type UserDetailsResponse,
 	type UsersResponse
 } from '$lib/types/pocketbase-types';
-import { getClientTrueIp } from '$lib/utils/ip';
+import { getClientTrueIp } from '$lib/utility/ip';
 import { rateLimiters } from '$lib/server/rate-limiter';
 
 export const load = (async () => {
@@ -28,16 +28,30 @@ export const actions: Actions = {
 
 		const clientIp = getClientTrueIp(event.request, event.getClientAddress());
 
-		const { success: ipSuccess } = await rateLimiters.registerIp.limit(clientIp);
-		if (!ipSuccess) {
+		const { success: successIp, timeRemaining: timeRemainingIp } =
+			await rateLimiters.registerIp.limit(clientIp);
+		if (!successIp) {
 			return message(form, {
 				status: 429,
-				message: `Rate limit hit.`
+				message: `Rate limit hit. Try again after ${timeRemainingIp} second(s))`
+			});
+		}
+
+		const { success: successIpUa, timeRemaining: timeRemainingIpUa } =
+			await rateLimiters.registerIpUa.limit(
+				clientIp + ':' + event.request.headers.get('user-agent')
+			);
+
+		if (!successIpUa) {
+			return message(form, {
+				status: 429,
+				message: `Rate limit hit. Try again after ${timeRemainingIpUa} second(s))`
 			});
 		}
 
 		try {
 			const newUser = await pbAdmin.collection(Collections.Users).create<UsersResponse>(form.data);
+
 			await pbAdmin.collection('users').requestVerification(form.data.email);
 
 			const newUserDetails = await pbAdmin
@@ -49,13 +63,11 @@ export const actions: Actions = {
 			await pbAdmin.collection('users').update(newUser.id, {
 				user_details: newUserDetails.id
 			});
-
-			return redirect(303, '/login?new_user=true');
 		} catch (e) {
 			const { status, response } = e as ClientResponseError;
 
-			if (response.data.email)
-				if (response.data.email.code === 'validation_invalid_email') {
+			if (response?.data?.email)
+				if (response.data.email.code === 'validation_not_unique') {
 					return message(form, { status, message: 'Email already in use or not yet verified' });
 				}
 
@@ -64,5 +76,7 @@ export const actions: Actions = {
 				message: 'An error occurred during the registration process'
 			});
 		}
+
+		return redirect(303, '/login?new_user=true');
 	}
 };

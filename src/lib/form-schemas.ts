@@ -10,8 +10,12 @@ export const loginSchema = z.object({
 	password: z
 		.string()
 		.min(8, { message: 'Must be at least 8 characters long' })
-		.max(72, { message: 'Can not exceed 72 characters' }),
-	totp_code: z.string().min(6).max(6, { message: 'Can not exceed 6 characters' }).optional()
+		.max(71, { message: 'Can not exceed 71 characters' }),
+	totp_code: z
+		.string()
+		.min(6, { message: 'TOTP must contain 6 characters' })
+		.max(6, { message: 'Can not exceed 6 characters' })
+		.optional()
 });
 
 export const registerSchema = z
@@ -28,14 +32,14 @@ export const registerSchema = z
 		password: z
 			.string()
 			.min(8, { message: 'Must be at least 8 characters long' })
-			.max(72, { message: 'Can not exceed 72 characters' }),
+			.max(71, { message: 'Can not exceed 71 characters' }),
 		passwordConfirm: z.string(),
 		accept_terms: z.boolean()
 	})
 	.superRefine(({ password }, checkPasswordComplexity) => {
 		const containsUppercase = (ch: string) => /[A-Z]/.test(ch);
 		const containsLowercase = (ch: string) => /[a-z]/.test(ch);
-		const containsSpecialChar = (ch: string) => /[`!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?~ ]/.test(ch);
+		const containsSpecialChar = (ch: string) => /[!@#$%^&*]/.test(ch);
 		let countOfUpperCase = 0,
 			countOfLowerCase = 0,
 			countOfNumbers = 0,
