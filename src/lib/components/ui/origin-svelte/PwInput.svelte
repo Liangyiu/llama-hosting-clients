@@ -8,6 +8,7 @@
 	import Eye from 'lucide-svelte/icons/eye';
 	import EyeOff from 'lucide-svelte/icons/eye-off';
 	import X from 'lucide-svelte/icons/x';
+	import type { FullAutoFill } from 'svelte/elements';
 
 	interface Props {
 		reqList?: boolean;
@@ -17,6 +18,7 @@
 		extraLabel?: boolean;
 		extraLabelText?: string;
 		extraLabelHref?: string;
+		autocomplete?: FullAutoFill;
 	}
 
 	let {
@@ -27,6 +29,7 @@
 		extraLabel = false,
 		extraLabelHref = '#',
 		extraLabelText = 'Extra label',
+		autocomplete = undefined,
 		...props
 	}: Props = $props();
 
@@ -93,6 +96,7 @@
 				placeholder="•••••••••••••"
 				type={isVisible ? 'text' : 'password'}
 				bind:value
+				{autocomplete}
 				aria-invalid={strengthScore < 5}
 				aria-describedby="password-strength"
 			/>

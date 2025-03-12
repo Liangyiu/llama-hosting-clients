@@ -93,6 +93,7 @@
 									type="email"
 									placeholder="me@example.com"
 									required
+									autocomplete="email"
 									bind:value={$formData.email}
 								/>
 							{/snippet}
@@ -110,6 +111,7 @@
 									extraLabel
 									extraLabelHref="/reset-password"
 									extraLabelText="Forgot your password?"
+									autocomplete="current-password"
 								/>
 							{/snippet}
 						</Form.Control>

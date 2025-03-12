@@ -72,6 +72,7 @@
 									placeholder="Max"
 									type="text"
 									required
+									autocomplete="given-name"
 									bind:value={$formData.first_name}
 								/>
 							{/snippet}
@@ -87,6 +88,7 @@
 									id="last_name"
 									placeholder="Robinson"
 									type="text"
+									autocomplete="family-name"
 									required
 									bind:value={$formData.last_name}
 								/>
@@ -104,6 +106,7 @@
 								id="email"
 								placeholder="me@example.com"
 								type="email"
+								autocomplete="email"
 								required
 								bind:value={$formData.email}
 							/>
@@ -114,7 +117,12 @@
 				<Form.Field {form} name="password">
 					<Form.Control>
 						{#snippet children({ props })}
-							<PwInput {...props} bind:value={$formData.password} reqList />
+							<PwInput
+								{...props}
+								bind:value={$formData.password}
+								reqList
+								autocomplete="new-password"
+							/>
 						{/snippet}
 					</Form.Control>
 				</Form.Field>
@@ -129,6 +137,7 @@
 								placeholder="•••••••••••••"
 								type="password"
 								required
+								autocomplete="new-password"
 								bind:value={$formData.passwordConfirm}
 							/>
 						{/snippet}

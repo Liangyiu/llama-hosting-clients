@@ -10,6 +10,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
+	import { goto } from '$app/navigation';
 
 	let {
 		user
@@ -22,6 +23,13 @@
 	} = $props();
 
 	const sidebar = useSidebar();
+
+	async function logout() {
+		const response = await fetch('/api/auth/logout');
+		if (response.ok) {
+			return await goto('/login?logout=1');
+		}
+	}
 </script>
 
 <Sidebar.Menu>
@@ -87,7 +95,7 @@
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
+				<DropdownMenu.Item onclick={logout} class="cursor-pointer">
 					<LogOut />
 					Log out
 				</DropdownMenu.Item>
