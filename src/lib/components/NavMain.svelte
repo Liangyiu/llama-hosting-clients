@@ -17,6 +17,7 @@
 			items?: {
 				title: string;
 				url: string;
+				isActive?: boolean;
 			}[];
 		}[];
 	} = $props();
@@ -24,7 +25,7 @@
 
 <Sidebar.Group>
 	<Sidebar.Menu>
-		{#each items as mainItem (mainItem.title)}
+		{#each items as mainItem, index (mainItem.title)}
 			{#if mainItem.type === 'collapsible'}
 				<Collapsible.Root open={mainItem.isActive} class="group/collapsible">
 					{#snippet child({ props })}
@@ -50,7 +51,7 @@
 									<Sidebar.MenuSub>
 										{#each mainItem.items as subItem (subItem.title)}
 											<Sidebar.MenuSubItem>
-												<Sidebar.MenuSubButton>
+												<Sidebar.MenuSubButton isActive={subItem.isActive}>
 													{#snippet child({ props })}
 														<a href={subItem.url} {...props}>
 															<span>{subItem.title}</span>
@@ -67,7 +68,7 @@
 				</Collapsible.Root>
 			{:else if mainItem.type === 'single'}
 				<Sidebar.MenuItem>
-					<Sidebar.MenuButton>
+					<Sidebar.MenuButton isActive={mainItem.isActive}>
 						{#snippet child({ props })}
 							<a href={mainItem.url} {...props}>
 								<mainItem.icon />

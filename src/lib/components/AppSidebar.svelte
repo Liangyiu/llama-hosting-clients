@@ -1,96 +1,48 @@
-<script lang="ts" module>
+<script lang="ts">
 	import BookOpen from 'lucide-svelte/icons/book-open';
 	import Bot from 'lucide-svelte/icons/bot';
 	import LifeBuoy from 'lucide-svelte/icons/life-buoy';
 	import Send from 'lucide-svelte/icons/send';
 	import Settings2 from 'lucide-svelte/icons/settings-2';
 	import SquareTerminal from 'lucide-svelte/icons/square-terminal';
+	import NavMain from '$lib/components/NavMain.svelte';
+	import NavSecondary from '$lib/components/NavSecondary.svelte';
+	import NavUser from '$lib/components/NavUser.svelte';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { type ComponentProps } from 'svelte';
+	import { getUserState } from '$lib/stores/UserStore.svelte';
+	import { page } from '$app/state';
+	import Bell from 'lucide-svelte/icons/bell';
 
-	const data = {
+	let navRoutes = $derived({
 		navMain: [
 			{
 				title: 'Dashboard',
 				url: '/dashboard',
 				icon: SquareTerminal,
-				type: 'single'
-			},
-			{
-				title: 'Playground',
-				icon: SquareTerminal,
-				type: 'collapsible',
-				items: [
-					{
-						title: 'History',
-						url: '#'
-					},
-					{
-						title: 'Starred',
-						url: '#'
-					},
-					{
-						title: 'Settings',
-						url: '#'
-					}
-				]
-			},
-			{
-				title: 'Models',
-				icon: Bot,
-				type: 'collapsible',
-				items: [
-					{
-						title: 'Genesis',
-						url: '#'
-					},
-					{
-						title: 'Explorer',
-						url: '#'
-					},
-					{
-						title: 'Quantum',
-						url: '#'
-					}
-				]
-			},
-			{
-				title: 'Documentation',
-				icon: BookOpen,
-				type: 'collapsible',
-				items: [
-					{
-						title: 'Introduction',
-						url: '#'
-					},
-					{
-						title: 'Get Started',
-						url: '#'
-					},
-					{
-						title: 'Tutorials',
-						url: '#'
-					},
-					{
-						title: 'Changelog',
-						url: '#'
-					}
-				]
+				type: 'single',
+				isActive: page.url.pathname === '/dashboard'
 			},
 			{
 				title: 'Settings',
 				icon: Settings2,
 				type: 'collapsible',
+				isActive: page.url.pathname.startsWith('/settings'),
 				items: [
 					{
 						title: 'Account',
-						url: '/settings/account'
+						url: '/settings/account',
+						isActive: page.url.pathname === '/settings/account'
 					},
 					{
 						title: 'Security',
-						url: '/settings/security'
+						url: '/settings/security',
+						isActive: page.url.pathname === '/settings/security'
 					},
 					{
 						title: 'SSH Key Vault',
-						url: '/settings/ssh-key-vault'
+						url: '/settings/ssh-key-vault',
+						isActive: page.url.pathname === '/settings/ssh-key-vault'
 					}
 				]
 			}
@@ -98,26 +50,16 @@
 		navSecondary: [
 			{
 				title: 'Support',
-				url: '#',
+				url: '/support',
 				icon: LifeBuoy
 			},
 			{
-				title: 'Feedback',
-				url: '#',
-				icon: Send
+				title: 'Notifications',
+				url: '/notifications',
+				icon: Bell
 			}
 		]
-	};
-</script>
-
-<script lang="ts">
-	import NavMain from '$lib/components/NavMain.svelte';
-	import NavProjects from '$lib/components/NavProjects.svelte';
-	import NavSecondary from '$lib/components/NavSecondary.svelte';
-	import NavUser from '$lib/components/NavUser.svelte';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { type ComponentProps } from 'svelte';
-	import { getUserState } from '$lib/stores/UserStore.svelte';
+	});
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 
@@ -148,8 +90,8 @@
 		</Sidebar.Menu>
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<NavMain items={data.navMain} />
-		<NavSecondary items={data.navSecondary} class="mt-auto" />
+		<NavMain items={navRoutes.navMain} />
+		<NavSecondary items={navRoutes.navSecondary} class="mt-auto" />
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<NavUser
