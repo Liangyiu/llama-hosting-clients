@@ -1,1 +1,5 @@
-<div class="w-full p-4">Dashboard</div>
+<script lang="ts">
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+</script>

@@ -1,18 +1,26 @@
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
-import type { TypedPocketBase, UsersRecord } from '$lib/types/pocketbase-types';
+// See https://svelte.dev/docs/kit/types#app.d.ts
 
+import type { TypedPocketBase } from '$lib/types/pocketbase-types';
+import type { AuthRecord } from 'pocketbase';
+
+interface ExtPageData {
+	crumbs?: Array<{ title: string; url?: string }>;
+}
+
+// for information about these interfaces
 declare global {
 	namespace App {
-		interface Error {
-			errorId?: string;
-		}
+		// interface Error {}
 		interface Locals {
 			pb: TypedPocketBase;
-			user: UsersRecord | null;
+			user: AuthRecord;
 		}
-		// interface PageData {}
+		interface PageData {
+			extra?: ExtPageData;
+		}
 		// interface PageState {}
 		// interface Platform {}
 	}
 }
+
+export {};

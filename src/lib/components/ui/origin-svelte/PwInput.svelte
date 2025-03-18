@@ -1,0 +1,160 @@
+<script lang="ts">
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import { cn } from '$lib/utils.js';
+	import autoAnimate from '@formkit/auto-animate';
+
+	import Check from 'lucide-svelte/icons/check';
+	import Eye from 'lucide-svelte/icons/eye';
+	import EyeOff from 'lucide-svelte/icons/eye-off';
+	import X from 'lucide-svelte/icons/x';
+	import type { FullAutoFill } from 'svelte/elements';
+
+	interface Props {
+		reqList?: boolean;
+		value: string;
+		label?: string;
+		id?: string;
+		extraLabel?: boolean;
+		extraLabelText?: string;
+		extraLabelHref?: string;
+		autocomplete?: FullAutoFill;
+	}
+
+	let {
+		reqList = false,
+		value = $bindable(),
+		label = 'Password',
+		id = 'pw-input',
+		extraLabel = false,
+		extraLabelHref = '#',
+		extraLabelText = 'Extra label',
+		autocomplete = undefined,
+		...props
+	}: Props = $props();
+
+	let isVisible = $state(false);
+
+	function toggleVisibility() {
+		isVisible = !isVisible;
+	}
+
+	const requirements = [
+		{ regex: /^.{8,71}$/, text: 'Between 8 and 71 characters' },
+		{ regex: /[0-9]/, text: 'At least 1 number' },
+		{ regex: /[a-z]/, text: 'At least 1 lowercase letter' },
+		{ regex: /[A-Z]/, text: 'At least 1 uppercase letter' },
+		{ regex: /[!@#$%^&*]+/, text: 'At least 1 special character (!@#$%^&*)' }
+	] as const;
+
+	const strength = $derived(
+		requirements.map((req) => ({
+			met: req.regex.test(value),
+			text: req.text
+		}))
+	);
+
+	const strengthScore = $derived(strength.filter((req) => req.met).length);
+
+	function getStrengthColor(score: number) {
+		if (score === 0) return 'bg-border';
+		if (score <= 1) return 'bg-red-500';
+		if (score <= 2) return 'bg-orange-500';
+		if (score <= 3) return 'bg-orange-500';
+		if (score === 4) return 'bg-amber-500';
+		return 'bg-emerald-500';
+	}
+
+	function getStrengthText(score: number) {
+		if (score === 0) return 'Enter a password';
+		if (score <= 3) return 'Weak password';
+		if (score === 4) return 'Medium password';
+		return 'Strong password';
+	}
+
+	let hasInput = $derived(value.length > 0);
+</script>
+
+<div use:autoAnimate>
+	<!-- Password input field with toggle visibility button -->
+	<div class="space-y-2">
+		{#if extraLabel}
+			<div class="flex items-center">
+				<Label for={id}>Password</Label>
+				<a href={extraLabelHref} class="ml-auto inline-block text-sm underline">
+					{extraLabelText}
+				</a>
+			</div>
+		{:else}
+			<Label for={id}>{label}</Label>
+		{/if}
+		<div class="relative">
+			<Input
+				{...props}
+				{id}
+				class="pe-9"
+				placeholder="•••••••••••••"
+				type={isVisible ? 'text' : 'password'}
+				bind:value
+				{autocomplete}
+				aria-invalid={strengthScore < 5}
+				aria-describedby="password-strength"
+			/>
+			<button
+				class="absolute inset-y-px end-px flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 transition-shadow hover:text-foreground focus-visible:border focus-visible:border-ring focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+				type="button"
+				onclick={toggleVisibility}
+				aria-label={isVisible ? 'Hide password' : 'Show password'}
+				aria-pressed={isVisible}
+				aria-controls="password"
+			>
+				{#if isVisible}
+					<EyeOff size={16} strokeWidth={2} aria-hidden="true" />
+				{:else}
+					<Eye size={16} strokeWidth={2} aria-hidden="true" />
+				{/if}
+			</button>
+		</div>
+	</div>
+
+	{#if hasInput && reqList}
+		<!-- Password strength indicator -->
+		<div
+			class="mb-4 mt-3 h-1 w-full overflow-hidden rounded-full bg-border"
+			role="progressbar"
+			aria-valuenow={strengthScore}
+			aria-valuemin={0}
+			aria-valuemax={5}
+			aria-label="Password strength"
+		>
+			<div
+				class={cn(`h-full transition-all duration-500 ease-out`, getStrengthColor(strengthScore))}
+				style:width="{(strengthScore / 5) * 100}%"
+			></div>
+		</div>
+
+		<!-- Password strength description -->
+		<p id="password-strength" class="mb-2 text-sm font-medium text-foreground">
+			{getStrengthText(strengthScore)}. Must contain:
+		</p>
+
+		<!-- Password requirements list -->
+		<ul class="space-y-1.5" aria-label="Password requirements">
+			{#each strength as req}
+				<li class="flex items-center space-x-2">
+					{#if req.met}
+						<Check size={16} class="text-emerald-500" aria-hidden="true" />
+					{:else}
+						<X size={16} class="text-muted-foreground/80" aria-hidden="true" />
+					{/if}
+					<span class={`text-xs ${req.met ? 'text-emerald-600' : 'text-muted-foreground'}`}>
+						{req.text}
+						<span class="sr-only">
+							{req.met ? ' - Requirement met' : ' - Requirement not met'}
+						</span>
+					</span>
+				</li>
+			{/each}
+		</ul>
+	{/if}
+</div>

@@ -1,39 +1,38 @@
 <script lang="ts">
-	import Navigation from '$lib/components/Navigation.svelte';
+	import { page } from '$app/state';
+	import AppSidebar from '$lib/components/AppSidebar.svelte';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { setUserState } from '$lib/stores/UserStore.svelte.js';
 
-	let { data, children } = $props();
+	const { children, data } = $props();
+	const { user, avatar } = data;
 
-	if (data.user) {
-		setUserState({
-			email: data.user.email,
-			firstName: data.user.first_name,
-			lastName: data.user.last_name,
-			user: data.user.id,
-			avatar: data.avatar,
-			addressCity: data.userDetails?.address_city,
-			addressCountry: data.userDetails?.address_country,
-			addressLineOne: data.userDetails?.address_line_one,
-			addressLineTwo: data.userDetails?.address_line_two,
-			addressStateProvince: data.userDetails?.address_state_province,
-			addressPostalCode: data.userDetails?.address_postal_code,
-			defaultSshKeys: data.userDetails?.default_ssh_keys,
-			phoneNumber: data.userDetails?.phone_number,
-			vatId: data.userDetails?.vat_id,
-			mfaTotp: data.user?.mfa_totp ?? false,
-			mfaTotpSecretId: data.user?.mfa_totp_secret_id
-		});
-	}
+	setUserState({
+		avatar,
+		email: user?.email || '',
+		firstName: user?.first_name || '',
+		lastName: user?.last_name || '',
+		mfaTotp: user?.mfa_totp || false,
+		user: user?.id || ''
+	});
+
+	let crumbs = $derived(page.data.extra?.crumbs);
 </script>
 
-<div class="min-h-screen">
-	<Navigation />
-
-	<main class="h-full min-h-screen pt-[80px] lg:pl-56">
-		<div class="p-4 mx-auto max-w-[1450px] h-full min-h-full md:h-full">
-			<div class="preset-glass-surface rounded-lg">
+<Sidebar.Provider>
+	<AppSidebar />
+	<Sidebar.Inset>
+		<header class="flex h-16 shrink-0 items-center gap-2">
+			<div class="flex items-center gap-2 px-4">
+				<Sidebar.Trigger class="-ml-1" />
+				<Breadcrumbs {crumbs} />
+			</div>
+		</header>
+		<div class="px-4 md:p-6">
+			<div class="mx-auto h-full min-h-full max-w-[1450px] md:h-full">
 				{@render children?.()}
 			</div>
 		</div>
-	</main>
-</div>
+	</Sidebar.Inset>
+</Sidebar.Provider>

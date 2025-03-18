@@ -5,7 +5,7 @@ import { env as envPublic } from '$env/dynamic/public';
 import { redirect, type HandleServerError } from '@sveltejs/kit';
 import Pocketbase from 'pocketbase';
 import crypto from 'crypto';
-import type { TypedPocketBase, UsersRecord } from '$lib/types/pocketbase-types';
+import type { TypedPocketBase } from '$lib/types/pocketbase-types';
 
 // Sentry.init({
 // 	environment: dev ? 'development' : 'production',

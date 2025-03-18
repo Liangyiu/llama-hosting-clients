@@ -1,37 +1,40 @@
 <script lang="ts">
+	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
+	import { Separator } from '$lib/components/ui/separator/index.js';
+
 	interface Props {
-		pathname: string;
+		crumbs?: Array<{
+			title: string;
+			url?: string;
+		}>;
 	}
 
-	let { pathname }: Props = $props();
-
-	const crumbs = pathname.split('/').filter((crumb) => crumb !== '');
-
-	function getHref(index: number) {
-		return crumbs.slice(0, index + 1).join('/');
-	}
-
-	function capitalizeFirstLetter(string: string) {
-		return string.charAt(0).toUpperCase() + string.slice(1);
-	}
+	let { crumbs }: Props = $props();
 </script>
 
-<div>
-	<ol class="breadcrumb text-sm">
-		{#each crumbs as crumb, i}
-			{#if i === 0}
-				<li class="crumb">
-					<a class="anchor" href="/{crumb}">{capitalizeFirstLetter(crumb)}</a>
-				</li>
-			{:else}
-				<li class="crumb">
-					<a class="anchor" href="/{getHref(i)}">{capitalizeFirstLetter(crumb)}</a>
-				</li>
-			{/if}
-
-			{#if crumbs.length !== i + 1}
-				<li class="crumb-separator" aria-hidden="true">&rsaquo;</li>
-			{/if}
-		{/each}
-	</ol>
-</div>
+{#if crumbs}
+	<Separator orientation="vertical" class="mr-2 h-4" />
+	<Breadcrumb.Root>
+		<Breadcrumb.List>
+			{#each crumbs as crumb, pos (crumb.title)}
+				{#if crumbs.length === pos + 1}
+					<Breadcrumb.Item>
+						<Breadcrumb.Page>{crumb.title}</Breadcrumb.Page>
+					</Breadcrumb.Item>
+				{:else if !crumb.url}
+					<Breadcrumb.Item>
+						<Breadcrumb.Page class="hidden md:block">{crumb.title}</Breadcrumb.Page>
+					</Breadcrumb.Item>
+					{#if !crumb.url}
+						<Breadcrumb.Separator class="hidden md:block" />
+					{/if}
+				{:else}
+					<Breadcrumb.Item class="hidden md:block">
+						<Breadcrumb.Link href={crumb.url}>{crumb.title}</Breadcrumb.Link>
+					</Breadcrumb.Item>
+					<Breadcrumb.Separator class="hidden md:block" />
+				{/if}
+			{/each}
+		</Breadcrumb.List>
+	</Breadcrumb.Root>
+{/if}
