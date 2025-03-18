@@ -29,8 +29,10 @@
 				<Breadcrumbs {crumbs} />
 			</div>
 		</header>
-		<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-			{@render children()}
+		<div class="px-4 md:p-6">
+			<div class="mx-auto h-full min-h-full max-w-[1450px] md:h-full">
+				{@render children?.()}
+			</div>
 		</div>
 	</Sidebar.Inset>
 </Sidebar.Provider>
