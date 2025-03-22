@@ -12,8 +12,8 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			pb: TypedPocketBase;
-			user: AuthRecord;
+			session: Session | undefined;
+			user: User | undefined;
 		}
 		interface PageData {
 			extra?: ExtPageData;
