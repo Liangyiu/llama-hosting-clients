@@ -1,23 +1,28 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { authClient } from '$lib/client/auth-client.js';
 	import AppSidebar from '$lib/components/AppSidebar.svelte';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { setUserState } from '$lib/stores/UserStore.svelte.js';
+	import { getAvatarUri } from '$lib/utility/avatar.js';
 
 	const { children, data } = $props();
-	const { user, avatar } = data;
-
-	setUserState({
-		avatar,
-		email: user?.email || '',
-		firstName: user?.first_name || '',
-		lastName: user?.last_name || '',
-		mfaTotp: user?.mfa_totp || false,
-		user: user?.id || ''
-	});
 
 	let crumbs = $derived(page.data.extra?.crumbs);
+
+	const session = authClient.useSession();
+
+	let user = $session.data?.user;
+	const firstName = data.userDetails?.first_name ? data.userDetails?.first_name : 'New';
+	const lastName = data.userDetails?.last_name ? data.userDetails?.last_name : 'User';
+
+	setUserState({
+		firstName,
+		lastName,
+		email: $session.data?.user.email,
+		avatar: getAvatarUri(firstName, lastName)
+	});
 </script>
 
 <Sidebar.Provider>

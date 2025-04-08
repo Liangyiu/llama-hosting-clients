@@ -1,7 +1,6 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 
-import type { TypedPocketBase } from '$lib/types/pocketbase-types';
-import type { AuthRecord } from 'pocketbase';
+import type { LogtoClient, UserInfoResponse } from '@logto/sveltekit';
 
 interface ExtPageData {
 	crumbs?: Array<{ title: string; url?: string }>;
@@ -12,8 +11,8 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			pb: TypedPocketBase;
-			user: AuthRecord;
+			logtoClient: LogtoClient;
+			user?: UserInfoResponse;
 		}
 		interface PageData {
 			extra?: ExtPageData;
