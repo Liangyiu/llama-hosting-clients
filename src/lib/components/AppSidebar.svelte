@@ -1,8 +1,5 @@
 <script lang="ts">
-	import BookOpen from 'lucide-svelte/icons/book-open';
-	import Bot from 'lucide-svelte/icons/bot';
 	import LifeBuoy from 'lucide-svelte/icons/life-buoy';
-	import Send from 'lucide-svelte/icons/send';
 	import Settings2 from 'lucide-svelte/icons/settings-2';
 	import SquareTerminal from 'lucide-svelte/icons/square-terminal';
 	import NavMain from '$lib/components/NavMain.svelte';
@@ -13,6 +10,8 @@
 	import { getUserState } from '$lib/stores/UserStore.svelte';
 	import { page } from '$app/state';
 	import Bell from 'lucide-svelte/icons/bell';
+	import { authClient } from '$lib/client/auth-client';
+	import { getAvatarUri } from '$lib/utility/avatar';
 
 	let navRoutes = $derived({
 		navMain: [
@@ -63,7 +62,8 @@
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 
-	let user = getUserState();
+	const session = authClient.useSession();
+	let user = $state(getUserState());
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
@@ -95,7 +95,11 @@
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<NavUser
-			user={{ avatar: user.avatar, email: user.email, name: user.firstName + ' ' + user.lastName }}
+			user={{
+				avatar: user.avatar,
+				email: $session?.data?.user.email || '',
+				name: user.firstName + ' ' + user.lastName
+			}}
 		/>
 	</Sidebar.Footer>
 </Sidebar.Root>

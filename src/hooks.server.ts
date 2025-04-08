@@ -3,6 +3,7 @@ import { sequence } from '@sveltejs/kit/hooks';
 import { error, redirect, type HandleServerError } from '@sveltejs/kit';
 import crypto from 'crypto';
 import { auth } from '$lib/auth'; // path to your auth file
+import { svelteKitHandler } from 'better-auth/svelte-kit';
 
 // Sentry.init({
 // 	environment: dev ? 'development' : 'production',
@@ -10,23 +11,26 @@ import { auth } from '$lib/auth'; // path to your auth file
 // 	tracesSampleRate: 1
 // });
 
-const errorId = crypto.randomUUID();
+// const errorId = crypto.randomUUID();
 
-// Sentry.setTag('custom_error_id', errorId);
+// // Sentry.setTag('custom_error_id', errorId);
 
-export const handleError: HandleServerError = ({ error, event }) => {
-	console.error('Server side error:', error, event);
+// export const handleError: HandleServerError = ({ error, event }) => {
+// 	console.error('Server side error:', error, event);
 
-	return {
-		message: "An unexpected error occurred. We're working on it!",
-		errorId
-	};
-};
+// 	return {
+// 		message: "An unexpected error occurred. We're working on it!",
+// 		errorId
+// 	};
+// };
 
 // export const handleError: HandleServerError = Sentry.handleErrorWithSentry(customErrorHandler);
 
 export const handle = sequence(
 	// Sentry.sentryHandle({ handleUnknownRoutes: false }),
+	async function betterAuth({ event, resolve }) {
+		return svelteKitHandler({ event, resolve, auth });
+	},
 	async function _handle({ event, resolve }) {
 		const { locals, request, url } = event;
 
@@ -46,11 +50,11 @@ export const handle = sequence(
 
 		// protect routes
 
-		if (
-			url.pathname.startsWith('/') &&
-			!locals.session &&
-			!['/login', '/register', '/reset-password', '/reset-password/success'].includes(url.pathname)
-		) {
+		if (url.pathname.startsWith('/api')) {
+			return await resolve(event);
+		}
+
+		if (url.pathname.startsWith('/') && !locals.session && !['/login'].includes(url.pathname)) {
 			return redirect(303, '/login');
 		}
 

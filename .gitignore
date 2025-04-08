@@ -27,4 +27,4 @@ vite.config.ts.timestamp-*
 .env.sentry-build-plugin
 
 # DB
-local.db
+local.db*

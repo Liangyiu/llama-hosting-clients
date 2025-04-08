@@ -11,9 +11,11 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
+	Admins = "admins",
 	DeployedVms = "deployed_vms",
 	HostSystemsVps = "host_systems_vps",
 	Invoices = "invoices",
+	LimitedUsers = "limited_users",
 	Orders = "orders",
 	ProductConfigVps = "product_config_vps",
 	Products = "products",
@@ -98,6 +100,13 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
+export type AdminsRecord = {
+	created?: IsoDateString
+	id: string
+	updated?: IsoDateString
+	user: RecordIdString
+}
+
 export type DeployedVmsRecord<Tipv4 = unknown, Tipv6 = unknown> = {
 	created?: IsoDateString
 	id: string
@@ -135,6 +144,13 @@ export type InvoicesRecord = {
 	status?: InvoicesStatusOptions
 	updated?: IsoDateString
 	user?: RecordIdString
+}
+
+export type LimitedUsersRecord = {
+	email: string
+	first_name: string
+	id: string
+	username: string
 }
 
 export enum OrdersStatusOptions {
@@ -288,10 +304,11 @@ export type UserDetailsRecord = {
 	address_state_province?: string
 	created?: IsoDateString
 	default_ssh_keys?: RecordIdString[]
+	first_name?: string
 	id: string
+	last_name?: string
 	phone_number?: string
 	updated?: IsoDateString
-	user: RecordIdString
 	vat_id?: string
 }
 
@@ -336,9 +353,11 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
+export type AdminsResponse<Texpand = unknown> = Required<AdminsRecord> & BaseSystemFields<Texpand>
 export type DeployedVmsResponse<Tipv4 = unknown, Tipv6 = unknown, Texpand = unknown> = Required<DeployedVmsRecord<Tipv4, Tipv6>> & BaseSystemFields<Texpand>
 export type HostSystemsVpsResponse<Texpand = unknown> = Required<HostSystemsVpsRecord> & BaseSystemFields<Texpand>
 export type InvoicesResponse<Texpand = unknown> = Required<InvoicesRecord> & BaseSystemFields<Texpand>
+export type LimitedUsersResponse<Texpand = unknown> = Required<LimitedUsersRecord> & BaseSystemFields<Texpand>
 export type OrdersResponse<Texpand = unknown> = Required<OrdersRecord> & BaseSystemFields<Texpand>
 export type ProductConfigVpsResponse<Texpand = unknown> = Required<ProductConfigVpsRecord> & BaseSystemFields<Texpand>
 export type ProductsResponse<Texpand = unknown> = Required<ProductsRecord> & BaseSystemFields<Texpand>
@@ -359,9 +378,11 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
+	admins: AdminsRecord
 	deployed_vms: DeployedVmsRecord
 	host_systems_vps: HostSystemsVpsRecord
 	invoices: InvoicesRecord
+	limited_users: LimitedUsersRecord
 	orders: OrdersRecord
 	product_config_vps: ProductConfigVpsRecord
 	products: ProductsRecord
@@ -381,9 +402,11 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
+	admins: AdminsResponse
 	deployed_vms: DeployedVmsResponse
 	host_systems_vps: HostSystemsVpsResponse
 	invoices: InvoicesResponse
+	limited_users: LimitedUsersResponse
 	orders: OrdersResponse
 	product_config_vps: ProductConfigVpsResponse
 	products: ProductsResponse
@@ -406,9 +429,11 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: '_mfas'): RecordService<MfasResponse>
 	collection(idOrName: '_otps'): RecordService<OtpsResponse>
 	collection(idOrName: '_superusers'): RecordService<SuperusersResponse>
+	collection(idOrName: 'admins'): RecordService<AdminsResponse>
 	collection(idOrName: 'deployed_vms'): RecordService<DeployedVmsResponse>
 	collection(idOrName: 'host_systems_vps'): RecordService<HostSystemsVpsResponse>
 	collection(idOrName: 'invoices'): RecordService<InvoicesResponse>
+	collection(idOrName: 'limited_users'): RecordService<LimitedUsersResponse>
 	collection(idOrName: 'orders'): RecordService<OrdersResponse>
 	collection(idOrName: 'product_config_vps'): RecordService<ProductConfigVpsResponse>
 	collection(idOrName: 'products'): RecordService<ProductsResponse>

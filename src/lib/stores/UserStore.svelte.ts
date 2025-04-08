@@ -1,9 +1,8 @@
 import { getContext, setContext } from 'svelte';
 
 type UserData = {
-	firstName: string;
-	lastName: string;
-	email: string;
+	firstName?: string;
+	lastName?: string;
 	addressCity?: string;
 	addressCountry?: string;
 	addressLineOne?: string;
@@ -12,12 +11,11 @@ type UserData = {
 	addressPostalCode?: string;
 	defaultSshKeys?: string[];
 	phoneNumber?: string;
-	user: string;
+	userId?: string;
 	vatId?: string;
-	avatar: string;
 	balance?: number;
-	mfaTotp: boolean;
-	mfaTotpSecretId?: string;
+	email?: string;
+	avatar?: string;
 };
 
 const USER_CTX = 'USER_CTX';

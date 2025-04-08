@@ -11,6 +11,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
 	import { goto } from '$app/navigation';
+	import { authClient } from '$lib/client/auth-client';
 
 	let {
 		user
@@ -18,17 +19,20 @@
 		user: {
 			name: string;
 			email: string;
-			avatar: string;
+			avatar?: string;
 		};
 	} = $props();
 
 	const sidebar = useSidebar();
 
 	async function logout() {
-		const response = await fetch('/api/auth/logout');
-		if (response.ok) {
-			return await goto('/login?logout=1');
-		}
+		await authClient.signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					goto('/login?logout=true');
+				}
+			}
+		});
 	}
 </script>
 
@@ -44,7 +48,7 @@
 					>
 						<Avatar.Root class="h-8 w-8 rounded-lg">
 							<Avatar.Image src={user.avatar} alt={user.name} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+							<Avatar.Fallback class="rounded-lg">NU</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold">{user.name}</span>
